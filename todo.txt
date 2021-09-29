@@ -1,10 +1,7 @@
 Todo:
 
-P1 -> Priority 1 (Highest)
-
-Hangman Command - P2 - WIP
-Tetra Command - P2 - WIP
--> Tetr.io Bot - P4
-Fix help function - P2
-Economy - P3
-RPG - P4
+- Hangman Command
+- Economy
+-Tetrio Profiles (Canvas)
+	-> Tetr.io Bot
+- RPG

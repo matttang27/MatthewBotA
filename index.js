@@ -8,10 +8,14 @@ const fs = require('fs');
 console.log("imported fs " + timePast())
 const Discord = require("discord.js");
 console.log("imported discord " + timePast())
+const https = require('https')
+console.log("imported https" + timePast())
 var bot = new Discord.Client();
 console.log("created bot instance " + timePast())
 const disbut = require('discord-buttons')(bot);
 console.log("imported discord-buttons" + timePast())
+const compress_images = require("compress-images");
+console.log("imported compress_images" + timePast())
 const {
 	prefix,
 	ownerID,
@@ -28,13 +32,6 @@ if (token == "") {
 
 var func = require("./functions.js")
 func.importAll(func, global)
-const {
-	inputs,
-	outputs,
-	cleanup,
-	gameClear,
-	sleep
-} = require("./functions.js")
 console.log("imported functions " + timePast())
 var startTime = new Date().toISOString().substring(2)
 
@@ -48,33 +45,31 @@ function fulllog(str) {
 }
 const Role = require('./role.js')
 
-var games = []
+bot.games = {}
 
 
-var praise = ["nice", "good", "amazing", "godly", "legend"]
+var praise = ["nice", "good", "amazing", "godly", "legend","legendary"]
 
 const commandFiles = fs.readdirSync('./commands')
 
 const commandFolders = commandFiles.filter(file => !file.endsWith('.js'))
 
-const commands = []
+const commands = {}
 var folderFind = {}
 for (folder of commandFolders) {
 	commands[folder] = fs.readdirSync('./commands/' + folder)
 	for (file of commands[folder]) {
 		const command = require(`./commands/${folder}/${file}`)
-		if (commands.indexOf(command.name) >= 0) {
-			console.log(`WARNING: COMMAND ${command.name} HAS DUPLICATE NAME`)
-		} else {
-			bot.commands.set(command.name, command)
-			folderFind[command.name] = folder
-			console.log(`set ${command.name} command ` + timePast())
-		}
+		bot.commands.set(command.name, command)
+		folderFind[command.name] = folder
+		console.log(`set ${command.name} command ` + timePast())
+		
 	}
 
 
 }
 
+bot.commandlist = commands
 
 
 console.log("set bot commands " + timePast())
@@ -95,7 +90,10 @@ console.log("set rpg commands " + timePast())
 const admin = require('firebase-admin');
 
 let serviceAccount = require('./servicekey.json');
+
 let rpgserviceAccount = require('./rpg/rpgservicekey.json');
+rpgserviceAccount.private_key = process.env['rpgkey'].replace(/\\n/g, '\n')
+serviceAccount.private_key = process.env['firebasekey'].replace(/\\n/g, '\n')
 
 admin.initializeApp({
 	credential: admin.credential.cert(serviceAccount)
@@ -113,7 +111,8 @@ bot.on("ready", () => {
 	fulllog("Bot Ready at " + new Date().toString());
 	changeStatus(bot)
 	fulllog("Changing status at " + new Date().toString());
-
+	syncEmotes()
+	console.log("synced Emotes " + timePast())
 });
 
 bot.on("messageDelete", async message => {
@@ -144,6 +143,9 @@ bot.on("messageDelete", async message => {
 })
 bot.on("messageUpdate", async (oldMessage, newMessage) => {
 	if (oldMessage.guild.id == "712382129673338991") {
+		if (oldMessage.author.id == "720466960118186015") {
+			return
+		}
 		var channel = await bot.channels.fetch("842750073896173628")
 		if (oldMessage.content) {
 			var embed = new Discord.MessageEmbed()
@@ -263,16 +265,13 @@ bot.on("message", async message => {
 		if (message.mentions.has(bot.user)) {
 			message.channel.send(pingers[Math.floor(Math.random() * pingers.length)])
 		}
-
+		
 		if (message.channel.type == "text") {
 
 			if (message.author.id == bot.user.id) {
 				return;
 			}
-			if (message.content == "https:tetr.io/#NYEA") {
-				message.delete()
-				message.channel.send("Shut the fuck up David")
-			}
+			
 			//Human trafficking cult stuff
 			if (message.guild.id == "757770623450611784") {
 				if (message.channel.id == "769979741506764844") {
@@ -281,6 +280,46 @@ bot.on("message", async message => {
 						await message.member.roles.add(dirty)
 					}
 
+				}
+				//emoji add in #emoji-voting
+				if (message.channel.id == "837743995828174878") {
+					
+					if (message.attachments.first()) {
+						if (!message.content) {
+							var sended = await message.channel.send(new Discord.MessageEmbed().setTitle("Emoji Adding").setDescription("Enter a name for you emoji:").setColor("#00FFFF"))
+							const collector = message.channel.createMessageCollector((m => m.author.id == message.author.id), {time:30000, max:1})
+							collector.on('end', (collected,reason) => {
+								if (reason == "time") {
+									sended.edit(new Discord.MessageEmbed().setTitle("Emoji Adding Timed out.").setDescription("Slowpoke :[").setColor("#FF0000"))
+								}
+								else {
+									message.guild.emojis.create(message.attachments.first().attachment, collected.first().content).catch((err) => {
+										message.channel.send(new Discord.MessageEmbed().setTitle("Failed to add Emoji").setDescription("Might be because the image size is over 256kb. If it's not, give up on your dreams and die.").setColor("#FF0000"))
+									})
+								}
+							});
+						}
+						else {
+							message.guild.emojis.create(message.attachments.first().attachment, message.content).catch((err) => {
+							message.channel.send(new Discord.MessageEmbed().setTitle("Failed to add Emoji").setDescription("Might be because the image size is over 256kb. If it's not, give up on your dreams and die.").setColor("#FF0000"))
+							})
+						}
+						
+					}
+					else if (message.content.match(/tenor/g) || message.content.match(/imgur/g)) {
+						let file = message.content
+						message.channel.send("Enter a name for this emoji:")
+						message.channel.awaitMessages(m => m.author.id == message.author.id,{max:1, time:30000}).then((collected,reason) => {
+							if (collected.first()) {
+								message.guild.emojis.create(file,collected.first().content).catch((err) => {
+							message.channel.send("File cannot be larger than 256.0 kb.")})
+							}
+							else {
+								return message.channel.send("Command timed out.")
+							}
+						})
+						
+					}
 				}
 				//emoji counting
 				var emojis = message.content.match(/<:.+?:\d+>/g)
@@ -293,6 +332,9 @@ bot.on("message", async message => {
 
 
 						var e = message.guild.emojis.cache.get(emojis[i])
+						if (!e) {
+							return;
+						}
 						var u = message.author
 
 						if (e.id in r.reactions) {
@@ -535,6 +577,9 @@ bot.on("message", async message => {
 			if (temp.includes("just do it")) {
 				message.react("🎷")
 			}
+			if (temp.includes("suck") && temp.includes("i") && message.author.id == 306512867232972802) {
+				return message.channel.send("https://i.imgur.com/1pQHxXd.png")
+			}
 
 			return
 		};
@@ -603,13 +648,12 @@ bot.on("message", async message => {
 			var other = [rpgadmin, bot, commandName, disbut]
 		}
 
-		// if (command.wip) {
-		// 	console.log('./commands/' + folderFind[command.name] + "/" + command.name + ".js")
-		// 	console.log(require.cache)
-		// 	delete require.cache['./commands/' + folderFind[command.name] + "/" + command.name + ".js"]
+		if (command.wip) {
+			
 
-		// 	bot.commands.set(command.name, require('./commands/' + folderFind[command.name] + "/" + command.name + ".js"))
-		// }
+			bot.commands.set(command.name, require('./commands/' + folderFind[command.name] + "/" + command.name + ".js"))
+		}
+		console.log(command.name)
 		command.execute(message, args, other);
 
 
@@ -625,62 +669,67 @@ var ignore = ["576031405037977600"]
 
 
 bot.on("messageReactionAdd", async function(reaction, user) {
-
-	if (user.bot) {
-		return;
-	}
-
-
-	if (reaction.message.guild.id == "757770623450611784") {
-		if (reaction.message.id == "850212882594398248") {
-			var reactlist = []
-			var test = await reaction.users.fetch()
-			console.log(test)
-
-
-			// msg = await trchannel.messages.fetch("850545940010893332")
-			// msg.edit(reactlist.join("\n"))
-		}
-		if (!(reaction.emoji instanceof Discord.GuildEmoji)) {
+	try {
+			if (user.bot) {
 			return;
 		}
-		if (reaction.emoji.guild.id != "757770623450611784") {
-			return;
-		}
-		var r = JSON.parse(fs.readFileSync('reactions.json').toString());
-		var e = reaction.emoji
-		var u = user
-		if (e.id in r.reactions) {
-			r.reactions[e.id].count++
-		} else {
-			r.reactions[e.id] = {}
-			r.reactions[e.id]["name"] = e.name
-			r.reactions[e.id]["count"] = 1
-			r.reactions[e.id]["users"] = {}
-		}
-		if (u.id in r.reactions[e.id].users) {
-			r.reactions[e.id].users[u.id]++
-		} else {
-			r.reactions[e.id].users[u.id] = 1
-		}
 
-		if (u.id in r.users) {
-			r.users[u.id].count++
-		} else {
-			r.users[u.id] = {}
-			r.users[u.id]["name"] = u.username
-			r.users[u.id]["count"] = 1
-			r.users[u.id]["reactions"] = {}
-		}
-		if (e.id in r.users[u.id].reactions) {
-			r.users[u.id].reactions[e.id]++
-		} else {
-			r.users[u.id].reactions[e.id] = 1
-		}
 
-		let list = JSON.stringify(r, null, 2);
-		fs.writeFileSync('reactions.json', list);
+		if (reaction.message.guild.id == "757770623450611784") {
+			if (reaction.message.id == "850212882594398248") {
+				var reactlist = []
+				var test = await reaction.users.fetch()
+				console.log(test)
+
+
+				// msg = await trchannel.messages.fetch("850545940010893332")
+				// msg.edit(reactlist.join("\n"))
+			}
+			if (!(reaction.emoji instanceof Discord.GuildEmoji)) {
+				return;
+			}
+			if (reaction.emoji.guild.id != "757770623450611784") {
+				return;
+			}
+			var r = JSON.parse(fs.readFileSync('reactions.json').toString());
+			var e = reaction.emoji
+			var u = user
+			if (e.id in r.reactions) {
+				r.reactions[e.id].count++
+			} else {
+				r.reactions[e.id] = {}
+				r.reactions[e.id]["name"] = e.name
+				r.reactions[e.id]["count"] = 1
+				r.reactions[e.id]["users"] = {}
+			}
+			if (u.id in r.reactions[e.id].users) {
+				r.reactions[e.id].users[u.id]++
+			} else {
+				r.reactions[e.id].users[u.id] = 1
+			}
+
+			if (u.id in r.users) {
+				r.users[u.id].count++
+			} else {
+				r.users[u.id] = {}
+				r.users[u.id]["name"] = u.username
+				r.users[u.id]["count"] = 1
+				r.users[u.id]["reactions"] = {}
+			}
+			if (e.id in r.users[u.id].reactions) {
+				r.users[u.id].reactions[e.id]++
+			} else {
+				r.users[u.id].reactions[e.id] = 1
+			}
+
+			let list = JSON.stringify(r, null, 2);
+			fs.writeFileSync('reactions.json', list);
+		}
 	}
+	catch(err) {
+		console.log(err)
+	}
+	
 
 
 
@@ -933,5 +982,19 @@ var humantraffickingicon = setInterval(() => nameChange(), 700000)
 
 setTimeout(() => {
 	console.log("REQUIRE CACHE")
-	console.log(require.cache)
+	
 },5000)
+
+async function syncEmotes() {
+	var e = JSON.parse(fs.readFileSync('serveremotes.json').toString());
+	var emojis = await bot.emojis.cache
+	var emojis = emojis.array()
+	for (i=0;i<emojis.length;i++) {
+		e[emojis[i].name] = emojis[i].id
+	}
+	fs.writeFileSync('serveremotes.json', JSON.stringify(e, null, 2));
+
+
+	
+}
+

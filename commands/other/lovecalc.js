@@ -12,7 +12,9 @@ module.exports = {
 	
 	async execute(message, args, other) {
 
-		
+		var admin = other[0]
+		var bot = other[1]
+		var commandName = other[2]
 
 
 
@@ -58,7 +60,7 @@ module.exports = {
 				}
 			}
 			else {
-				var user = await client.users.fetch(name1)
+				var user = await bot.users.fetch(name1)
 				temp1 = user.username 
 			}
 
@@ -77,7 +79,7 @@ module.exports = {
 				}
 			}
 			else {
-				var user = await client.users.fetch(name1)
+				var user = await bot.users.fetch(name1)
 				temp2 = user.username 
 			}
 		}

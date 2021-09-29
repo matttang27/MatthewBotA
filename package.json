@@ -6,15 +6,17 @@
   "dependencies": {
     "an-array-of-english-words": "^2.0.0",
     "body-parser": "^1.19.0",
+    "compress-images": "^1.9.9",
     "discord-buttons": "^2.4.1",
-    "discord.js": "^12.3.1",
+    "discord.js": "^12.5.3",
     "express": "^4.17.1",
-    "firebase-admin": "^9.2.0",
+    "firebase-admin": "^9.11.1",
     "natural": "^2.4.5",
-    "nhentai": "^2.0.0",
-    "node-fetch": "^2.6.1",
+    "nhentai": "^2.1.1",
+    "node-fetch": "^2.6.5",
+    "puppeteer": "^10.4.0",
     "wordnet-db": "^3.1.14",
-    "ytdl-core": "^4.5.0"
+    "ytdl-core": "^4.9.1"
   },
   "devDependencies": {},
   "scripts": {

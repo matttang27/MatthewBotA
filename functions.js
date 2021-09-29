@@ -146,7 +146,11 @@ const inputs = [
 
 	["weirdchamp"],
 
-	["fuckingbullshit","fckingbullshit","fucking bullshit", "fcking bullshit"]
+	["fuckingbullshit","fckingbullshit","fucking bullshit", "fcking bullshit"],
+
+	["install league","uninstall league"],
+
+	["enormous penis"]
 ]
 const outputs = [
 	["EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE\nEE         EE         EE         EE         EE         EE         EE         EE         EE\nEEEE    EEEE     EEEE    EEEE     EEEE    EEEE     EEEE     EEEE    EEEE\nEE         EE         EE         EE         EE         EE         EE         EE         EE\nEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE\nEEEEEEEEEEEEEEEEEE\nEE         EE         EE\nEEEE    EEEE     EEEE\nEE         EE         EE\nEEEEEEEEEEEEEEEEEE\nEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE\nEE         EE         EE         EE         EE         EE\nEEEE    EEEE     EEEE    EEEE    EEEE     EEEE\nEE         EE         EE         EE         EE         EE\nEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE\nEEEEEEEEEEEEEEEEEE\nEE         EE         EE\nEEEE    EEEE     EEEE\nEE         EE         EE\nEEEEEEEEEEEEEEEEEE\nEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE\nEE         EE         EE         EE         EE         EE         EE         EE         EE\nEEEE    EEEE     EEEE    EEEE     EEEE    EEEE     EEEE     EEEE    EEEE\nEE         EE         EE         EE         EE         EE         EE         EE         EE\nEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"],
@@ -158,7 +162,11 @@ const outputs = [
 	
 	["True, that is kinda weirdchamp.","https://tenor.com/view/weirdchamping-weirdchamp-twitch-meme-ryan-gutierrez-gif-17202815"],
 
-	["https://www.youtube.com/watch?v=OFjqEexH0Tg"]
+	["https://www.youtube.com/watch?v=OFjqEexH0Tg"],
+
+	["https://signup.na.leagueoflegends.com/en/signup/redownload?page_referrer=index"],
+
+	["https://www.youtube.com/watch?v=EWMPVn1kgIQ"]
 
 ]
 

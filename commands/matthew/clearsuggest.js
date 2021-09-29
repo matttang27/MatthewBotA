@@ -6,7 +6,7 @@ module.exports = {
 	args: [-1],
 	category: "bot",
 	name: "clearsuggest",
-	aliases: ["clearsuggestions","cs"],
+	aliases: ["clearsuggestions","csg"],
 	description: "Clears all the suggestions",
 	usage: `${prefix}template`,
 	perms: 1,

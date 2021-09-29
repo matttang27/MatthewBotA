@@ -5,8 +5,9 @@ const Discord = require('discord.js');
 module.exports = {
 	args: [1],
 	name: "copyemotes",
+	aliases: ["ces","cemotes"],
 	description: "Copies emotes from another server",
-	usage: `${prefix}copyemotes`,
+	usage: `${prefix}copyemotes <guild id>`,
 	perms: 2,
 	async execute(message, args, other) {
 		var admin = other[0]

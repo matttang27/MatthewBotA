@@ -1,5 +1,6 @@
 const { prefix, token, ownerID,rpgprefix } = require("../../config.json");
-
+const fs = require('fs');
+const Discord = require('discord.js');
 module.exports = {
 	args: [0,1],
 	name: "help",
@@ -12,23 +13,27 @@ module.exports = {
 	
 	execute(message, args, other) {
 		data = []
-		const {commands} = message.client;
-		
+		var bot = other[1]
+		var commandlist = {...bot.commandlist}
+		console.log(commandlist)
+		var keys = Object.keys(commandlist)
+
+		for (i of keys) {
+			commandlist[i] = commandlist[i].map(r => r.slice(0,-3))
+		}
 		//sends command list if there are no arguments
 		if (!args.length) {
 			data.push("Here's a list of all my commands:");
-			commands.forEach(command => {
-				if (command.ownerOnly && message.author.id != ownerID) {
-					return;
-				}
-				else {
-					data.push(command.name)
-				}
-			})
-			data.push(`\nYou can send \`${prefix}help [command]\` to get info on a specific command!`);
-			data.push(`\nFor RPG commands, use ${rpgprefix}help instead!`)
-
-			return message.author.send(data, { split: true })
+			var embed = new Discord.MessageEmbed()
+			.setTitle("List of commands")
+			.setTimestamp()
+			.setDescription(`\nYou can send \`${prefix}help [command]\` to get info on a specific command!`)
+			.setFooter(`\nFor RPG commands, use ${rpgprefix}help instead!`)
+			for (i of keys) {
+				console.log(i)
+				embed.addField(i, commandlist[i].join(", "))
+			}
+			return message.author.send(embed)
 				.then(() => {
 					if (message.channel.type === 'dm') return;
 					message.reply('I\'ve sent you a DM with all my commands!');

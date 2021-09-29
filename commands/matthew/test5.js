@@ -10,11 +10,8 @@ module.exports = {
 	perms: 1,
 	wip: true,
 	async execute(message, args, other) {
-		message.channel.send("hi")
-		var a = await JSON.stringify(require.cache)
-		fs.writeFile('wtf.txt', a, function (err) {
-			if (err) return console.log(err);
-		});
+		
 	}
 };	
+
 

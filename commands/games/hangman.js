@@ -18,7 +18,7 @@ module.exports = {
 		var topic = "random"
 		var goal = 100;
 		var embed = new Discord.MessageEmbed()
-		.setTitle("🍺 The beer is being brewed. Starting in 10 seconds. 🍺")
+		.setTitle("Setting up the stage...:noose:")
 		.setDescription(`Enter any word containing all four letters in any order\nPoints System: \n\n1st - 10pts\n2nd - 5pts\n3rd - 3pts\n4th - 2pts\n5th - 1 pt.\n\n**Current settings:**\n**m@time** : The amount of time in seconds to answer the question(5-120). \n(Current: ${time})\n**m@difficulty** : The amount of possible answers that is required(100-3000)\n(Current: ${diff})\n**m@goal** : the number of points to get (10-1000)\n(Current: ${goal})\n\nEnd the game with **m@end**`)
 		.setColor("#6f4e37")
 
