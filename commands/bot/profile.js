@@ -1,7 +1,7 @@
 const { prefix, token } = require("../../config.json");
 const Discord = require('discord.js');
 const fs = require('fs');
-const {findMember} = require('../../functions.js')
+const {findMember,newProfile} = require('../../functions.js')
 
 module.exports = {
 	args: [-1],
@@ -29,15 +29,7 @@ module.exports = {
 			var embed = new Discord.MessageEmbed()
 				.setColor('#0099ff')
 				.setTitle(`Profile of ${user.username}`)
-				
-				.addFields(
-					{ name: 'Balance', value: `$${userData.money}` },
-					{ name: 'RPS Record W-L', value: `${userData.rpswon}-${userData.rpsplayed-userData.rpswon}`, inline: true },
-					{ name: 'RPS Winrate', value: `${winrate}%`, inline: true },
-					{ name: 'RPS Streak', value: userData.rpsstreak, inline: true},
-					{ name: 'Age', value: `${(Math.floor((Date.now() - userData.timeCreated.toDate())/86400000))} days`}
-				)
-				
+				.setDescription(`**Balance**: $${userData.money}\n**Age**: ${(Math.floor((Date.now() - userData.timeCreated.toDate())/86400000))} days`)
 				.setTimestamp()
 				.setFooter(`Matthew Bot Profile`);
 			if (user.displayAvatarURL()) {
@@ -83,30 +75,8 @@ module.exports = {
 			//if author doesn't have a profile, create one and send an empty profile
 			if (!user.exists) {
 				message.reply("Creating profile...")
-				
 
-				const embed = new Discord.MessageEmbed()
-				.setColor('#0099ff')
-				.setTitle(`Profile of ${message.author.username}`)
-				.setThumbnail(`${message.author.avatarURL()}`)
-				.addFields(
-					{ name: 'Balance', value: '$0' },
-					{ name: 'RPS Record W-L', value: '0-0', inline: true },
-					{ name: 'RPS Winrate', value: '0%', inline: true },
-					{ name: 'RPS Streak', value: 0, inline: true},
-					{ name: 'Age', value: `0 Days` }
-				)
-				
-				.setTimestamp()
-				.setFooter(`Matthew Bot Profile`);
-
-				const setUser = await db.collection('users').doc(message.author.id).set({
-					money: 0,
-					rpsplayed: 0,
-					rpswon: 0,
-					rpsstreak: 0,
-					timeCreated: firestore.Timestamp.fromDate(new Date()),	
-				})
+				const setUser = await db.collection('users').doc(message.author.id).set(newProfile(firestore))
 				.catch((err) => console.log(err))
 
 
@@ -118,6 +88,7 @@ module.exports = {
 					"lastweekly": 0
 				}
 				fs.writeFileSync('players.json', JSON.stringify(p,null,2));
+				embed = createEmbed(message.author,userData)
 				return message.channel.send(embed)
 			}
 			

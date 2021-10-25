@@ -10,6 +10,7 @@ module.exports = {
 	description: "You horny bastard.",
 	usage: `${prefix}nhentai {option}`,
 	perms: 4,
+	nsfw: true,
 	async execute(message, args, other) {
 		var admin = other[0]
 		var bot = other[1]
@@ -28,13 +29,13 @@ module.exports = {
 				temp = doujin.titles.japanese
 			}
 			
-			var parodies = doujin.tags.filter(tag => tag.type=='parody').sort((a,b) => (a.count > b.count) ? -1 : (a.count < b.count) ? 1 : 0).map(tag=>tag.name + ` (${tag.count})`)
-			var characters = doujin.tags.filter(tag => tag.type=='character').sort((a,b) => (a.count > b.count) ? -1 : (a.count < b.count) ? 1 : 0).map(tag=>tag.name + ` (${tag.count})`)
-			var tags = doujin.tags.filter(tag => tag.type=='tag').sort((a,b) => (a.count > b.count) ? -1 : (a.count < b.count) ? 1 : 0).map(tag=>tag.name + ` (${tag.count})`)
-			var artists = doujin.tags.filter(tag => tag.type=='artist').sort((a,b) => (a.count > b.count) ? -1 : (a.count < b.count) ? 1 : 0).map(tag=>tag.name + ` (${tag.count})`)
-			var languages = doujin.tags.filter(tag => tag.type=='language').sort((a,b) => (a.count > b.count) ? -1 : (a.count < b.count) ? 1 : 0).map(tag=>tag.name + ` (${tag.count})`)
-			var groups = doujin.tags.filter(tag => tag.type=='language').sort((a,b) => (a.count > b.count) ? -1 : (a.count < b.count) ? 1 : 0).map(tag=>tag.name + ` (${tag.count})`)
-			var categories = doujin.tags.filter(tag => tag.type=='category').sort((a,b) => (a.count > b.count) ? -1 : (a.count < b.count) ? 1 : 0).map(tag=>tag.name + ` (${tag.count})`)
+			var parodies = doujin.tags.all.filter(tag => tag.type=='parody').sort((a,b) => (a.count > b.count) ? -1 : (a.count < b.count) ? 1 : 0).map(tag=>tag.name + ` (${tag.count})`)
+			var characters = doujin.tags.all.filter(tag => tag.type=='character').sort((a,b) => (a.count > b.count) ? -1 : (a.count < b.count) ? 1 : 0).map(tag=>tag.name + ` (${tag.count})`)
+			var tags = doujin.tags.all.filter(tag => tag.type=='tag').sort((a,b) => (a.count > b.count) ? -1 : (a.count < b.count) ? 1 : 0).map(tag=>tag.name + ` (${tag.count})`)
+			var artists = doujin.tags.all.filter(tag => tag.type=='artist').sort((a,b) => (a.count > b.count) ? -1 : (a.count < b.count) ? 1 : 0).map(tag=>tag.name + ` (${tag.count})`)
+			var languages = doujin.tags.all.filter(tag => tag.type=='language').sort((a,b) => (a.count > b.count) ? -1 : (a.count < b.count) ? 1 : 0).map(tag=>tag.name + ` (${tag.count})`)
+			var groups = doujin.tags.all.filter(tag => tag.type=='language').sort((a,b) => (a.count > b.count) ? -1 : (a.count < b.count) ? 1 : 0).map(tag=>tag.name + ` (${tag.count})`)
+			var categories = doujin.tags.all.filter(tag => tag.type=='category').sort((a,b) => (a.count > b.count) ? -1 : (a.count < b.count) ? 1 : 0).map(tag=>tag.name + ` (${tag.count})`)
 			var options = {year: 'numeric', month: 'long', day: 'numeric' };
 			var uploaded = new Intl.DateTimeFormat('en-US', options).format(doujin.uploadDate)
 			console.log(uploaded)

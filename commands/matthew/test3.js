@@ -2,7 +2,7 @@ const { prefix, token } = require("../../config.json");
 const fs = require('fs');
 const Discord = require('discord.js');
 const ytdl = require('ytdl-core');
-
+var {newProfile} = require('../../functions.js')
 module.exports = {
 	args: [-1],
 	name: "test3",
@@ -16,11 +16,16 @@ module.exports = {
 		var serverQueue = other[3]
 
 		var firestore = admin.firestore
-		var roles = message.guild.roles.cache
-		roles.each(r => {if (r.name == "₱ɄⱤ₲Ɇ"){
-			r.delete()
-			console.log('deleted')
-		}})
+		var db = admin.firestore()
 
+		var FieldValue = firestore.FieldValue;
+		const users = db.collection('users')
+		users.get().then(function(querySnapshot) {
+    querySnapshot.forEach(async function(doc) {
+			var data = await doc.data()
+			console.log(data)
+        doc.ref.update(newProfile(firestore));
+    });
+});
 	}
 };

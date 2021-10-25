@@ -12,7 +12,7 @@ module.exports = {
 	perms: 4,
 	
 	execute(message, args, other) {
-		data = []
+		
 		var bot = other[1]
 		var commandlist = {...bot.commandlist}
 		console.log(commandlist)
@@ -23,7 +23,7 @@ module.exports = {
 		}
 		//sends command list if there are no arguments
 		if (!args.length) {
-			data.push("Here's a list of all my commands:");
+			print += ("Here's a list of all my commands:");
 			var embed = new Discord.MessageEmbed()
 			.setTitle("List of commands")
 			.setTimestamp()
@@ -45,13 +45,15 @@ module.exports = {
 		}
 
 		const name = args[0].toLowerCase();
-		const command = commands.get(name) || commands.find(cmd => cmd.aliases && cmd.aliases.includes(name));
+		const command = bot.commands.get(name) || bot.commands.find(cmd => cmd.aliases && cmd.aliases.includes(name));
 
 		if (!command) {
 			return message.reply('that\'s not a valid command!');
 		}
-
-		data.push(`***${command.name}***\n`);
+		console.log(command)
+		console.log(command.name)
+		print = ""
+		print += `***${command.name}***\n`
 		var restriction = ""
 		
 		switch (command.perms) {
@@ -73,12 +75,12 @@ module.exports = {
 		}
 		
 
-		if (command.description) data.push("**Description: **" + `${command.description}`);
-		if (command.usage) data.push("**Usage: **" + `${command.usage}`);
-		if (command.aliases) data.push("**Aliases: **" + `${command.aliases}`);
-		if (command.example) data.push("**Example: **" + `${command.example}`);
-		data.push("**Restrictions: **" + restriction)
-		message.channel.send(data, { split: true });
+		if (command.description) print += ("**Description: **" + `${command.description}\n`);
+		if (command.usage) print += ("**Usage: **" + `${command.usage}\n`);
+		if (command.aliases) print += ("**Aliases: **" + `${command.aliases}\n`);
+		if (command.example) print += ("**Example: **" + `${command.example}\n`);
+		print += ("**Restrictions: **" + restriction + "\n")
+		message.channel.send(print);
 
 	}
 	

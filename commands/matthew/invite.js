@@ -14,7 +14,7 @@ module.exports = {
 		var commandName = other[2]
 
 
-		message.channel.send(`https://discord.com/api/oauth2/authorize?client_id=720466960118186015&permissions=${args[0] ? args[0] : 8}&scope=bot`)
+		message.channel.send(`Here's my server invite ->\nhttps://discord.com/api/oauth2/authorize?client_id=720466960118186015&permissions=${args[0] ? args[0] : 8}&scope=bot`)
 		
 	}
 };	

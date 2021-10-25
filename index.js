@@ -96,7 +96,8 @@ rpgserviceAccount.private_key = process.env['rpgkey'].replace(/\\n/g, '\n')
 serviceAccount.private_key = process.env['firebasekey'].replace(/\\n/g, '\n')
 
 admin.initializeApp({
-	credential: admin.credential.cert(serviceAccount)
+	credential: admin.credential.cert(serviceAccount),
+	storageBucket: "tosbot.appspot.com",
 });
 
 var rpgadmin = admin.initializeApp({
@@ -175,7 +176,7 @@ bot.on("message", async message => {
 		if (message.author.bot && message.author.id != bot.user.id) {
 			return
 		};
-
+		
 		if (message.channel.type == "dm") {
 			if (message.author.id == bot.user.id && !message.content.startsWith(prefix)) {
 				return;
@@ -262,7 +263,7 @@ bot.on("message", async message => {
 		//ping response
 		var temp = message.content.toLowerCase()
 		var pingers = ["Ping me again b*tch I dare you", "I guess you wanna die today huh?", "I've got things to do.", "Sigh...you got a death wish?", "Bruh what do you want", "Sup.", "Please just stfu man", "Stop pinging me", "I'm blocking you.", "Just let me sleep", "Someone kill me", "I'm here wassup", "._.", ".-.", "-_-", "-___-"]
-		if (message.mentions.has(bot.user)) {
+		if (message.mentions.has(bot.user) && !message.mentions.everyone) {
 			message.channel.send(pingers[Math.floor(Math.random() * pingers.length)])
 		}
 		
@@ -271,6 +272,7 @@ bot.on("message", async message => {
 			if (message.author.id == bot.user.id) {
 				return;
 			}
+			
 			
 			//Human trafficking cult stuff
 			if (message.guild.id == "757770623450611784") {
@@ -470,6 +472,9 @@ bot.on("message", async message => {
 					var receive = await bot.users.fetch(message.channel.name)
 					receive.send(message.content);
 				}
+				if (message.channel.id == "894262071116566558") {
+					botUpdates(message.content)
+				}
 			}
 		}
 
@@ -606,7 +611,10 @@ bot.on("message", async message => {
 		if (!command) {
 			return;
 		}
-
+		//nsfw check
+		if (command.nsfw && !message.channel.nsfw) {
+			return message.reply("THIS IS A WHOLESOME AND SAFE CHANNEL! THAT COMMAND CANNOT BE USED HERE.")
+		}
 		/*perm levels:
 	
  		4 - DMs allowed
@@ -998,3 +1006,16 @@ async function syncEmotes() {
 	
 }
 
+
+async function botUpdates(message) {
+	let guilds = await bot.guilds.cache
+	guilds.forEach(async g => {
+		if (g.id == "720351714791915520") {return}
+		let channels = await g.channels.cache
+		channel = await channels.find(c => c.name == "matthew-bot-updates")
+		if (channel) {
+			channel.send(message)
+		}
+		
+	})
+}
