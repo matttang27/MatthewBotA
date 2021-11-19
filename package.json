@@ -6,7 +6,9 @@
   "dependencies": {
     "an-array-of-english-words": "^2.0.0",
     "body-parser": "^1.19.0",
+    "chess-web-api": "^1.1.1",
     "compress-images": "^1.9.9",
+    "cron": "^1.8.2",
     "discord-buttons": "^2.4.1",
     "discord.js": "^12.5.3",
     "express": "^4.17.1",

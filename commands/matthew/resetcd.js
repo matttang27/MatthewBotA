@@ -7,7 +7,7 @@ module.exports = {
 	name: "resetcd",
 	description: "Resets Matthew's Cooldowns",
 	usage: `${prefix}resetcd`,
-	perms: 1,
+	perms: ["MATTHEW"],
 	async execute(message, args, other) {
 		var p = JSON.parse(fs.readFileSync('players.json').toString());
 		var index = p.players.findIndex(p => p.playerid == message.author.id)

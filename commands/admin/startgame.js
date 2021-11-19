@@ -8,7 +8,7 @@ module.exports = {
 	description: "Starts the game! (Must be Gamemaster or Admin)",
 	usage: `${prefix}start <gameID> <channelnum>`,
 	example: `${prefix}start 15 2`,
-	perms: 0,
+	perms: ["MATTHEW"],
 	
 	async execute(message, args, other) {
 		var db = other[0].firestore()

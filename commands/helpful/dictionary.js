@@ -11,7 +11,7 @@ module.exports = {
 	name: "dictionary",
 	description: "Gets a definition of the word",
 	usage: `${prefix}dictionary`,
-	perms: 4,
+	perms: [],
 	async execute(message, args, other) {
         wordnet.lookup(args[0], function(details) {
             

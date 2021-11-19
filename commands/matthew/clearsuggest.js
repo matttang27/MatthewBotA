@@ -9,7 +9,7 @@ module.exports = {
 	aliases: ["clearsuggestions","csg"],
 	description: "Clears all the suggestions",
 	usage: `${prefix}template`,
-	perms: 1,
+	perms: ["MATTHEW"],
 	async execute(message, args, other) {
 		var admin = other[0]
 		var bot = other[1]

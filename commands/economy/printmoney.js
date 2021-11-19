@@ -9,7 +9,7 @@ module.exports = {
 	aliases: ["give"],
 	description: "Adds money to someone",
 	usage: `${prefix}printmoney <money> <opt. person>`,
-	perms: 1,
+	perms: ["MATTHEW"],
 	async execute(message, args, other) {
 		var admin = other[0]
 		var bot = other[1]

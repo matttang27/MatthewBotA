@@ -7,7 +7,7 @@ module.exports = {
 	description: "Copycat!",
 	usage: `${prefix}copycat <message>`,
 	example: `${prefix}copycat HII!`,
-	perms: 4,
+	perms: [],
 	
 	execute(message, args, other) {
 		message.channel.send(args.join(' ')).catch(() => {

@@ -3,23 +3,23 @@
     "commands/games/wordgame.js": [
       {
         "id": "f36b56a2-4fb3-405b-96a8-e9986f40fd23",
-        "line": 349,
-        "version": 3539,
-        "index": 10916
+        "line": 353,
+        "version": 3903,
+        "index": 10993
       },
       {
         "id": "2aace3f2-8877-478a-8b97-d67e711c2742",
-        "line": 363,
-        "version": 3539,
-        "index": 11268
+        "line": 367,
+        "version": 3903,
+        "index": 11345
       }
     ],
     "commands/helpful/covidscreen.js": [
       {
         "id": "59656132-ec64-463c-92b2-e697490f9020",
         "line": 18,
-        "version": 3650,
-        "index": 578
+        "version": 4209,
+        "index": 540
       }
     ]
   }

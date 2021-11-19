@@ -7,7 +7,7 @@ module.exports = {
 	name: "confess",
 	description: "WIP (a.k.a i have nothing here)",
 	usage: `${prefix}confess <user>`,
-	perms: 4,
+	perms: [],
 	async execute(message, args, other) {
 		var admin = other[0]
 		var bot = other[1]

@@ -7,7 +7,7 @@ module.exports = {
 	name: "danbooru",
 	description: "WIP (a.k.a i have nothing here)",
 	usage: `${prefix}danbooru <command>`,
-	perms: 4,
+	perms: [],
 	nsfw: true,
 	async execute(message, args, other) {
 		var admin = other[0]

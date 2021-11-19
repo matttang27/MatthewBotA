@@ -9,7 +9,7 @@ module.exports = {
 	name: "test2",
 	description: "Another TEST? Damn ok Matthew chill",
 	usage: `${prefix}test2`,
-	perms: 1,
+	perms: ["MATTHEW"],
 	async execute(message, args, other) {
 		var admin = other[0]
 		var bot = other[1]

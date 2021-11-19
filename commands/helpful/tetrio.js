@@ -11,7 +11,7 @@ module.exports = {
 	description: "Get tetr.io results. Subcommands: leaderboard, user",
 	usage: `${prefix}tetrio <command> <args>`,
 	wip: false,
-	perms: 4,
+	perms: [],
 	async execute(message, args, other) {
 		var admin = other[0]
 		var bot = other[1]
@@ -43,7 +43,7 @@ module.exports = {
 			console.log(players)
 			results = players.map(p => updatePlayer(p,false))
 			records = []
-			Promise.allSettled(results).then((result) => {
+			Promise.allSettled(results).then(async (result) => {
 				console.log(result)
 				for (i=0;i<result.length;i++) {
 					var p = {
@@ -57,6 +57,7 @@ module.exports = {
 					records.push(p)
 				}
 				var title = ""
+				let imagelink;
 				if (args[1] == "tr" || !args[1]) {
 					title = "TETRA LEAGUE"
 					var trlb = records.filter(r => r.tr >= 0)
@@ -78,6 +79,8 @@ module.exports = {
 						
 						text += `**${i+1}.** <@${trlb[i].userid}> - **${trlb[i].username}** - **${Math.round(trlb[i].tr*100)/100}** - <:${rank}:${emojiid}>\n `
 					}
+					imagelink = await bot.users.fetch(trlb[0].userid)
+					imagelink = imagelink.displayAvatarURL()
 					
 				}
 				else if (args[1] == "lines") {
@@ -89,6 +92,8 @@ module.exports = {
 					for (i=0;i<lineslb.length;i++) {
 						text += `${i+1}. <@${lineslb[i].userid}> - **${lineslb[i].username}** - **${String(Math.floor(lineslb[i].lines / 60000))}:${String(Math.floor((lineslb[i].lines % 60000)/1000)).padStart(2, "0")}:${String(Math.floor(lineslb[i].lines % 60000 - Math.floor((lineslb[i].lines % 60000)/1000) * 1000)).padStart(3, "0") }**\n`
 					}
+					imagelink = await bot.users.fetch(lineslb[0].userid)
+					imagelink = imagelink.displayAvatarURL()
 				}
 				else if (args[1] == "blitz") {
 					title = "BLITZ"
@@ -99,6 +104,8 @@ module.exports = {
 					for (i=0;i<blitzlb.length;i++) {
 						text += `${i+1}. <@${blitzlb[i].userid}> **${blitzlb[i].username}** - **${blitzlb[i].blitz}**\n`
 					}
+					imagelink = await bot.users.fetch(blitzlb[0].userid)
+					imagelink = imagelink.displayAvatarURL()
 				}
 
 				
@@ -107,6 +114,7 @@ module.exports = {
 				.setTitle(`${title} Leaderboard of ${message.guild.name}`)
 				.setDescription(text)
 				.setFooter("Leaderboards: tr, lines, blitz")
+				.setThumbnail(imagelink)
 				sended.edit(embed)
 
 
@@ -118,34 +126,31 @@ module.exports = {
 		}
 		else if (args[0] == "add") {
 			var docRefs = await trlist.listDocuments()
-			if (message.mentions.members.first()) {
-				var user = message.mentions.members.first().user	
+			let user = undefined
+			if (args[1].length == 21) {
+				user = await bot.users.resolve(args[1].slice(3,21))
 			}
-			else if (args[1].length == 18 && !isNaN(args[1])) {
-				try {
-					var user = await message.guild.members.resolve(args[1])
-				} catch (e) {
-					console.error(e)
-				}
+			if (user == undefined) {
+				return message.channel.send(new Discord.MessageEmbed().setTitle("m!tetrio add failed.").setDescription("Please mention a user (Your first argument should be a ping)").setColor("RED"))
 			}
-			if (docRefs.indexOf(user.id) == -1) {
-				userdata = await Promise.all([httpsGet("https://ch.tetr.io/api/users/" + args[2].toLowerCase(),https)
-				,httpsGet("https://ch.tetr.io/api/users/" + args[2].toLowerCase() + "/records",https)]).then((values) => {
-					trlist.doc(user.id).set({
-						user: values[0],
-						records: values[1]
-					})
-				});
+			userdata = await Promise.all([httpsGet("https://ch.tetr.io/api/users/" + args[2].toLowerCase(),https)
+			,httpsGet("https://ch.tetr.io/api/users/" + args[2].toLowerCase() + "/records",https)]).then((values) => {
+				console.log(values)
+				trlist.doc(user.id).set({
+					user: values[0],
+					records: values[1]
+				})
 				message.react("👍")
-			}
+			});
+				
 		}
 		else if (args[0] == "view") {
 			if (message.mentions.members.first()) {
 				var user = message.mentions.members.first().user	
 			}
-			else if (args[1].length == 18 && !isNaN(args[1])) {
+			else if (args[1].length == 21) {
 				try {
-					var user = await message.guild.members.resolve(args[1])
+					var user = await bot.users.resolve(args[1].slice(3,21))
 				} catch (e) {
 					console.error(e)
 				}

@@ -7,7 +7,7 @@ module.exports = {
 	description: "Selects a number from the range chosen, or 1 to the number.",
 	usage: `${prefix}random <num> <op.num>`,
 	example: `${prefix}random 10 (choose a number between 1 to 10)`,
-	perms: 4,
+	perms: [],
 	
 	async execute(message, args, other) {
 		for (i=0;i<args.length;i++) {

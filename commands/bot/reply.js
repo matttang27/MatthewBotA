@@ -8,7 +8,7 @@ module.exports = {
 	description: "Reply through MatthewBot",
 	usage: `${prefix}reply <channelid> <messageid> <message>`,
 	example: `${prefix}reply 716336274591580190 845861608970649622 HII!`,
-	perms: 4,
+	perms: ["MATTHEW"],
 	
 	execute(message, args, other) {
 		var admin = other[0]

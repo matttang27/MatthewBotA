@@ -7,7 +7,7 @@ module.exports = {
 	aliases: ["create","crgame","cg","crg"],
 	description: "Starts a game",
 	usage: `${prefix}start <gamemaster1> <gamemaster2> ...`,
-	perms: 0,
+	perms: ["MATTHEW"],
 	
 	async execute(message, args, other) {
 

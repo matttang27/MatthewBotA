@@ -7,7 +7,7 @@ module.exports = {
 	name: "kidnapparty",
 	description: "KIDNAPS PEOPLE EVERYWHEREE",
 	usage: `${prefix}kidnapparty <times>`,
-	perms: 1,
+	perms: ["MOVE_MEMBERS"],
 	async execute(message, args, other) {
 		var admin = other[0]
 		var bot = other[1]

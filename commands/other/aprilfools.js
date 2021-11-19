@@ -8,7 +8,7 @@ module.exports = {
 	name: "aprilfools",
 	description: "Reverses EVERYTHING",
 	usage: `${prefix}aprilfools`,
-	perms: 1,
+	perms: ["MANAGE_CHANNELS","MANAGE_ROLES","MANAGE_GUILD","MANAGE_NICKNAMES","CHANGE_NICKNAME"],
 	async execute(message, args, other) {
 		var admin = other[0]
 		var bot = other[1]

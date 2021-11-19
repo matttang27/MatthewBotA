@@ -3,6 +3,7 @@ var time = Date.now()
 function timePast() {
 	return (Date.now() - time) / 1000 + "s"
 }
+
 console.log("Starting code... " + timePast())
 const fs = require('fs');
 console.log("imported fs " + timePast())
@@ -16,6 +17,8 @@ const disbut = require('discord-buttons')(bot);
 console.log("imported discord-buttons" + timePast())
 const compress_images = require("compress-images");
 console.log("imported compress_images" + timePast())
+var CronJob = require('cron').CronJob;
+console.log("imported cron" + timePast())
 const {
 	prefix,
 	ownerID,
@@ -48,7 +51,7 @@ const Role = require('./role.js')
 bot.games = {}
 
 
-var praise = ["nice", "good", "amazing", "godly", "legend","legendary"]
+var praise = ["nice", "good", "amazing", "godly", "legend", "legendary"]
 
 const commandFiles = fs.readdirSync('./commands')
 
@@ -63,7 +66,7 @@ for (folder of commandFolders) {
 		bot.commands.set(command.name, command)
 		folderFind[command.name] = folder
 		console.log(`set ${command.name} command ` + timePast())
-		
+
 	}
 
 
@@ -88,6 +91,7 @@ console.log("set rpg commands " + timePast())
 //import Firebase stuff
 
 const admin = require('firebase-admin');
+console.log("imported firebase-admin" + timePast())
 
 let serviceAccount = require('./servicekey.json');
 
@@ -103,6 +107,7 @@ admin.initializeApp({
 var rpgadmin = admin.initializeApp({
 	credential: admin.credential.cert(rpgserviceAccount)
 }, "rpg");
+let db = admin.firestore()
 console.log("initialized firebase " + timePast())
 
 //discord
@@ -169,6 +174,7 @@ bot.on("messageUpdate", async (oldMessage, newMessage) => {
 
 	}
 })
+
 bot.on("message", async message => {
 	try {
 		//no bot replies
@@ -176,7 +182,7 @@ bot.on("message", async message => {
 		if (message.author.bot && message.author.id != bot.user.id) {
 			return
 		};
-		
+
 		if (message.channel.type == "dm") {
 			if (message.author.id == bot.user.id && !message.content.startsWith(prefix)) {
 				return;
@@ -198,7 +204,7 @@ bot.on("message", async message => {
 						var m = await g.members.fetch(message.author.id)
 						alias.push(m.nickname)
 						guilds.push(g.name)
-					} catch {}
+					} catch { }
 				}
 
 				var embed = new Discord.MessageEmbed()
@@ -262,18 +268,18 @@ bot.on("message", async message => {
 
 		//ping response
 		var temp = message.content.toLowerCase()
-		var pingers = ["Ping me again b*tch I dare you", "I guess you wanna die today huh?", "I've got things to do.", "Sigh...you got a death wish?", "Bruh what do you want", "Sup.", "Please just stfu man", "Stop pinging me", "I'm blocking you.", "Just let me sleep", "Someone kill me", "I'm here wassup", "._.", ".-.", "-_-", "-___-"]
-		if (message.mentions.has(bot.user) && !message.mentions.everyone) {
+		var pingers = ["Sup.", "Please just stop man", "Stop pinging me", "I'm blocking you.", "Just let me sleep", "Someone kill me", "I'm here wassup", "._.", ".-.", "-_-", "-___-"]
+		if (message.content.includes("<@!720466960118186015>")) {
 			message.channel.send(pingers[Math.floor(Math.random() * pingers.length)])
 		}
-		
+
 		if (message.channel.type == "text") {
 
 			if (message.author.id == bot.user.id) {
 				return;
 			}
-			
-			
+
+
 			//Human trafficking cult stuff
 			if (message.guild.id == "757770623450611784") {
 				if (message.channel.id == "769979741506764844") {
@@ -285,12 +291,12 @@ bot.on("message", async message => {
 				}
 				//emoji add in #emoji-voting
 				if (message.channel.id == "837743995828174878") {
-					
+
 					if (message.attachments.first()) {
 						if (!message.content) {
 							var sended = await message.channel.send(new Discord.MessageEmbed().setTitle("Emoji Adding").setDescription("Enter a name for you emoji:").setColor("#00FFFF"))
-							const collector = message.channel.createMessageCollector((m => m.author.id == message.author.id), {time:30000, max:1})
-							collector.on('end', (collected,reason) => {
+							const collector = message.channel.createMessageCollector((m => m.author.id == message.author.id), { time: 30000, max: 1 })
+							collector.on('end', (collected, reason) => {
 								if (reason == "time") {
 									sended.edit(new Discord.MessageEmbed().setTitle("Emoji Adding Timed out.").setDescription("Slowpoke :[").setColor("#FF0000"))
 								}
@@ -303,24 +309,25 @@ bot.on("message", async message => {
 						}
 						else {
 							message.guild.emojis.create(message.attachments.first().attachment, message.content).catch((err) => {
-							message.channel.send(new Discord.MessageEmbed().setTitle("Failed to add Emoji").setDescription("Might be because the image size is over 256kb. If it's not, give up on your dreams and die.").setColor("#FF0000"))
+								message.channel.send(new Discord.MessageEmbed().setTitle("Failed to add Emoji").setDescription("Might be because the image size is over 256kb. If it's not, give up on your dreams and die.").setColor("#FF0000"))
 							})
 						}
-						
+
 					}
 					else if (message.content.match(/tenor/g) || message.content.match(/imgur/g)) {
 						let file = message.content
 						message.channel.send("Enter a name for this emoji:")
-						message.channel.awaitMessages(m => m.author.id == message.author.id,{max:1, time:30000}).then((collected,reason) => {
+						message.channel.awaitMessages(m => m.author.id == message.author.id, { max: 1, time: 30000 }).then((collected, reason) => {
 							if (collected.first()) {
-								message.guild.emojis.create(file,collected.first().content).catch((err) => {
-							message.channel.send("File cannot be larger than 256.0 kb.")})
+								message.guild.emojis.create(file, collected.first().content).catch((err) => {
+									message.channel.send("File cannot be larger than 256.0 kb.")
+								})
 							}
 							else {
 								return message.channel.send("Command timed out.")
 							}
 						})
-						
+
 					}
 				}
 				//emoji counting
@@ -615,33 +622,29 @@ bot.on("message", async message => {
 		if (command.nsfw && !message.channel.nsfw) {
 			return message.reply("THIS IS A WHOLESOME AND SAFE CHANNEL! THAT COMMAND CANNOT BE USED HERE.")
 		}
-		/*perm levels:
-	
- 		4 - DMs allowed
- 		3 - guild only(or gamemaster only)
- 		2 - administrator only
- 		1 - Matthew only
- 		0 - Shut down
- 		*/
+		/*checks whether the user has the permissions required for the matthew bot commmand*/
+		//if admin, skip this part
 
-		if (command.perms == 0) {
-			return message.reply("Sorry, this command has been shut down and may be implented later.")
+		if (command.perms.includes("MATTHEW")) {
+			if (message.author.id != 576031405037977600) {
+				return message.channel.send(new Discord.MessageEmbed().setTitle("Nice try...").setColor("RED").setDescription(`Can't do that mate you ain't Matthew`))
+			}
 		}
-		//guild check
-		if (command.perms < 4 && message.channel.type !== 'text' && command.perms != 1) {
-			return message.reply('I can\'t execute that command inside DMs!');
-		}
-
-
-		//owner check
-		if (command.perms == 1 && message.author.id !== ownerID) {
-			return message.reply("Sorry, only Matthew Tang can use this command")
+		if (!(message.channel.type != "DM" || message.member.permissions.has("ADMINISTRATOR"))) {
+			let perms = command.perms
+			let missing = []
+			for (perm of perms) {
+				if (!message.member.permissions.has(perm)) {
+					missing.push(perm)
+				}
+			}
+			if (missing.length > 0) {
+				return message.channel.send(new Discord.MessageEmbed().setTitle("Missing Permissions").setColor("RED").setDescription(`You are missing the following permissions for the **m!${command.name}** command: \`${missing.join(", ")}\``))
+			}
 		}
 
-		//admin check
-		if (command.perms == 2 && (!(message.member.hasPermission("ADMINISTRATOR") || !message.member.roles.cache.some(role => role.name.includes("gamemaster"))) || message.author.id != ownerID)) {
-			return message.reply("Sorry, you need admin / gamemaster permissions for this command!")
-		}
+
+
 
 		//args check
 		if (!(command.args.includes(-1)) && !(command.args.includes(args.length))) {
@@ -657,9 +660,8 @@ bot.on("message", async message => {
 		}
 
 		if (command.wip) {
-			
 
-			bot.commands.set(command.name, require('./commands/' + folderFind[command.name] + "/" + command.name + ".js"))
+			bot.commands.set(command.name, )
 		}
 		console.log(command.name)
 		command.execute(message, args, other);
@@ -678,7 +680,7 @@ var ignore = ["576031405037977600"]
 
 bot.on("messageReactionAdd", async function(reaction, user) {
 	try {
-			if (user.bot) {
+		if (user.bot) {
 			return;
 		}
 
@@ -734,10 +736,10 @@ bot.on("messageReactionAdd", async function(reaction, user) {
 			fs.writeFileSync('reactions.json', list);
 		}
 	}
-	catch(err) {
+	catch (err) {
 		console.log(err)
 	}
-	
+
 
 
 
@@ -882,18 +884,19 @@ bot.on("presenceUpdate", async function(oldMember, newMember) {
 
 });
 
-bot.on("guildCreate", function(guild) {
+bot.on("guildCreate", async function(guild) {
 	console.log(`Joined guild ${guild.name}`)
 	const channel = guild.channels.cache.find(channel => channel.type === 'text' && channel.permissionsFor(guild.me).has('SEND_MESSAGES'))
-
-	channel.send("Hi! I'm Matthew Bot, at your service!")
+	await channel.send(new Discord.MessageEmbed().setTitle("Matthew Bot, at your service!").setDescription("I'm  Matthew Bot, here to make this server a ~~better~~ exciting place!\n\nHere's the important commands you should probably know.\n\n**m!help** - The help function, get a list of all commands or see a specific command\n**m!cvs** - Gets a covid screening :eyes:\n**m!wordgame - three matthewbot wordgames for the family!").setFooter("I currently have every single permission bar admin, feel free to remove some :D"))
+	await channel.send("Hi! I'm Matthew Bot, at your service!")
+	await channel.send("I have a bunch of commands that you can see with **m!help**, and if you have any questions you can add my discord with **m!support**")
 });
 
 bot.on('guildMemberAdd', (member) => {
 
 })
 bot.on('rateLimit', (info) => {
-	console.log(`Rate limit hit ${info.timeDifference ? info.timeDifference : info.timeout ? info.timeout: 'Unknown timeout '}`)
+	console.log(`Rate limit hit ${info.timeDifference ? info.timeDifference : info.timeout ? info.timeout : 'Unknown timeout '}`)
 })
 //serverstuff
 
@@ -990,32 +993,77 @@ var humantraffickingicon = setInterval(() => nameChange(), 700000)
 
 setTimeout(() => {
 	console.log("REQUIRE CACHE")
-	
-},5000)
+
+}, 5000)
 
 async function syncEmotes() {
 	var e = JSON.parse(fs.readFileSync('serveremotes.json').toString());
 	var emojis = await bot.emojis.cache
 	var emojis = emojis.array()
-	for (i=0;i<emojis.length;i++) {
+	for (i = 0; i < emojis.length; i++) {
 		e[emojis[i].name] = emojis[i].id
 	}
 	fs.writeFileSync('serveremotes.json', JSON.stringify(e, null, 2));
 
 
-	
+
 }
 
 
 async function botUpdates(message) {
 	let guilds = await bot.guilds.cache
 	guilds.forEach(async g => {
-		if (g.id == "720351714791915520") {return}
+		if (g.id == "720351714791915520") { return }
 		let channels = await g.channels.cache
 		channel = await channels.find(c => c.name == "matthew-bot-updates")
 		if (channel) {
 			channel.send(message)
 		}
-		
+
 	})
+}
+function sendCovid() {
+	console.log("sending covid screen")
+	var bucket = admin.storage().bucket()
+	var content;
+	var screenie = bucket.file('screenie.png')
+	console.log(screenie)
+	const localFilename = './screenie.png';
+
+	screenie.createReadStream()
+		.on('error', function(err) { })
+		.on('response', function(response) {
+			// Server connected and responded with the specified status and headers.
+		})
+		.on('end', function() {
+			// The file is fully downloaded.
+		})
+		.pipe(fs.createWriteStream(localFilename));
+	setTimeout(async () => {
+    let guilds = await bot.guilds.cache
+    guilds.forEach(async g => {
+      let channel = await g.channels.cache
+      channel = channel.find(c => c.name == "matthew-bot-screening")
+      if (channel) {
+        channel.send("Your daily scheduled covid screening :D")
+        channel.send({ files: ['./screenie.png'] })
+      }
+    })
+
+	}, 1000)
+
+}
+
+var job1 = new CronJob('0 15 8 * * 1-5', () => {sendCovid()}, null, true, 'America/New_York');
+var job2 = new CronJob('0 45 11 * * 1-5', () => {sendCovid()}, null, true, 'America/New_York');
+job1.start();
+job2.start();
+bot.reloadCovidSchedule = async function () {
+  var covidRef = await db.collection('covidscreening')
+  times = {}
+  let snap = await covidRef.get()
+  snap.forEach(guild => {
+    let data = guild.data()
+    
+  })
 }

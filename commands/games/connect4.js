@@ -7,7 +7,7 @@ module.exports = {
 	name: "connect4",
 	description: "Connect4",
 	usage: `${prefix}connect4 <opt. variation>`,
-	perms: 4,
+	perms: [],
 	async execute(message, args, other) {
 		var admin = other[0]
 		var bot = other[1]

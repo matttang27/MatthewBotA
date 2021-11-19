@@ -8,7 +8,7 @@ module.exports = {
 	description: "Calculates the love between the people specified ~ cannot be more than 2 (WIP)",
 	usage: `${prefix}lovecalc <person> <1> | <person> <2> (Unlimited number of arguments, seperate the people with a | (Shift+\\)`,
 	example: `${prefix}lovecalc Matthew Tang | Astolfo`,
-	perms: 4,
+	perms: [],
 	
 	async execute(message, args, other) {
 

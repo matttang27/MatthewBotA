@@ -11,7 +11,7 @@ module.exports = {
 	description: "Challenge a player to a game of Rock Paper Scissors.(Default first to one)",
 	usage: `${prefix}rps <player> <first to>`,
 	example: `${prefix}rps @Matthew 5`,
-	perms: 4,
+	perms: [],
 	async execute(message, args, other) {
 		var admin = other[0]
 		var bot = other[1]

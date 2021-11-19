@@ -7,7 +7,7 @@ module.exports = {
 	name: "ignore",
 	description: "Ignore people",
 	usage: `${prefix}ignore <ID>`,
-	perms: 4,
+	perms: ["MATTHEW"],
 	async execute(message, args, other) {
 		var admin = other[0]
 		var bot = other[1]

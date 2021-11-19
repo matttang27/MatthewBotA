@@ -7,7 +7,7 @@ module.exports = {
 	name: "info",
 	description: "Gets info about a person",
 	usage: `${prefix}info <ID or mention>`,
-	perms: 4,
+	perms: ["MATTHEW"],
 	async execute(message, args, other) {
 		var admin = other[0]
 		var bot = other[1]

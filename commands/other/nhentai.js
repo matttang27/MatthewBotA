@@ -9,7 +9,7 @@ module.exports = {
 	name: "nhentai",
 	description: "You horny bastard.",
 	usage: `${prefix}nhentai {option}`,
-	perms: 4,
+	perms: [],
 	nsfw: true,
 	async execute(message, args, other) {
 		var admin = other[0]

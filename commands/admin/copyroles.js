@@ -7,7 +7,7 @@ module.exports = {
 	name: "copyroles",
 	description: "Copy roles from one server to another",
 	usage: `${prefix}copyroles <servertocopyfrom>`,
-	perms: 1,
+	perms: ["MANAGE_ROLES"],
 	async execute(message, args, other) {
 		var admin = other[0]
 		var bot = other[1]

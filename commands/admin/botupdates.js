@@ -8,7 +8,7 @@ module.exports = {
 	description: "Creates an annoucements channel for MatthewBot",
 	aliases: ["bu"],
 	usage: `${prefix}botupdates`,
-	perms: 2,
+	perms: ["MANAGE_CHANNELS"],
 	async execute(message, args, other) {
 		var channels = await message.guild.channels.cache
 		var channel = channels.find(c => c.name == "matthew-bot-updates")

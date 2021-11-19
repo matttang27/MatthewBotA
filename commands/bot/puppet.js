@@ -7,7 +7,7 @@ module.exports = {
 	description: "Speak through TosBot!",
 	usage: `${prefix}puppet <message>`,
 	example: `${prefix}puppet HII!`,
-	perms: 4,
+	perms: ["MANAGE_MESSAGES"],
 	
 	execute(message, args, other) {
 

@@ -8,7 +8,7 @@ module.exports = {
 	name: "channelsend",
 	description: "Send to channel",
 	usage: `${prefix}cs <guildID> <channelID> message here`,
-	perms: 1,
+	perms: ["MATTHEW"],
 	async execute(message, args, other) {
 		var admin = other[0]
 		var bot = other[1]

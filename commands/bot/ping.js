@@ -6,7 +6,7 @@ module.exports = {
 	aliases: ["pong", "latency", "lag"],
 	description: "Ping me!",
 	usage: `${prefix}ping`,
-	perms: 4,
+	perms: [],
 	execute(message, args, other) {
 		var ping = Date.now() - message.createdAt;
 		if (other[2] == "ping") {

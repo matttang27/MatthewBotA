@@ -7,7 +7,7 @@ module.exports = {
 	name: "kidnap",
 	description: "Kidnaps everyone to one voice channel",
 	usage: `${prefix}kidnap <channelID> or <channelName>`,
-	perms: 1,
+	perms: ["MOVE_MEMBERS"],
 	async execute(message, args, other) {
 		var admin = other[0]
 		var bot = other[1]

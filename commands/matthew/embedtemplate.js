@@ -7,7 +7,7 @@ module.exports = {
 	name: "embedtemplate",
 	description: "Template for sending an embed",
 	usage: `${prefix}embedtemplate`,
-	perms: 4,
+	perms: ["MATTHEW"],
 	async execute(message, args, other) {
 		var admin = other[0]
 		var bot = other[1]

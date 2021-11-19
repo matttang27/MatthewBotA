@@ -9,11 +9,12 @@ module.exports = {
 	aliases: ["cvs"],
 	description: "Dms you a picture of a covid screening result!",
 	usage: `${prefix}covidscreen <opt. device | x pixels> <y pixels>`,
-	perms: 4,
+	perms: [],
 	async execute(message, args, other) {
 		var admin = other[0]
 		var bucket = admin.storage().bucket()
 		var content;
+		
 		var screenie = bucket.file('screenie.png')
 		console.log(screenie)
 		const localFilename = './screenie.png';

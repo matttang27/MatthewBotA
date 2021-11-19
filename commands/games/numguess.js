@@ -9,7 +9,7 @@ module.exports = {
 	aliases: ["ng","numberguess","guessthenumber"],
 	description: "Guess the number!",
 	usage: `${prefix}guess <min> <max>`,
-	perms: 1,
+	perms: [],
 	async execute(message, args, other) {
 		// Create a message collector
 		var secretNumber = 0;

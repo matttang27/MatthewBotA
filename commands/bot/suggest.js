@@ -8,7 +8,7 @@ module.exports = {
 	category: "bot",
 	description: "Make a suggestion for Matthew Bot!",
 	usage: `${prefix}suggest <stuff>`,
-	perms: 4,
+	perms: [],
 	async execute(message, args, other) {
 		var s = JSON.parse(fs.readFileSync('suggestions.json').toString());
 		var m = []

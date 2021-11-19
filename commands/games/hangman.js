@@ -8,7 +8,7 @@ module.exports = {
 	category: "fun",
 	description: "The classic hangman",
 	usage: `${prefix}hangman`,
-	perms: 4,
+	perms: [],
 	async execute(message, args, other) {
 		var admin = other[0]
 		var bot = other[1]

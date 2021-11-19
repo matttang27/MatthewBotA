@@ -9,7 +9,7 @@ module.exports = {
     name: "pin",
     description: "Pins a message",
     usage: `${prefix}pin messageID`,
-    perms: 4,
+    perms: ["MANAGE_MESSAGES"],
     async execute(message, args, other) {
         var admin = other[0];
         var bot = other[1];

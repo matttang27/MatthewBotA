@@ -8,7 +8,7 @@ module.exports = {
 	aliases: ["ea"],
 	description: "Creates an emoji with a link and name",
 	usage: `${prefix}emojiadd <imageurl> <name>`,
-	perms: 1,
+	perms: [0x0040000000],
 	async execute(message, args, other) {
 		var admin = other[0]
 		var bot = other[1]

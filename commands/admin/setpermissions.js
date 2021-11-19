@@ -7,7 +7,7 @@ module.exports = {
 	aliases: ["setpermissions","sp"],
 	description: "Set permissions for all the channels in that game",
 	usage: `${prefix}setperms <optional game num>`,
-	perms: 0,
+	perms: ["ADMINISTRATOR"],
 	
 	async execute(message, args, other) {
 

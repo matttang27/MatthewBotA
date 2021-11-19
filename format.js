@@ -1,4 +1,4 @@
-
+message.channel.send("TESTING")
 let chessAPI = new ChessWebAPI();
 let test = await chessAPI.getPlayer('matttang_05')
 var db = admin.firestore()
@@ -20,120 +20,104 @@ if (args[0] == "leaderboard" || args[0] == "lb") {
 	var userRef = chesslist.doc('users')
 	let chessusers = await userRef.get()
 	chessusers = chessusers.data()
-	chessusers = chessusers.users
 
 
 	var serverIds = await message.guild.members.cache.map((m) => m.id)
-	var players = {}
-	for (i in chessusers) {
-		if (serverIds.indexOf(i) >= 0) {
-			players[i] = chessusers[i]
-		}
-	}
+	Object.filter = (obj, predicate) =>
+		Object.fromEntries(Object.entries(obj).filter(predicate));
+
+	var players = chessusers.users.filter(chessusers.users, r => serverIds.indexOf(r) != -1)
 	var lb = {}
 	console.log(players)
-	for (i in players) {
-		let body = await usernameToPlayer(players[i])
-		if (body.statusCode != 200) {
-			delete players[i]
-		}
-		players[i] = [players[i], body.body]
-	}
-	console.log(players)
+	results = players.map(p => updatePlayer(p, false))
 	records = []
-
-	for (i in players) {
-		let p = {
-			userid: i,
-			username: players[i][0],
-			bullet: players[i][1].chess_bullet.last.rating,
-			blitz: players[i][1].chess_blitz.last.rating,
-			rapid: players[i][1].chess_rapid.last.rating,
-			
+	Promise.allSettled(results).then((result) => {
+		console.log(result)
+		for (i = 0; i < result.length; i++) {
+			var p = {
+				userid: players[i],
+				username: result[i].value.user.data.user.username,
+				tr: result[i].value.user.data.user.league.rating,
+				rapid: result[i].value.records.data.records["40l"].record ? result[i].value.records.data.records["40l"].record.endcontext.finalTime : null,
+				blitz: result[i].value.records.data.records["blitz"].record ? result[i].value.records.data.records["blitz"].record.endcontext.score : null,
+				rank: result[i].value.user.data.user.league.rank,
+			}
+			records.push(p)
 		}
-		records.push(p)
-	}
-	console.log(records)
-	var title = ""
-	let imagelink;
-	if (args[1] == "bullet" || !args[1]) {
-		title = "BULLET"
-		var bulletlb = records.filter(r => r.bullet >= 0)
-		bulletlb = bulletlb.sort((a, b) => b.bullet - a.bullet)
-		var text = ""
-		for (i = 0; i < bulletlb.length; i++) {
-			text += `${i + 1}. <@${bulletlb[i].userid}> **${bulletlb[i].username}** - **${bulletlb[i].bullet}**\n`
+		var title = ""
+		if (args[1] == "bullet" || !args[1]) {
+			title = "BULLET"
+			var bulletlb = records.filter(r => r.tr >= 0)
+			bulletlb = bulletlb.sort((a, b) => b.tr - a.tr)
+			var text = ""
+
+			var serveremotes = JSON.parse(fs.readFileSync('serveremotes.json').toString())
+
+			for (i = 0; i < bulletlb.length; i++) {
+				var rank = bulletlb[i].rank
+				if (rank.charAt(1) == "-") {
+					rank = rank.charAt(0) + "minus"
+				}
+				if (rank.charAt(1) == "+") {
+					rank = rank.charAt(0) + "plus"
+				}
+				rank = rank + "rank"
+				emojiid = serveremotes[rank]
+
+				text += `**${i + 1}.** <@${bulletlb[i].userid}> - **${bulletlb[i].username}** - **${Math.round(bulletlb[i].tr * 100) / 100}** - <:${rank}:${emojiid}>\n `
+			}
+
 		}
-		imagelink = await bot.users.fetch(bulletlb[0].userid)
-		imagelink = imagelink.displayAvatarURL()
+		else if (args[1] == "rapid") {
+			title = "RAPID"
+			var rapidlb = records.filter(r => r.rapid)
+			rapidlb = rapidlb.sort((a, b) => a.rapid - b.rapid)
 
-	}
-	else if (args[1] == "rapid") {
-		title = "RAPID"
-		var rapidlb = records.filter(r => r.rapid)
-		rapidlb = rapidlb.sort((a, b) => a.rapid - b.rapid)
-
-		var text = ""
-		for (i = 0; i < rapidlb.length; i++) {
-			text += `${i + 1}. <@${blitzlb[i].userid}> **${blitzlb[i].username}** - **${blitzlb[i].rapid}**\n`
+			var text = ""
+			for (i = 0; i < rapidlb.length; i++) {
+				text += `${i + 1}. <@${rapidlb[i].userid}> - **${rapidlb[i].username}** - **${String(Math.floor(rapidlb[i].rapid / 60000))}:${String(Math.floor((rapidlb[i].rapid % 60000) / 1000)).padStart(2, "0")}:${String(Math.floor(rapidlb[i].rapid % 60000 - Math.floor((rapidlb[i].rapid % 60000) / 1000) * 1000)).padStart(3, "0")}**\n`
+			}
 		}
-		imagelink = await bot.users.fetch(rapidlb[0].userid)
-		imagelink = imagelink.displayAvatarURL()
-	}
-	else if (args[1] == "blitz") {
-		title = "BLITZ"
-		var blitzlb = records.filter(r => r.blitz)
-		blitzlb = blitzlb.sort((a, b) => b.blitz - a.blitz)
+		else if (args[1] == "blitz") {
+			title = "BLITZ"
+			var blitzlb = records.filter(r => r.blitz)
+			blitzlb = blitzlb.sort((a, b) => b.blitz - a.blitz)
 
-		var text = ""
-		for (i = 0; i < blitzlb.length; i++) {
-			text += `${i + 1}. <@${blitzlb[i].userid}> **${blitzlb[i].username}** - **${blitzlb[i].blitz}**\n`
+			var text = ""
+			for (i = 0; i < blitzlb.length; i++) {
+				text += `${i + 1}. <@${blitzlb[i].userid}> **${blitzlb[i].username}** - **${blitzlb[i].blitz}**\n`
+			}
 		}
-		imagelink = await bot.users.fetch(blitzlb[0].userid)
-		imagelink = imagelink.displayAvatarURL()
-	}
 
 
 
-	var embed = new Discord.MessageEmbed()
-		.setTitle(`${title} Leaderboard of ${message.guild.name}`)
-		.setDescription(text)
-		.setFooter("Leaderboards: tr, rapid, blitz")
-		.setThumbnail(imagelink)
-	sended.edit(embed)
+		var embed = new Discord.MessageEmbed()
+			.setTitle(`${title} Leaderboard of ${message.guild.name}`)
+			.setDescription(text)
+			.setFooter("Leaderboards: tr, rapid, blitz")
+		sended.edit(embed)
 
 
 
 
+
+	});
 
 }
 else if (args[0] == "add") {
-	console.log(args.length)
-	console.log(args[1].length)
-	if (args.length < 3 || args[1].length != 22) {
-		return message.channel.send(new Discord.MessageEmbed().setTitle("Incorrect arguments").setDescription("Incorrect arguments for **m!chesscom add**\n\nUsage: \`m!chesscom add <userping> <chess username>\`").setColor("RED"))
-	}
 	var userRef = chesslist.doc('users')
 	let chessusers = await userRef.get()
 	chessusers = chessusers.data()
-	chessusers = chessusers.users
-	console.log(chessusers)
 
-	var user = await message.guild.members.resolve(args[1].slice(3, 21))
 
+	if (args[1].length == 21) {
+		var user = await message.guild.members.resolve(args[1].slice(3, 21))
+	}
 	if (user == undefined) {
 		return message.channel.send("User not found")
 	}
-	let chessuser
-	try {
-		chessuser = await chessAPI.getPlayerStats(args[2])
-	} catch (err) {
-		return message.channel.send(new Discord.MessageEmbed().setTitle("Chess User not found").setDescription(`Was not able to find user **${args[2]} on chess.com. Please check and try again.**`).setColor("RED"))
-	}
-	chessusers[args[1].slice(3, 21)] = args[2]
-	userRef.set({
-		users: chessusers
-	})
+	let chessuser = await chessAPI.getPlayerStats(args[2])
+	console.log(chessuser)
 
 }
 else if (args[0] == "view") {
@@ -220,17 +204,21 @@ else {
 
 	message.channel.send(embed)
 }
-function usernameToPlayer(username) {
-	console.log(username)
-	return new Promise(async (resolve, reject) => {
-		try {
-			let chessuser = await chessAPI.getPlayerStats(username)
-			resolve(chessuser)
-		}
-		catch (err) {
-			reject("Username is invalid")
-		}
+function updatePlayer(id, force) {
+	return new Promise(async resolve => {
+		var userRef = chesslist.doc(id)
+		var userData = await userRef.get()
+		var userData = userData.data()
 
 
-	})
+		var username = userData.user.data.user.username
+
+		userData.user = await chessApi.getPlayerStats()
+		if (userData.records.cache.cached_until < Date.now() || force) {
+			userData.records = await httpsGet("https://ch.tetr.io/api/users/" + username + "/records", https)
+		}
+		userRef.set(userData)
+		resolve(userData)
+	});
+
 }

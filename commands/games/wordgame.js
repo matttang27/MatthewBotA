@@ -9,7 +9,7 @@ module.exports = {
 	category: "fun",
 	description: "Word games!",
 	usage: `${prefix}<beer, coffee or wine>`,
-	perms: 4,
+	perms: [],
 	async execute(message, args, other) {
 
 		var admin = other[0]
@@ -76,6 +76,7 @@ module.exports = {
 		var salt = false;
 		var lb = {}
 		var hp = 20;
+		var salted = []
 		var embed = new Discord.MessageEmbed()
 			.setTitle(startTitle[game])
 			.setDescription(`${description[game]}\nPoints System: \n\n1st - 10pts\n2nd - 5pts\n3rd - 3pts\n4th - 2pts\n5th - 1 pt.\n\n**Current settings:**\n**m@time** : The amount of time in seconds to answer the question(5-120). \n(Current: ${time})\n**m@difficulty** : The amount of possible answers that is required(100-3000)\n(Current: ${diff})\n**m@goal** : the number of points to get (10-1000)\n(Current: ${goal})\n\n**m@salt** : toggles the salt gamemode \n\nEnd the game with **m@end**\nView the in-game leaderboard with **m@lb**`)
@@ -249,7 +250,8 @@ module.exports = {
 				console.log("collect")
 				if (salt) {
 					if (m.content == "m@end") {
-						return message.channel.send("Ending already? How salty")
+						message.channel.send("Ending already? How salty.")
+						collector.stop("end")
 					}
 					else if (m.content == "m@quit") {
 						lb[m.author.id] = 0;
@@ -289,8 +291,10 @@ module.exports = {
 							clearTimeout(countdown)
 							m.channel.send(`${m.author.username} has gained 2 💖`)
 							collector.stop("got");
+							active = 0
 						}
 						else {
+							active = 0
 							let username = await bot.users.fetch(player)
 							username = username.username
 							m.react('🧂')
@@ -376,9 +380,12 @@ module.exports = {
 							}
 						}
 						if (alive.length == 1) {
-							var user = await bot.users.fetch(Object.keys(lb).indexOf('356945454979874816') >= 0 ? '356945454979874816' : player);
+							var user = await bot.users.fetch(Object.keys(lb).indexOf('356945454979874816') >= 0 ? '356945454979874816' : alive[0]);
 							let leader = await leaderboard(lb)
-							message.channel.send(new Discord.MessageEmbed().setTitle(`${user.username} embraced the salt!`).setColor("GREEN").setDescription("Final Leaderboard:\n\n" + leader).setThumbnail(user.displayAvatarURL()));
+							let salter = Object.keys(salted).reduce((a, b) => salted[a] > salted[b] ? a : b)
+							let saltuser = await bot.users.fetch(salter)
+							message.channel.send(new Discord.MessageEmbed().setTitle(`${user.username} embraced the salt!`).setColor("GREEN").setDescription("Final Leaderboard:\n\n" + leader + `\n\nTop Salter: ${saltuser.username} - ${salted[salter]} salts`).setThumbnail(user.displayAvatarURL()));
+
 							return
 
 						}
@@ -401,7 +408,7 @@ module.exports = {
 							round(time, diff, goal, lb, active)
 						}
 						else if (winners.length == 1) {
-							var user = await bot.users.fetch(Object.keys(lb).indexOf('356945454979874816') >= 0 ? '356945454979874816' : player);
+							var user = await bot.users.fetch(Object.keys(lb).indexOf('356945454979874816') >= 0 ? '356945454979874816' : winners[0]);
 							let leader = await leaderboard(lb)
 							message.channel.send(new Discord.MessageEmbed().setTitle(`${user.username} has claimed the ${game}!`).setColor("GREEN").setDescription("Final Leaderboard:\n\n" + leader).setThumbnail(user.displayAvatarURL()));
 

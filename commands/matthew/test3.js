@@ -8,7 +8,7 @@ module.exports = {
 	name: "test3",
 	description: "Testing with firestore!",
 	usage: `${prefix}test3`,
-	perms: 1,
+	perms: ["MATTHEW"],
 	async execute(message, args, other) {
 		var admin = other[0]
 		var bot = other[1]

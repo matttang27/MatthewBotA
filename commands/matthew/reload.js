@@ -7,7 +7,7 @@ module.exports = {
 	name: "reload",
 	description: "Reload specific command, 'all', or 'wip'",
 	usage: `${prefix}reload`,
-	perms: 4,
+	perms: ["MATTHEW"],
 	async execute(message, args, other) {
 		var {admin,bot,commandName} = other
 		

@@ -8,7 +8,7 @@ module.exports = {
 	name: "emoters",
 	description: "2 modes: leaderboard and profile",
 	usage: `${prefix}emoters lb <opt. page> or ${prefix}emoters <ping, username or id>`,
-	perms: 4,
+	perms: [],
 	async execute(message, args, other) {
 		var admin = other[0]
 		var bot = other[1]

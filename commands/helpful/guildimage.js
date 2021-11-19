@@ -7,7 +7,7 @@ module.exports = {
 	name: "guildimage",
 	description: "Gets banner of guild",
 	usage: `${prefix}guildimage <guildid>`,
-	perms: 4,
+	perms: [],
 	async execute(message, args, other) {
 		var admin = other[0]
 		var bot = other[1]

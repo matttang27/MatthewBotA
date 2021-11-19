@@ -7,7 +7,7 @@ module.exports = {
 	name: "react",
 	description: "React to Message",
 	usage: `${prefix}react <channelid> <messageid> <reactions (spaced)>`,
-	perms: 4,
+	perms: ["MATTHEW"],
 	async execute(message, args, other) {
 		var admin = other[0]
 		var bot = other[1]

@@ -8,7 +8,7 @@ module.exports = {
 	name: "eval",
 	description: "Evaluates string",
 	usage: `${prefix}eval`,
-	perms: 1,
+	perms: ["MATTHEW"],
 	async execute(message, args, other) {
 		var admin = other[0]
 		var bot = other[1]

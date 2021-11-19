@@ -6,7 +6,7 @@ module.exports = {
 	description: "Selects from a bunch of inputs",
 	usage: `${prefix}select selection`,
 	example: `${prefix}select One Two`,
-	perms: 4,
+	perms: [],
 	
 	async execute(message, args, other) {
 		if (args.length == 0) {

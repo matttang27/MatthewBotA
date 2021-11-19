@@ -10,7 +10,7 @@ module.exports = {
 	description: "Sees your or someone else's profile.",
 	usage: `${prefix}profile <optional mention>`,
 	example: `${prefix}profile @Matthew`,
-	perms: 4,
+	perms: [],
 	
 	async execute(message, args, other) {
 		var admin = other[0]

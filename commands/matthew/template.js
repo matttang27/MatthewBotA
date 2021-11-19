@@ -7,7 +7,7 @@ module.exports = {
 	name: "template",
 	description: "Template for commands. Literally does nothing",
 	usage: `${prefix}template`,
-	perms: 4,
+	perms: ["MATTHEW"],
 	async execute(message, args, other) {
 		var admin = other[0]
 		var bot = other[1]
