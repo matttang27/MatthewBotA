@@ -5,6 +5,8 @@ function timePast() {
 }
 
 console.log("Starting code... " + timePast())
+
+
 const fs = require('fs');
 console.log("imported fs " + timePast())
 const Discord = require("discord.js");
@@ -17,8 +19,13 @@ const disbut = require('discord-buttons')(bot);
 console.log("imported discord-buttons" + timePast())
 const compress_images = require("compress-images");
 console.log("imported compress_images" + timePast())
-var CronJob = require('cron').CronJob;
+const CronJob = require('cron').CronJob;
 console.log("imported cron" + timePast())
+require('console-error');
+require('console-info');
+require('console-warn');
+console.log("console error,info,warn" + timePast())
+
 const {
 	prefix,
 	ownerID,
@@ -661,10 +668,16 @@ bot.on("message", async message => {
 
 		if (command.wip) {
 
-			bot.commands.set(command.name, )
+			return message.channel.send("That command is currently a WIP, please check again later (or pester Matthew to code it faster)")
 		}
 		console.log(command.name)
-		command.execute(message, args, other);
+    try {
+      command.execute(message, args, other);
+    }
+    catch (err) {
+      return message.channel.send(embedError(err))
+    }
+		
 
 
 	} catch (error) {
@@ -812,9 +825,11 @@ bot.on("presenceUpdate", async function(oldMember, newMember) {
 				return
 			}
 			var e = JSON.parse(fs.readFileSync('edward.json').toString());
-
+      if (!((newMember.status != 'offline' && status == 'offline') || newMember.status == 'offline')) {
+        return
+      }
 			channel.send(newMember.status != 'offline' && status == 'offline' ? "Edward has gone on!" : newMember.status == 'offline' ? "Edward has gone off." : "").catch((err) => {
-				console.log("Edwardstatuscatch")
+				console.log(err)
 				return
 			})
 			e.status = "online"
@@ -969,7 +984,13 @@ function keepAlive() {
 
 
 keepAlive()
-bot.login(token).then(console.log("Setup finished at " + timePast()))
+bot.login(token).then(() => {
+    const humantraffickingicon = setInterval(() => nameChange(), 700000)
+    covidScheduleSetup()
+
+    console.log("Setup finished at " + timePast())
+  }
+)
 
 
 
@@ -988,13 +1009,6 @@ async function nameChange() {
 	console.log(`Cult Server Name: ${name} Icon: ${icon}`)
 	return
 }
-
-var humantraffickingicon = setInterval(() => nameChange(), 700000)
-
-setTimeout(() => {
-	console.log("REQUIRE CACHE")
-
-}, 5000)
 
 async function syncEmotes() {
 	var e = JSON.parse(fs.readFileSync('serveremotes.json').toString());
@@ -1022,14 +1036,14 @@ async function botUpdates(message) {
 
 	})
 }
-function sendCovid() {
+function sendCovid(guilds) {
 	console.log("sending covid screen")
 	var bucket = admin.storage().bucket()
 	var content;
 	var screenie = bucket.file('screenie.png')
-	console.log(screenie)
+	
 	const localFilename = './screenie.png';
-
+  let a = fs.createWriteStream(localFilename)
 	screenie.createReadStream()
 		.on('error', function(err) { })
 		.on('response', function(response) {
@@ -1038,32 +1052,54 @@ function sendCovid() {
 		.on('end', function() {
 			// The file is fully downloaded.
 		})
-		.pipe(fs.createWriteStream(localFilename));
-	setTimeout(async () => {
-    let guilds = await bot.guilds.cache
-    guilds.forEach(async g => {
-      let channel = await g.channels.cache
+		.pipe(a);
+  a.on('finish', async () => {
+    guilds.forEach(async guildid => {
+      let guild = await bot.guilds.fetch(guildid)
+      let channel = await guild.channels.cache
       channel = channel.find(c => c.name == "matthew-bot-screening")
       if (channel) {
         channel.send("Your daily scheduled covid screening :D")
         channel.send({ files: ['./screenie.png'] })
       }
     })
-
-	}, 1000)
-
-}
-
-var job1 = new CronJob('0 15 8 * * 1-5', () => {sendCovid()}, null, true, 'America/New_York');
-var job2 = new CronJob('0 45 11 * * 1-5', () => {sendCovid()}, null, true, 'America/New_York');
-job1.start();
-job2.start();
-bot.reloadCovidSchedule = async function () {
-  var covidRef = await db.collection('covidscreening')
-  times = {}
-  let snap = await covidRef.get()
-  snap.forEach(guild => {
-    let data = guild.data()
-    
   })
+
 }
+
+async function covidScheduleSetup() {
+  tempguilds = await bot.guilds.cache
+  tempguilds = tempguilds.map(g => g.id)
+  var job1 = new CronJob('0 15 8 * * 1-5', () => {sendCovid(tempguilds)}, null, true, 'America/New_York');
+  var job2 = new CronJob('0 45 11 * * 1-5', () => {sendCovid(tempguilds)}, null, true, 'America/New_York');
+  job1.start();
+  job2.start();
+  bot.reloadCovidSchedule = async function () {
+    console.log("reloading Covid Schedule")
+    var covidRef = await db.collection('covidscreening')
+    times = {}
+    let snap = await covidRef.get()
+    snap.forEach(guild => {
+      let data = guild.data()
+      let crons = data.screencrons
+      for (i of crons) {
+        times[i] ? times[i].push(guild.id): times[i] = [guild.id]
+      }
+    })
+    bot.covidtimes = times
+    console.log(bot.covidtimes)
+    bot.covidCrons = []
+    let counter = 0
+    for (i in bot.covidtimes) {
+      bot.covidCrons.push(new CronJob(i,() => {sendCovid(bot.covidtimes[i])},null,true,'America/New_York'))
+      bot.covidCrons[counter].start();
+      counter++
+    }
+    console.log("Covid schedule reloaded " + timePast())
+  }
+  bot.reloadCovidSchedule()
+  
+}
+
+
+

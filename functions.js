@@ -1,4 +1,4 @@
-
+const Discord = require('discord.js')
 
 function minutesToMessage(minutes) {
 	var days = Math.floor(minutes / 1440)
@@ -324,5 +324,10 @@ function newProfile(firestore) {return {
 	timeCreated: firestore.Timestamp.fromDate(new Date()),
 }}
 
+function embedError(err) {
+  let embed = new Discord.MessageEmbed().setTitle("Something went wrong...").setDescription(`Matthew bot broke :<\n\nPlease notify Matthew and send him this error: ${err}`).setColor("RED")
+  console.log(err)
+  return embed
+}
 
-module.exports = { minutesToMessage, findMember, cleanup, gameClear, changeStatus, sleep, inputs, outputs, randomOdd, importAll, sendProfile, httpsGet, httpRequest, newProfile }
+module.exports = { minutesToMessage, findMember, cleanup, gameClear, changeStatus, sleep, inputs, outputs, randomOdd, importAll, sendProfile, httpsGet, httpRequest, newProfile, embedError }

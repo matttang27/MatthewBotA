@@ -8,6 +8,7 @@ module.exports = {
 	description: "Create a poll.",
 	usage: `${prefix}poll`,
 	perms: [],
+  wip: true,
 	async execute(message, args, other) {
 		var admin = other[0]
 		var bot = other[1]
