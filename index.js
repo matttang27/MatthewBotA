@@ -155,31 +155,6 @@ bot.on("messageDelete", async message => {
 	}
 })
 bot.on("messageUpdate", async (oldMessage, newMessage) => {
-	if (oldMessage.guild.id == "712382129673338991") {
-		if (oldMessage.author.id == "720466960118186015") {
-			return
-		}
-		var channel = await bot.channels.fetch("842750073896173628")
-		if (oldMessage.content) {
-			var embed = new Discord.MessageEmbed()
-				.setTitle("Message Edited")
-				.addField("Old Message: ", oldMessage.content)
-				.addField("New Message: ", newMessage.content)
-				.addField("Channel:", oldMessage.channel.name)
-				.setAuthor(oldMessage.author.username, oldMessage.author.avatarURL())
-				.setTimestamp()
-			channel.send(embed)
-		} else {
-			oldMessage.embeds.forEach(e => channel.send(e))
-			channel.send(`From: <@${message.author.id}> in ${message.channel.name} at ${Date.now().toString()}`)
-			channel.send("New message:")
-			newMessage.embeds.forEach(e => channel.send(e))
-			channel.send(`From: <@${message.author.id}> in ${message.channel.name} at ${Date.now().toString()}`)
-		}
-
-
-
-	}
 })
 
 bot.on("message", async message => {
@@ -480,7 +455,7 @@ bot.on("message", async message => {
 
 			if (message.guild.id == "720351714791915520") {
 				if (message.channel.parentID == "781939212416581654") {
-					if (message.author.bot) {
+					if (message.author.id != ownerID) {
 						return;
 					}
 					var receive = await bot.users.fetch(message.channel.name)
@@ -820,7 +795,7 @@ bot.on("presenceUpdate", async function(oldMember, newMember) {
 	351132323405889537
 	if (newMember.user.id == "351132323405889537") {
 		if (newMember.guild.id == "712382129673338991") {
-			var channel = await newMember.guild.channels.cache.find(c => c.name == "general")
+			var channel = await newMember.guild.channels.cache.find(c => c.name == "dead-chat")
 			if (!channel) {
 				return
 			}
@@ -1036,8 +1011,10 @@ async function botUpdates(message) {
 
 	})
 }
-function sendCovid(guilds) {
+function sendCovid(i) {
 	console.log("sending covid screen")
+  console.log(bot.covidtimes)
+  let guilds = bot.covidtimes[i]
 	var bucket = admin.storage().bucket()
 	var content;
 	var screenie = bucket.file('screenie.png')
@@ -1068,12 +1045,14 @@ function sendCovid(guilds) {
 }
 
 async function covidScheduleSetup() {
+  `
   tempguilds = await bot.guilds.cache
   tempguilds = tempguilds.map(g => g.id)
   var job1 = new CronJob('0 15 8 * * 1-5', () => {sendCovid(tempguilds)}, null, true, 'America/New_York');
   var job2 = new CronJob('0 45 11 * * 1-5', () => {sendCovid(tempguilds)}, null, true, 'America/New_York');
   job1.start();
   job2.start();
+  `
   bot.reloadCovidSchedule = async function () {
     console.log("reloading Covid Schedule")
     var covidRef = await db.collection('covidscreening')
@@ -1091,7 +1070,9 @@ async function covidScheduleSetup() {
     bot.covidCrons = []
     let counter = 0
     for (i in bot.covidtimes) {
-      bot.covidCrons.push(new CronJob(i,() => {sendCovid(bot.covidtimes[i])},null,true,'America/New_York'))
+      let p = i
+      console.log(bot.covidtimes[p])
+      bot.covidCrons.push(new CronJob(p,() => {sendCovid(p)},null,true,'America/New_York'))
       bot.covidCrons[counter].start();
       counter++
     }

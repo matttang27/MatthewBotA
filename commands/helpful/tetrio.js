@@ -127,9 +127,8 @@ module.exports = {
 		else if (args[0] == "add") {
 			var docRefs = await trlist.listDocuments()
 			let user = undefined
-			if (args[1].length == 21) {
-				user = await bot.users.resolve(args[1].slice(3,21))
-			}
+			user = await message.mentions.members.first()
+
 			if (user == undefined) {
 				return message.channel.send(new Discord.MessageEmbed().setTitle("m!tetrio add failed.").setDescription("Please mention a user (Your first argument should be a ping)").setColor("RED"))
 			}
