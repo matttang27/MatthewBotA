@@ -34,10 +34,12 @@ const {
 bot.commands = new Discord.Collection();
 bot.rpgcommands = new Discord.Collection();
 
+require('dotenv').config();
 const token = process.env['token'];
-
-
 const othertoken = process.env['othertoken']
+const rpgkey = process.env['rpgkey']
+const firebasekey = process.env['firebasekey']
+
 if (token == "") {
   console.log("You're missing a token!")
 }
@@ -105,8 +107,8 @@ console.log("imported firebase-admin" + timePast())
 let serviceAccount = require('./servicekey.json');
 
 let rpgserviceAccount = require('./rpg/rpgservicekey.json');
-rpgserviceAccount.private_key = process.env['rpgkey'].replace(/\\n/g, '\n')
-serviceAccount.private_key = process.env['firebasekey'].replace(/\\n/g, '\n')
+rpgserviceAccount.private_key = rpgkey.replace(/\\n/g, '\n')
+serviceAccount.private_key = firebasekey.replace(/\\n/g, '\n')
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -968,7 +970,6 @@ function keepAlive() {
 
 keepAlive()
 console.log("bot login")
-console.log(token)
 bot.login(token).then(() => {
   const humantraffickingicon = setInterval(() => nameChange(), 700000)
   //covidScheduleSetup()
@@ -980,14 +981,14 @@ bot.login(token).then(() => {
 
 
 async function nameChange() {
-  const dirs = fs.readdirSync('/home/runner/MatthewBot/amongus');
+  const dirs = fs.readdirSync('./amongus');
   var guild = await bot.guilds.fetch("757770623450611784");
 
   var names = ["Cult.", "Needs A New Name Cult", "NOT A Black Marketing Cult", "Never Plays Among Us Cult", "Matthew Cult?", "Organ Collector Cult", "Mai Sakurajima Cult", "Tetris Cult", "Human Trafficking Cult"];
 
   var name = names[Math.floor(Math.random() * names.length)]
   var icon = dirs[Math.floor(Math.random() * dirs.length)]
-  await guild.setIcon(`/home/runner/MatthewBot/amongus/${icon}`)
+  await guild.setIcon(`./amongus/${icon}`)
   await guild.setName(name).catch((error) => {
     console.error(error)
   });
@@ -1016,7 +1017,7 @@ async function botUpdates(message) {
     let channels = await g.channels.cache
     channel = await channels.find(c => c.name == "matthew-bot-updates")
     if (channel) {
-      channel.send(message)
+      channel.send(message).catch();
     }
 
   })
