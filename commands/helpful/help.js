@@ -30,6 +30,7 @@ module.exports = {
 			for (i of keys) {
 				embed.addField(i, commandlist[i].join(", "))
 			}
+      /*No longer DMing help message
 			message.author.send(embed)
 				.then(() => {
 					if (message.channel.type !== 'dm') {
@@ -42,6 +43,8 @@ module.exports = {
 					message.reply(`DM failed (DM me first), sending commands in this channel instead.`);
 					message.channel.send(embed)
 				});
+      */
+      message.channel.send(embed)
 		}
 		else {
 
@@ -63,6 +66,8 @@ module.exports = {
 
 			message.channel.send(embed);
 		}
+    
+    
 	}
 
 }

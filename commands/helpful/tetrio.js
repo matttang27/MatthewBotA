@@ -40,11 +40,15 @@ module.exports = {
 
 			var players = documentIds.filter(r => serverIds.indexOf(r) != -1)
 			var lb = {}
-			console.log(players)
 			results = players.map(p => updatePlayer(p,false))
+
+      for (i in results) {
+        if (!results[i]) {
+          delete results[i]
+        }
+      }
 			records = []
 			Promise.allSettled(results).then(async (result) => {
-				console.log(result)
 				for (i=0;i<result.length;i++) {
 					var p = {
 						userid: players[i],
@@ -134,7 +138,6 @@ module.exports = {
 			}
 			userdata = await Promise.all([httpsGet("https://ch.tetr.io/api/users/" + args[2].toLowerCase(),https)
 			,httpsGet("https://ch.tetr.io/api/users/" + args[2].toLowerCase() + "/records",https)]).then((values) => {
-				console.log(values)
 				trlist.doc(user.id).set({
 					user: values[0],
 					records: values[1]
@@ -159,7 +162,6 @@ module.exports = {
 				var search = args.slice(1).join(" ")
 				var guildm = await message.guild.members.cache.filter(u => ((u.nickname ? u.nickname.toLowerCase() : null)  == search.toLowerCase()) || (u.user.username.toLowerCase() == search.toLowerCase()))
 				var arraym = guildm.array()
-				console.log(arraym)
 				if (guildm.size > 1) {
 					var text = ""
 					for (i=0;i<arraym.length;i++){
@@ -174,7 +176,6 @@ module.exports = {
 				}
 				else if (guildm.size == 1) {
 					var user = guildm.first().user
-					console.log(user)
 				}
 				else {
 					return message.channel.send("No user found with that username / nickname.")
@@ -206,7 +207,6 @@ module.exports = {
 
 			var players = documentIds.filter(r => serverIds.indexOf(r) != -1)
 			var lb = {}
-			console.log(players)
 			results = players.map(p => updatePlayer(p,true))
 
 			Promise.allSettled(results).then((result) => {
@@ -232,17 +232,24 @@ module.exports = {
 				var userRef = trlist.doc(id)
 				var userData = await userRef.get()
 				var userData = userData.data()
+				if (userData.user.success) {
+          var username = userData.user.data.user.username
+          if (userData.user.cache.cached_until < Date.now() || force) {
+            userData.user = await httpsGet("https://ch.tetr.io/api/users/" + username,https)
+          }
+          if (userData.records.cache.cached_until < Date.now() || force) {
+            userData.records = await httpsGet("https://ch.tetr.io/api/users/" + username + "/records",https)
+          }
+          userRef.set(userData)
+          resolve(userData)
+          
+        }
+				else {
+          userRef.delete()
 
+          resolve(null)
+        }
 				
-				var username = userData.user.data.user.username
-				if (userData.user.cache.cached_until < Date.now() || force) {
-					userData.user = await httpsGet("https://ch.tetr.io/api/users/" + username,https)
-				}
-				if (userData.records.cache.cached_until < Date.now() || force) {
-					userData.records = await httpsGet("https://ch.tetr.io/api/users/" + username + "/records",https)
-				}
-				userRef.set(userData)
-				resolve(userData)
 			});
 
 		}
