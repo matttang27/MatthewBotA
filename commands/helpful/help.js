@@ -1,6 +1,6 @@
 const { prefix, token, ownerID, rpgprefix } = require("../../config.json");
-const fs = require('fs');
-const Discord = require('discord.js');
+const fs = require("fs");
+const Discord = require("discord.js");
 module.exports = {
 	args: [0, 1],
 	name: "help",
@@ -12,25 +12,41 @@ module.exports = {
 	perms: [],
 
 	execute(message, args, other) {
-
-		var bot = other[1]
-		var commandlist = { ...bot.commandlist }
-		var keys = Object.keys(commandlist)
+		var bot = other[1];
+		var commandlist = { ...bot.commandlist };
+		var keys = Object.keys(commandlist);
 
 		for (i of keys) {
-			commandlist[i] = commandlist[i].map(r => r.slice(0, -3))
+			commandlist[i] = commandlist[i].map((r) => r.slice(0, -3));
 		}
 		//sends command list if there are no arguments
 		if (!args.length) {
 			let embed = new Discord.MessageEmbed()
 				.setTitle("List of commands")
 				.setTimestamp()
-				.setDescription(`\nYou can send \`${prefix}help [command]\` to get info on a specific command!`)
-				.setFooter(`\nFor RPG commands, use ${rpgprefix}help instead!`)
+				.setDescription(
+					`\nYou can send \`${prefix}help [command]\` to get info on a specific command!\n\n❌ -  closed\n⚙️ - wip`
+				)
+				.setFooter(`\nFor RPG commands, use ${rpgprefix}help instead!`);
 			for (i of keys) {
-				embed.addField(i, commandlist[i].join(", "))
+				let adder = {
+					undefined: "",
+					"closed": "(❌)",
+					"wip": "(⚙️)",
+				};
+				embed.addField(
+					i,
+					commandlist[i]
+						.map((c) => {
+							st = bot.commands.get(c).status;
+							return `${c}${adder[st]}`;
+						})
+						.join(", ")
+				);
 			}
-      /*No longer DMing help message
+
+			message.channel.send(embed);
+			/*No longer DMing help message
 			message.author.send(embed)
 				.then(() => {
 					if (message.channel.type !== 'dm') {
@@ -44,30 +60,29 @@ module.exports = {
 					message.channel.send(embed)
 				});
       */
-      message.channel.send(embed)
-		}
-		else {
-
-
+		} else {
 			const name = args[0].toLowerCase();
-			const command = bot.commands.get(name) || bot.commands.find(cmd => cmd.aliases && cmd.aliases.includes(name));
+			const command =
+				bot.commands.get(name) ||
+				bot.commands.find((cmd) => cmd.aliases && cmd.aliases.includes(name));
 
 			if (!command) {
-				return message.reply('that\'s not a valid command!');
+				return message.reply("that's not a valid command!");
 			}
 			let embed = new Discord.MessageEmbed()
-			embed.setTitle(command.name)
-			embed.addField("Description", command.description)
-			embed.addField("Usage", command.usage)
-			embed.addField("Aliases", command.aliases)
-			embed.addField("Example", command.example)
-			embed.addField("Permissions", command.perms.length == 0 ? "None" : command.perms.join(","))
-			embed.setColor("#AAEEAA")
+			.setTitle(command.name)
+			.addField("Description", command.description)
+			.addField("Usage", command.usage)
+			.addField("Aliases", command.aliases)
+			.addField("Example", command.example)
+			.addField(
+				"Permissions",
+				command.perms.length == 0 ? "None" : command.perms.join(",")
+			)
+			.addField("Status", command.status ? command.status : "open")
+			.setColor("#AAEEAA")
 
 			message.channel.send(embed);
 		}
-    
-    
-	}
-
-}
+	},
+};
