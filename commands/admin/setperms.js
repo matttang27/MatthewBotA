@@ -8,7 +8,7 @@ module.exports = {
 	description: "Set permissions for all the channels in that game",
 	usage: `${prefix}setperms <optional game num>`,
 	perms: ["ADMINISTRATOR"],
-	
+	status: 'closed',
 	async execute(message, args, other) {
 
 		var roles = ['gamemaster','alive','dead']

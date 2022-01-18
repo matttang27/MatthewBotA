@@ -8,7 +8,7 @@ module.exports = {
 	description: "Starts a game",
 	usage: `${prefix}start <gamemaster1> <gamemaster2> ...`,
 	perms: ["MATTHEW"],
-	
+	status: "wip",
 	async execute(message, args, other) {
 
 		const db = other[0].firestore()

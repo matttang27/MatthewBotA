@@ -9,6 +9,8 @@ module.exports = {
 	description: "Gets the Love History of a person",
 	usage: `${prefix}lovehistory <person>`,
 	perms: [],
+	
+	status: 'closed',
 	async execute(message, args, other) {
 		var admin = other[0]
 		var bot = other[1]

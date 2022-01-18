@@ -10,6 +10,7 @@ module.exports = {
 	aliases: ["cooldowns","cds","cd"],
 	usage: `${prefix}cooldown`,
 	perms: [],
+	status: 'closed',
 	async execute(message, args, other) {
 		var admin = other[0]
 		var bot = other[1]

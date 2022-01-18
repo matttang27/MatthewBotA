@@ -2,14 +2,14 @@ const { prefix, token } = require("../../config.json");
 
 module.exports = {
 	args: [2],
-	name: "start",
+	name: "startgame",
 	category: "TOS",
 	aliases: ["startgame","finishregister","sg"],
 	description: "Starts the game! (Must be Gamemaster or Admin)",
-	usage: `${prefix}start <gameID> <channelnum>`,
-	example: `${prefix}start 15 2`,
+	usage: `${prefix}startgame <gameID> <channelnum>`,
+	example: `${prefix}startgame 15 2`,
 	perms: ["MATTHEW"],
-	
+	status: 'closed',
 	async execute(message, args, other) {
 		var db = other[0].firestore()
 		var firestore = other[0].firestore

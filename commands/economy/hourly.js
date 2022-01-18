@@ -10,6 +10,7 @@ module.exports = {
 	description: "Become a productive member of society",
 	usage: `${prefix}hourly`,
 	perms: [],
+	status: 'closed',
 	async execute(message, args, other) {
 		var admin = other[0]
 		var bot = other[1]

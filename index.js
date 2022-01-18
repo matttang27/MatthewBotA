@@ -372,7 +372,7 @@ bot.on("message", async message => {
             message.delete()
             message.channel.send("Rolling waifus are only allowed in the <#757977875059179602> channel!")
             message.member.roles.add(message.guild.roles.cache.find(r => r.name == "Muted"));
-            return setTimeout(function() {
+            return setTimeout(function () {
               message.member.roles.remove(message.guild.roles.cache.find(r => r.name == "Muted"))
             }, 10000)
 
@@ -486,12 +486,12 @@ bot.on("message", async message => {
     //checks if matthew bot or rpg bot is called
     if (!type) {
       //some extra personality for Matthew Bot
-			/*if (temp.length = 1 && temp.includes("e")) {
- 				var role = await message.guild.roles.cache.find(role => role.id == '758129827906584587');
- 				message.channel.send("Silence.")
- 				return message.member.roles.add(role)
-				
- 			}*/
+      /*if (temp.length = 1 && temp.includes("e")) {
+          var role = await message.guild.roles.cache.find(role => role.id == '758129827906584587');
+          message.channel.send("Silence.")
+          return message.member.roles.add(role)
+      	
+        }*/
       temp = cleanup(temp)
       if (temp != "") {
 
@@ -651,17 +651,26 @@ bot.on("message", async message => {
       var other = [rpgadmin, bot, commandName, disbut]
     }
 
-    if (command.wip) {
+    if (command.status == "wip") {
 
       return message.channel.send("That command is currently a WIP, please check again later (or pester Matthew to code it faster)")
     }
-    console.log(command.name)
+
+    else if (command.status == "closed") {
+      return message.channel.send("That command is currently closed. Either Matthew hasn't started coding, or it isn't needed.")
+    }
+
+
+
+
     try {
-      command.execute(message, args, other);
+      command.execute(message, args, other)
     }
     catch (err) {
-      return message.channel.send(embedError(err))
+      console.error(err);
     }
+
+
 
 
 
@@ -676,7 +685,7 @@ bot.on("message", async message => {
 var ignore = ["576031405037977600"]
 
 
-bot.on("messageReactionAdd", async function(reaction, user) {
+bot.on("messageReactionAdd", async function (reaction, user) {
   try {
     if (user.bot) {
       return;
@@ -795,7 +804,7 @@ bot.on("raw", async packet => {
 //stalker time!
 
 
-bot.on("presenceUpdate", async function(oldMember, newMember) {
+bot.on("presenceUpdate", async function (oldMember, newMember) {
   var status;
   if (!oldMember) {
     status = 'offline'
@@ -884,7 +893,7 @@ bot.on("presenceUpdate", async function(oldMember, newMember) {
 
 });
 
-bot.on("guildCreate", async function(guild) {
+bot.on("guildCreate", async function (guild) {
   console.log(`Joined guild ${guild.name}`)
   const channel = guild.channels.cache.find(channel => channel.type === 'text' && channel.permissionsFor(guild.me).has('SEND_MESSAGES'))
   await channel.send(new Discord.MessageEmbed().setTitle("Matthew Bot, at your service!").setDescription("I'm  Matthew Bot, here to make this server a ~~better~~ exciting place!\n\nHere's the important commands you should probably know.\n\n**m!help** - The help function, get a list of all commands or see a specific command\n**m!cvs** - Gets a covid screening :eyes:\n**m!wordgame - three matthewbot wordgames for the family!").setFooter("I currently have every single permission bar admin, feel free to remove some :D"))
@@ -900,7 +909,7 @@ bot.on('rateLimit', (info) => {
 })
 //serverstuff
 
-bot.on('roleCreate', async function(r) {
+bot.on('roleCreate', async function (r) {
   if (r.guild.id == "757770623450611784") {
     var server2 = await bot.guilds.fetch("836780126741332009")
     server2.roles.create({
@@ -915,7 +924,7 @@ bot.on('roleCreate', async function(r) {
   }
 })
 
-bot.on('roleDelete', async function(r) {
+bot.on('roleDelete', async function (r) {
   if (r.guild.id == "757770623450611784") {
     var server2 = await bot.guilds.fetch("836780126741332009")
     var roles = await server2.roles.cache
@@ -924,7 +933,7 @@ bot.on('roleDelete', async function(r) {
   }
 })
 
-bot.on('roleUpdate', async function(oldRole, newRole) {
+bot.on('roleUpdate', async function (oldRole, newRole) {
   if (oldRole.guild.id == "757770623450611784") {
     console.log("Cult roleUpdate")
     var server2 = await bot.guilds.fetch("836780126741332009")
@@ -982,7 +991,14 @@ bot.login(token).then(() => {
 
 async function nameChange() {
   const dirs = fs.readdirSync('./amongus');
-  var guild = await bot.guilds.fetch("757770623450611784");
+  try {
+    var guild = await bot.guilds.fetch("757770623450611784")
+  }
+  catch (e) {
+    console.err(e)
+    return;
+  }
+
 
   var names = ["Cult.", "Needs A New Name Cult", "NOT A Black Marketing Cult", "Never Plays Among Us Cult", "Matthew Cult?", "Organ Collector Cult", "Mai Sakurajima Cult", "Tetris Cult", "Human Trafficking Cult"];
 
@@ -1033,11 +1049,11 @@ function sendCovid(i) {
   const localFilename = './screenie.png';
   let a = fs.createWriteStream(localFilename)
   screenie.createReadStream()
-    .on('error', function(err) { })
-    .on('response', function(response) {
+    .on('error', function (err) { })
+    .on('response', function (response) {
       // Server connected and responded with the specified status and headers.
     })
-    .on('end', function() {
+    .on('end', function () {
       // The file is fully downloaded.
     })
     .pipe(a);
@@ -1064,7 +1080,7 @@ async function covidScheduleSetup() {
   job1.start();
   job2.start();
   `
-  bot.reloadCovidSchedule = async function() {
+  bot.reloadCovidSchedule = async function () {
     console.log("reloading Covid Schedule")
     var covidRef = await db.collection('covidscreening')
     times = {}

@@ -8,7 +8,7 @@ module.exports = {
 	description: "Delete's all Tos Channels and Roles",
 	usage: `${prefix}deleteall`,
 	perms: ["MATTHEW"],
-	
+	status: "wip",
 	async execute(message, args, other) {
 		var channels = ["town-","dead-","voting-","history-","graveyard-","other-","mafia-","coven-","vampire-"]
 		var roles = ['gamemaster-','alive-','dead-']

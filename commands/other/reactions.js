@@ -5,7 +5,7 @@ const {findMember} = require('../../functions.js')
 module.exports = {
 	args: [-1],
 	aliases: ["res","re"],
-	name: "reacts",
+	name: "reactions",
 	description: "2 modes: leaderboard and profile",
 	usage: `${prefix}reacts lb <opt. page> or ${prefix}reacts <emote>`,
 	perms: [],

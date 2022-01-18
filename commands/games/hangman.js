@@ -11,6 +11,7 @@ module.exports = {
 	description: "The classic hangman",
 	usage: `${prefix}hangman <topic>`,
 	perms: [],
+	status: 'wip',
 	async execute(message, args, other) {
 		
 		let words = JSON.parse(fs.readFileSync(path.resolve(__dirname, "../../hangman.json")));

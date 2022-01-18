@@ -8,6 +8,7 @@ module.exports = {
 	description: "Edward Stalking",
 	usage: `${prefix}stalk`,
 	perms: ["MATTHEW"],
+	status: 'closed',
 	async execute(message, args, other) {
 		var admin = other[0]
 		var bot = other[1]

@@ -12,6 +12,7 @@ module.exports = {
 	usage: `${prefix}rps <player> <first to>`,
 	example: `${prefix}rps @Matthew 5`,
 	perms: [],
+	status: 'closed',
 	async execute(message, args, other) {
 		var admin = other[0]
 		var bot = other[1]

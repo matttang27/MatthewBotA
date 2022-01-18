@@ -7,7 +7,7 @@ module.exports = {
 	description: "Creates the channels and roles for a Town of Salem game",
 	usage: `${prefix}create <optional game num>`,
 	perms: ["MATTHEW"],
-	
+	status: 'closed',
 	async execute(message, args, other) {
 		//part 1: find a game number that does not exist in the guild
 		
