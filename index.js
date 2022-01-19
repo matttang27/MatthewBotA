@@ -981,7 +981,7 @@ keepAlive()
 console.log("bot login")
 bot.login(token).then(() => {
   const humantraffickingicon = setInterval(() => nameChange(), 700000)
-  //covidScheduleSetup()
+  covidScheduleSetup()
 
   console.log("Setup finished at " + timePast())
 }
