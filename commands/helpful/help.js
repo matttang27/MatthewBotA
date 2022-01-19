@@ -25,7 +25,7 @@ module.exports = {
 				.setTitle("List of commands")
 				.setTimestamp()
 				.setDescription(
-					`\nYou can send \`${prefix}help [command]\` to get info on a specific command!\n\n❌ -  closed\n⚙️ - wip`
+					`\nYou can send \`${prefix}help [command]\` to get info on a specific command!\n\n`
 				)
 				.setFooter(`\nFor RPG commands, use ${rpgprefix}help instead!`);
 			for (i of keys) {
