@@ -34,15 +34,20 @@ module.exports = {
 					"closed": "(❌)",
 					"wip": "(⚙️)",
 				};
-				embed.addField(
-					i,
-					commandlist[i]
-						.map((c) => {
-							st = bot.commands.get(c).status;
-							return `${c}${adder[st]}`;
+				let workcoms = commandlist[i]
+						.filter((c) => {
+							return !bot.commands.get(c).status;
+							
 						})
-						.join(", ")
-				);
+
+				//only print field if there are commands
+				if (workcoms.length > 0) {
+				embed.addField(
+							i,
+							workcoms.join(", ")
+						);
+				}
+				
 			}
 
 			message.channel.send(embed);
