@@ -64,6 +64,7 @@ module.exports = {
 			return message.channel.send(new Discord.MessageEmbed()
 				.setTitle("Matthew Bot's word games!")
 				.setDescription(`Currently Matthew Bot has 3 (three) word games that you can play:\n**beer**: ${description.beer}\n**coffee** ${description.coffee}\n**wine** ${description.wine}\n\nBefore the game, you can edit the **m@time**, **m@difficulty**, and **m@goal**, as well as the **m@salt** gamemode\n\n**m@start** to start the game\n**m@end** to end the game\n**m@lb** to view the leaderboard.`))
+        .setFooter("Play one now with: m!beer , m!coffee, or m!wine !")
 		}
 		else {
 			game = commandName

@@ -3,15 +3,15 @@
     "commands/games/wordgame.js": [
       {
         "id": "f36b56a2-4fb3-405b-96a8-e9986f40fd23",
-        "line": 353,
-        "version": 3903,
-        "index": 10993
+        "line": 354,
+        "version": 3905,
+        "index": 11065
       },
       {
         "id": "2aace3f2-8877-478a-8b97-d67e711c2742",
-        "line": 367,
-        "version": 3903,
-        "index": 11345
+        "line": 368,
+        "version": 3905,
+        "index": 11417
       }
     ],
     "commands/helpful/covidscreen.js": [
