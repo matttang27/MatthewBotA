@@ -84,7 +84,7 @@ module.exports = {
 			.setColor("#6f4e37")
 			.setFooter("m@end to stop right now")
 
-		var reactor = await message.channel.send(embed)
+		var reactor = await message.channel.send({embeds: [embed]})
 
 
 
@@ -188,7 +188,7 @@ module.exports = {
 				.setTitle(`${salt ? "🧂 " : ""}${finishTitle[game]}${salt ? " 🧂" : ""}`)
 				.setDescription(`Who will claim the ${game}?\n\n**Time**: ${time} seconds\n**Difficulty**: ${diff} Minimum Solutions\n${salt ? `**HP**: ${hp}` : `**Goal**: ${goal} pts`}`)
 				.setColor("#6f4e37")
-			await message.channel.send(embed)
+			await message.channel.send({embeds: [embed]})
 
 
 			round(time, diff, goal, lb, 0);

@@ -34,7 +34,7 @@ module.exports = {
         var embed = new Discord.MessageEmbed()
         .setColor('#26abFF')
         .setDescription(`A new letin for ${q.user.username} has been created by ${message.author.username}! We need two more to type **letin** to unquarantine them!`)
-        message.channel.send(embed);
+        message.channel.send({embeds: [embed]});
 
         var voter = 0
         const filter = m => m.author.id != message.author.id && m.author.id != q.id && m.content == "letin" && m.author.id != voter && !m.member.roles.cache.find(n => n.name == "New Member") && Date.now() - message.member.joinedTimestamp < 1209600000
@@ -43,7 +43,7 @@ module.exports = {
         collector.on('collect', m => {
             if (voter != 0) {
                 embed.setDescription(`${m.author.username} has voted to let ${q.user.username} in! 1 vote left!`);
-                message.channel.send(embed)
+                message.channel.send({embeds: [embed]})
             }
             else {
                 embed.setDescription(`${m.author.username} has voted to let ${q.uesrname} in! The 3 required votes have been fulfilled!`);
@@ -54,18 +54,18 @@ module.exports = {
             if (collected.size == 0) {
                 embed.setDescription(`No one else voted to let ${q.user.username} in.`)
                 embed.setColor('#DC2700')
-                return message.channel.send(embed)
+                return message.channel.send({embeds: [embed]})
             }
             else if (collected.size == 1) {
                 embed.setDescription(`We only had 2 out of the 3 voters needed to let ${q.user.username} in.`)
                 embed.setColor('#DC2700')
-                return message.channel.send(embed)
+                return message.channel.send({embeds: [embed]})
             }
             else {
                 q.roles.remove(qrole)
                 embed.setDescription(`${q.user.username} has been let into the rest of the server! Congratulations!`)
                 embed.setColor('#00FF00')
-                return message.channel.send(embed)
+                return message.channel.send({embeds: [embed]})
             }
         })
 

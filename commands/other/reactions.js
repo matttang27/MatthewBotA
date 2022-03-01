@@ -21,7 +21,7 @@ module.exports = {
 			.setColor('#26abFF')
 			.setDescription("<a:loading:745769231295184959> Getting leaderboard...")
 			
-			var sended = await message.channel.send(embed)
+			var sended = await message.channel.send({embeds: [embed]})
 
 			var e = []
 
@@ -116,7 +116,7 @@ module.exports = {
 				string += `${r.users[e[i][0]].name} --- ${e[i][1]}\n`
 			}
 			embed.addField("Favourite Users: ", string)
-			message.channel.send(embed)
+			message.channel.send({embeds: [embed]})
 		}
 		
 

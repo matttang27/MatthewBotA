@@ -31,14 +31,14 @@ module.exports = {
           .setTitle("Chess.com Leaderboard Fail")
           .setDescription(`"${args[1]}" is not one of the available leaderboards: bullet, blitz, rapid`)
           .setFooter("Example: m!chesscom lb blitz")
-        return message.channel.send(embed)
+        return message.channel.send({embeds: [embed]})
       }
       var embed = new Discord.MessageEmbed()
         .setColor('#26abFF')
         .setTitle("<a:loading:745769231295184959> Loading Leaderboard... Please be patient.")
 
       try {
-        var sended = await message.channel.send(embed)
+        var sended = await message.channel.send({embeds: [embed]})
         var userRef = chesslist.doc('users')
         let chessusers = await userRef.get()
         chessusers = chessusers.data()
@@ -178,7 +178,7 @@ module.exports = {
       var embed = new Discord.MessageEmbed()
         .setColor('#26abFF')
         .setTitle("<a:loading:745769231295184959> Loading Player... Please be patient.")
-      var sended = await message.channel.send(embed)
+      var sended = await message.channel.send({embeds: [embed]})
       try {
         var userData = await chessAPI.getPlayerStats(chessusers[user.id])
       }
@@ -213,7 +213,7 @@ module.exports = {
         .setDescription("Available subcommands:\n**view** - view the chess profile of a guildmember.\n**lb** - view the server leaderboard for various game times.\n**add** - link a username and guildmember to the database.")
         .setFooter("Example: m!chesscom add <usermention> <chess username>")
 
-      message.channel.send(embed)
+      message.channel.send({embeds: [embed]})
     }
 
   }

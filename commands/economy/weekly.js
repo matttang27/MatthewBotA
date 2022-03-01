@@ -76,7 +76,7 @@ module.exports = {
 			.setAuthor(`${message.author.username}'s weekly event.`, `${message.author.avatarURL()}`)
 			.setDescription(situations[i].message(money))
 			embed.setFooter(`written by: ${situations[i].author}`)
-			message.channel.send(embed)
+			message.channel.send({embeds: [embed]})
 			return money
 		}
 

@@ -13,7 +13,6 @@
     "console-warn": "0.0.4",
     "cron": "^1.8.2",
     "cronstrue": "^1.125.0",
-    "discord-buttons": "^4.0.0-deprecated",
     "discord.js": "^13.6.0",
     "dotenv": "^14.3.2",
     "express": "^4.17.3",

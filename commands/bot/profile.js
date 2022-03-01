@@ -89,7 +89,7 @@ module.exports = {
 				}
 				fs.writeFileSync('players.json', JSON.stringify(p,null,2));
 				embed = createEmbed(message.author,userData)
-				return message.channel.send(embed)
+				return message.channel.send({embeds: [embed]})
 			}
 			
 			else {

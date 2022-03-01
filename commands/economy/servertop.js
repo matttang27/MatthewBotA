@@ -21,7 +21,7 @@ module.exports = {
 			.setColor('#26abFF')
 			.setDescription("<a:loading:745769231295184959> Getting leaderboard...")
 			
-		var sended = await message.channel.send(embed)
+		var sended = await message.channel.send({embeds: [embed]})
 
 
 		async function getMarker() {
