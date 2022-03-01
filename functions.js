@@ -118,16 +118,10 @@ function gameClear() {
 function changeStatus(bot) {
   setTimeout(function() {
     bot.user.setPresence({ activity: { name: 'Everyone must die.' }, status: 'dnd' })
-      .then()
-      .catch(console.error);
     var message2 = setTimeout(function() {
       bot.user.setPresence({ activity: { name: 'No one is safe.' }, status: 'idle' })
-        .then()
-        .catch(console.error);
       var message3 = setTimeout(function() {
         bot.user.setPresence({ activity: { name: 'I have ascended.' }, status: 'online' })
-          .then()
-          .catch(console.error);
         changeStatus(bot)
       }, 10000)
     }, 10000)

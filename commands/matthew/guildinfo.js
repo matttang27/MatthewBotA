@@ -15,7 +15,9 @@ module.exports = {
 		var commandName = other[2]
     var g = await bot.guilds.fetch(args[0])
     var m = await g.members.fetch(bot.user.id)
-		message.channel.send(new Discord.MessageEmbed().setTitle(g.name).setThumbnail(g.iconURL()).setDescription(`Number of members: ${g.memberCount}\nDescription: ${g.description ? g.description : "None"}\nJoined At: ${m.joinedAt.toLocaleString("en-US", {timeZone: "America/New_York"})}`))
+		var o = await g.members.fetch(g.ownerID)
+
+		message.channel.send(new Discord.MessageEmbed().setTitle(g.name).setThumbnail(g.iconURL()).setDescription(`Number of members: ${g.memberCount}\nDescription: ${g.description ? g.description : "None"}\nJoined At: ${m.joinedAt.toLocaleString("en-US", {timeZone: "America/New_York"})}\nOwner:${o.user.tag}`))
 	}
 };	
 

@@ -51,7 +51,7 @@ module.exports = {
 			bot.games[message.channel.id] = "Tetris"
 			
 			
-			await message.channel.send(embed)
+			await message.channel.send({embeds: [embed]})
 			var filter = m => (m.author.id != player1.id && m.content == "accept") || (m.author.id == player1.id && m.content == "cancel")
 
 			var collector = message.channel.createMessageCollector(filter, { time: 60000, max: 1 })
