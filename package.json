@@ -1,49 +1,37 @@
 {
   "name": "matthew-bot",
   "version": "1.0.0",
+  "description": "",
   "main": "index.js",
   "dependencies": {
     "@top-gg/sdk": "^3.1.3",
     "an-array-of-english-words": "^2.0.0",
-    "body-parser": "^1.19.2",
-    "chess-web-api": "^1.1.2",
+    "body-parser": "^1.19.0",
+    "chess-web-api": "^1.1.1",
     "compress-images": "^1.9.9",
     "console-error": "0.0.4",
     "console-info": "0.0.5",
     "console-warn": "0.0.4",
     "cron": "^1.8.2",
-    "cronstrue": "^1.125.0",
-    "discord-buttons": "^4.0.0-deprecated",
-    "discord.js": "^13.6.0",
-    "dotenv": "^14.3.2",
-    "express": "^4.17.3",
-    "firebase": "^9.6.7",
+    "cronstrue": "^1.122.0",
+    "discord-buttons": "^2.4.1",
+    "discord.js": "^12.5.3",
+    "dotenv": "^14.1.1",
+    "express": "^4.17.1",
+    "firebase": "^9.1.3",
     "firebase-admin": "^9.12.0",
     "natural": "^2.4.5",
     "nhentai": "^2.1.1",
-    "node-fetch": "^2.6.7",
+    "node-fetch": "^2.6.5",
     "puppeteer": "^10.4.0",
     "uuid-v4": "^0.1.0",
     "wordnet-db": "^3.1.14",
-    "ytdl-core": "^4.10.1"
+    "ytdl-core": "^4.9.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
   },
   "author": "Matthew Tang",
-  "license": "ISC",
-  "devDependencies": {
-    "node": "^16.13.2"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/matttang27/MatthewBot2.git"
-  },
-  "keywords": [],
-  "bugs": {
-    "url": "https://github.com/matttang27/MatthewBot2/issues"
-  },
-  "homepage": "https://github.com/matttang27/MatthewBot2#readme",
-  "description": ""
+  "license": "ISC"
 }
