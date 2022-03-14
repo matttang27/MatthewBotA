@@ -18,7 +18,7 @@ module.exports = {
 			.setColor('#26abFF')
 			.setDescription("<a:loading:745769231295184959> loading...")
 
-		var sended = await message.channel.send({embeds: [embed]})
+		var sended = await message.channel.send(embed)
 		var e = JSON.parse(fs.readFileSync('edward.json').toString());
 
 		if (args[0] == "h" || args[0] == "history") {

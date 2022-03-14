@@ -18,7 +18,7 @@ module.exports = {
 		.setColor("00FF13")
 		.setImage("https://cdn.discordapp.com/attachments/720354326228500560/823905182327898112/soraflipcut.gif")
 
-		var sended = await message.channel.send({embeds: [embed]})
+		var sended = await message.channel.send(embed)
 		setTimeout(() => {
 			var embed = new Discord.MessageEmbed()
 			var heads = Math.random() > 0.5

@@ -27,7 +27,7 @@ module.exports = {
 				.setColor("#FF0000")
 				.setTitle("Avatar Image Format Fail")
 				.setDescription(`"${args[1]}" is not one of the available image formats: webp, png, jpg, jpeg, gif`)
-				return message.channel.send({embeds: [embed]})
+				return message.channel.send(embed)
 			}
 		}
 		if (args.length > 2) {
@@ -36,7 +36,7 @@ module.exports = {
 				.setColor("#FF0000")
 				.setTitle("Avatar Image Size Fail")
 				.setDescription(`"${args[2]} is not one of the available image sizes: 16, 32, 64, 128, 256, 512, 1024, 2048, 4096`)
-				return message.channel.send({embeds: [embed]})
+				return message.channel.send(embed)
 			}
 		}
 		

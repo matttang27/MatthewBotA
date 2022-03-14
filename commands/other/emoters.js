@@ -21,7 +21,7 @@ module.exports = {
 			.setColor('#26abFF')
 			.setDescription("<a:loading:745769231295184959> Getting leaderboard...")
 			
-			var sended = await message.channel.send({embeds: [embed]})
+			var sended = await message.channel.send(embed)
 
 			var e = []
 
@@ -122,7 +122,7 @@ module.exports = {
 					string += `<:${r.reactions[e[i][0]].name}:${e[i][0]}> --- ${e[i][1]}\n`
 				}
 				embed.addField("Favourite Emotes: ", string)
-				message.channel.send({embeds: [embed]})
+				message.channel.send(embed)
 			}
 		}
 		

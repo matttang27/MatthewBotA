@@ -11,12 +11,12 @@ if (args[0] == "leaderboard" || args[0] == "lb") {
 			.setTitle("Chess.com Leaderboard Fail")
 			.setDescription(`"${args[1]}" is not one of the available leaderboards: bullet, blitz, rapid`)
 			.setFooter("Example: m!chesscom lb blitz")
-		return message.channel.send({embeds: [embed]})
+		return message.channel.send(embed)
 	}
 	var embed = new Discord.MessageEmbed()
 		.setColor('#26abFF')
 		.setTitle("<a:loading:745769231295184959> Loading Leaderboard... Please be patient.")
-	var sended = await message.channel.send({embeds: [embed]})
+	var sended = await message.channel.send(embed)
 	var userRef = chesslist.doc('users')
 	let chessusers = await userRef.get()
 	chessusers = chessusers.data()
@@ -147,7 +147,7 @@ else if (args[0] == "view") {
 				.setTitle("Select member or cancel command")
 				.setDescription(text)
 				.setTimestamp()
-			var sended = await message.channel.send({embeds: [embed]})
+			var sended = await message.channel.send(embed)
 		}
 		else if (guildm.size == 1) {
 			var user = guildm.first().user
@@ -161,7 +161,7 @@ else if (args[0] == "view") {
 	var embed = new Discord.MessageEmbed()
 		.setColor('#26abFF')
 		.setTitle("<a:loading:745769231295184959> Loading Player... Please be patient.")
-	var sended = await message.channel.send({embeds: [embed]})
+	var sended = await message.channel.send(embed)
 	var userData = await updatePlayer(user.id, false)
 	var username = userData.user.data.user.username
 	embed
@@ -175,7 +175,7 @@ else if (args[0] == "refresh") {
 	var embed = new Discord.MessageEmbed()
 		.setColor('#26abFF')
 		.setTitle("<a:loading:745769231295184959> Refreshing player information...")
-	var sended = await message.channel.send({embeds: [embed]})
+	var sended = await message.channel.send(embed)
 	var docRefs = await chesslist.listDocuments()
 	var documentIds = docRefs.map(it => it.id)
 
@@ -202,7 +202,7 @@ else {
 		.setDescription("Available subcommands:\n**view** - view the tetra profile of a guildmember.\n**lb** - view the server leaderboard for various modes.\n**add** - link a username and guildmember to the database.\n**refresh** - refreshes info of all players in this server.")
 		.setFooter("Example: m!chesscom view <usermention or id>")
 
-	message.channel.send({embeds: [embed]})
+	message.channel.send(embed)
 }
 function updatePlayer(id, force) {
 	return new Promise(async resolve => {

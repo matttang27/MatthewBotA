@@ -27,12 +27,12 @@ module.exports = {
 				.setTitle("Tetrio Leaderboard Fail")
 				.setDescription(`"${args[1]}" is not one of the available leaderboards: tr, lines, blitz`)
 				.setFooter("Example: m!tetrio lb blitz")
-				return message.channel.send({embeds: [embed]})
+				return message.channel.send(embed)
 			}
 			var embed = new Discord.MessageEmbed()
 			.setColor('#26abFF')
 			.setTitle("<a:loading:745769231295184959> Loading Leaderboard... Please be patient.")
-			var sended = await message.channel.send({embeds: [embed]})
+			var sended = await message.channel.send(embed)
 			var docRefs = await trlist.listDocuments()
 			var documentIds = docRefs.map(it => it.id)
 
@@ -172,7 +172,7 @@ module.exports = {
 					.setTitle("Select member or cancel command")
 					.setDescription(text)
 					.setTimestamp()
-					var sended = await message.channel.send({embeds: [embed]})
+					var sended = await message.channel.send(embed)
 				}
 				else if (guildm.size == 1) {
 					var user = guildm.first().user
@@ -185,7 +185,7 @@ module.exports = {
 			var embed = new Discord.MessageEmbed()
 			.setColor('#26abFF')
 			.setTitle("<a:loading:745769231295184959> Loading Player... Please be patient.")
-			var sended = await message.channel.send({embeds: [embed]})
+			var sended = await message.channel.send(embed)
 			var userData = await updatePlayer(user.id,false)
 			var username = userData.user.data.user.username
 			embed
@@ -199,7 +199,7 @@ module.exports = {
 			var embed = new Discord.MessageEmbed()
 			.setColor('#26abFF')
 			.setTitle("<a:loading:745769231295184959> Refreshing player information...")
-			var sended = await message.channel.send({embeds: [embed]})
+			var sended = await message.channel.send(embed)
 			var docRefs = await trlist.listDocuments()
 			var documentIds = docRefs.map(it => it.id)
 
@@ -225,7 +225,7 @@ module.exports = {
 			.setDescription("Available subcommands:\n**view** - view the tetra profile of a guildmember.\n**lb** - view the server leaderboard for various modes.\n**add** - link a username and guildmember to the database.\n**refresh** - refreshes info of all players in this server.")
 			.setFooter("Example: m!tetrio view <usermention or id>")
 
-			message.channel.send({embeds: [embed]})
+			message.channel.send(embed)
 		}
 		function updatePlayer(id,force) {
 			return new Promise(async resolve => {

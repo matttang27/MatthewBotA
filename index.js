@@ -21,6 +21,10 @@ const compress_images = require("compress-images");
 console.log("imported compress_images" + timePast())
 const CronJob = require('cron').CronJob;
 console.log("imported cron" + timePast())
+require('console-error');
+require('console-info');
+require('console-warn');
+console.log("console error,info,warn" + timePast())
 
 const {
 	prefix,
@@ -129,7 +133,6 @@ bot.on("ready", () => {
 });
 
 bot.on("messageDelete", async message => {
-	
 	if (message.channel.id == "834141508264525845") {
 		var channel = await bot.channels.fetch("838496897861025812")
 		channel.send(message.content)
@@ -145,7 +148,7 @@ bot.on("messageDelete", async message => {
 				.addField("Channel:", message.channel.name)
 				.setAuthor(message.author.username, message.author.avatarURL())
 				.setTimestamp()
-			channel.send({embeds: [embed]})
+			channel.send(embed)
 		} else {
 			message.embeds.forEach(e => channel.send(e))
 			channel.send(`From: <@${message.author.id}> in ${message.channel.name} at ${Date.now().toString()}`)
@@ -159,7 +162,6 @@ bot.on("messageUpdate", async (oldMessage, newMessage) => {
 })
 
 bot.on("messageCreate", async message => {
-	console.log("HI")
 	try {
 		//no bot replies
 
@@ -197,7 +199,7 @@ bot.on("messageCreate", async message => {
 					.addField("a.k.a", alias.join(",").length > 0 ? alias.join(",") : "None.")
 					.addField("In Guilds: ", guilds.join(",").length > 0 ? guilds.join(",") : "None.")
 					.setImage(message.author.displayAvatarURL)
-				var sended = await channel.send({embeds: [embed]})
+				var sended = await channel.send(embed)
 				sended.pin()
 			}
 

@@ -50,9 +50,9 @@ module.exports = {
 				
 			}
 
-			message.channel.send({embeds: [embed]});
+			message.channel.send(embed);
 			/*No longer DMing help message
-			message.author.send({embeds: [embed]})
+			message.author.send(embed)
 				.then(() => {
 					if (message.channel.type !== 'dm') {
 						message.reply('I\'ve sent you a DM with all my commands!');
@@ -62,7 +62,7 @@ module.exports = {
 				.catch(error => {
 					console.error(`Could not send help DM to ${message.author.tag}.\n`, error);
 					message.reply(`DM failed (DM me first), sending commands in this channel instead.`);
-					message.channel.send({embeds: [embed]})
+					message.channel.send(embed)
 				});
       */
 		} else {
@@ -87,7 +87,7 @@ module.exports = {
 			.addField("Status", command.status ? command.status : "open")
 			.setColor("#AAEEAA")
 
-			message.channel.send({embeds: [embed]});
+			message.channel.send(embed);
 		}
 	},
 };

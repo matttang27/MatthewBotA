@@ -36,7 +36,7 @@ module.exports = {
 		.addField("a.k.a", alias.length > 0 ? alias.join(",") : "None.")
 		.addField("In Guilds: ", guilds.length > 0 ? guilds.join(", ") : "None.")
 		.setImage(author.avatarURL)
-		var sended = await message.channel.send({embeds: [embed]})
+		var sended = await message.channel.send(embed)
 		sended.pin();
 	}
 }

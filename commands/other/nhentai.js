@@ -144,7 +144,7 @@ module.exports = {
 				
 			
 			console.log(embed)
-			var sended = await message.channel.send({embeds: [embed]});
+			var sended = await message.channel.send(embed);
 			await sended.react('📖')
 			await sended.react('❌')
 
@@ -308,7 +308,7 @@ module.exports = {
 			.setColor('#26abFF')
 			.setDescription("<a:loading:745769231295184959> Getting results...")
 			
-			var sended = await message.channel.send({embeds: [embed]})
+			var sended = await message.channel.send(embed)
 			showSearch(sended,args.splice(2,args.length-2),1,sort)
 			
 		}

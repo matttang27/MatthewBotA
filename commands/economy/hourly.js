@@ -267,7 +267,7 @@ module.exports = {
 						embed.setColor('#ff0000')
 					}
 					embed.setFooter(`written by: ${situations[i].author}`)
-					message.channel.send({embeds: [embed]})
+					message.channel.send(embed)
 					return money
 				}
 				else {
