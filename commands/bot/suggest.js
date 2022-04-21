@@ -10,17 +10,27 @@ module.exports = {
 	usage: `${prefix}suggest <stuff>`,
 	perms: [],
 	async execute(message, args, other) {
-		var s = JSON.parse(fs.readFileSync('suggestions.json').toString());
+		admin = other[0]
+		var db = admin.firestore()
+		let suggestRef = db.collection("extra").doc("suggestions")
+		let s = await suggestRef.get()
+		if (s.exists) {
+			s = s.data()
+		}
 		var m = []
 		if (args.length == 0) {
-			s.suggestions.forEach(sg => {
-				m.push(`\`${sg.suggestion}\`\n**from:** ${sg.author}`)
-			})
-			message.channel.send(m.join("\n\n"),{split: true}).catch(message.channel.send("No suggestions currently."))
+			if (s.suggestions.length != 0) {
+				s.suggestions.forEach(sg => {
+								m.push(`\`${sg.suggestion}\`\n**from:** ${sg.author}`)})	
+				message.channel.send(m.join("\n\n"))
+			}
+			else {
+				message.channel.send("No suggestions currently.")
+			}
 		}
 		else if (args.length == 1 && args[0] == "clear") {
 			s.suggestions = []
-			fs.writeFileSync('suggestions.json', JSON.stringify(s,null,2));
+			suggestRef.set(s)
 		}
 		else {
 				s.suggestions[s.suggestions.length] = {
@@ -28,7 +38,7 @@ module.exports = {
 				"author": message.author.tag
 			}
 			message.channel.send("Noted. Thanks for your input!")
-			fs.writeFileSync('suggestions.json', JSON.stringify(s,null,2));
+			suggestRef.set(s)
 		}
 
 		

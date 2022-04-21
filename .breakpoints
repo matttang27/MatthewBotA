@@ -1,5 +1,25 @@
 {
   "files": {
+    "commands/bot/suggest.js": [
+      {
+        "id": "1edbd3cd-ecc4-4183-94c4-c548697ccfc3",
+        "line": 23,
+        "version": 159,
+        "index": 584
+      },
+      {
+        "id": "4e539938-2049-48ea-872d-0d2c64ea7ddc",
+        "line": 24,
+        "version": 159,
+        "index": 618
+      },
+      {
+        "id": "53ba2584-a2ee-426e-b58a-cf758faae59d",
+        "line": 25,
+        "version": 159,
+        "index": 684
+      }
+    ],
     "commands/games/wordgame.js": [
       {
         "id": "f36b56a2-4fb3-405b-96a8-e9986f40fd23",
@@ -20,6 +40,32 @@
         "line": 18,
         "version": 4213,
         "index": 540
+      }
+    ],
+    "index.js": [
+      {
+        "id": "9022fb9a-e2dc-4104-97d1-d2127f6e31a0",
+        "line": 291,
+        "version": 18959,
+        "index": 8248
+      },
+      {
+        "id": "cef995b0-ed38-4e4f-9db6-14aa463f3a45",
+        "line": 292,
+        "version": 18959,
+        "index": 8303
+      },
+      {
+        "id": "84fda11c-d864-4aef-83a9-454a53f32288",
+        "line": 295,
+        "version": 18959,
+        "index": 8341
+      },
+      {
+        "id": "45031624-fb1e-40b2-b16d-4b6e83804259",
+        "line": 325,
+        "version": 18959,
+        "index": 9102
       }
     ]
   }

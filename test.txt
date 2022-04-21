@@ -1,16 +1,4 @@
-let db = admin.firestore()
-let covids = await db.collection('covidscreening')
-covids = covids.doc(message.guild.id)
-let covidData = await covids.get()
-covidData = covidData.data()
-let crons = covidData.screencrons
-
-console.log(crons)
-
-for (i in crons) {
-  let scrons = crons[i].split(" ")
-  let minute = scrons[1]
-  let hour = scrons[2]
-  let weekday = scrons[5]
-  if (weekday.includes(","))
-}
+var db = admin.firestore()
+let guildRef = db.collection("extra").doc("edward")
+let r = JSON.parse(fs.readFileSync('edward.json').toString());
+guildRef.set(r)

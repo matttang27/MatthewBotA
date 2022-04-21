@@ -3,17 +3,25 @@ const fs = require('fs');
 const Discord = require('discord.js');
 const {findMember} = require('../../functions.js')
 module.exports = {
-	args: [-1],
+	args: [1,2],
 	aliases: ["res","re"],
 	name: "reactions",
 	description: "2 modes: leaderboard and profile",
-	usage: `${prefix}reacts lb <opt. page> or ${prefix}reacts <emote>`,
+	usage: `${prefix}reactions lb <opt. page> or ${prefix}reactions <emote>`,
 	perms: [],
 	async execute(message, args, other) {
 		var admin = other[0]
 		var bot = other[1]
 		var commandName = other[2]
-		var r = JSON.parse(fs.readFileSync('reactions.json').toString());
+		var db = admin.firestore()
+		let guildRef = db.collection("reactions").doc(message.guild.id)
+		let r = await guildRef.get()
+		if (r.exists) {
+			r = r.data()
+		}
+		else {
+			return message.channel.send("Send an emoji in your server first!")
+		}
 
 		var embed = new Discord.MessageEmbed()
 		if (args[0] == "lb" || args[0] == "leaderboard") {
@@ -87,6 +95,8 @@ module.exports = {
 		}
 
 		else {
+
+			
 			
 			var reaction = args[0].slice(-19,-1)
 			var temp = reaction
