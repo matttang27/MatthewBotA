@@ -3,3 +3,6 @@ node_modules
 servicekey.json
 package-lock.json
 rpg/rpgservicekey.json
+.breakpoints
+screenie.png
+serveremotes.json
