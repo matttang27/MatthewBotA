@@ -8,13 +8,14 @@
             "type": "pwa-node",
             "request": "launch",
             "name": "Launch Program",
+            "preLaunchTask": "tsc: build - tsconfig.json",
             "skipFiles": [
                 "<node_internals>/**",
                 "${workspaceFolder}/node_modules/**/*.js",
                 "${workspaceFolder}/lib/**/*.js"
                 
             ],
-            "program": "${workspaceFolder}\\index.js"
+            "program": "${workspaceFolder}\\index.ts"
         }
         
     ]
