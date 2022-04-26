@@ -1,6 +1,6 @@
 
 
-var time = Date.now();
+let time = Date.now();
 
 function timePast() {
   return (Date.now() - time) / 1000 + "s";
@@ -21,17 +21,18 @@ process.addListener("warning", warning => {
   console.warn("ProcessWarn:", warning.message, "\n", warning.stack); // Print the warning message // Print the stack trace
 });
 console.log("Added things-went-wrong listeners " + timePast())
-const fs = require("fs");
+import fs = require("fs");
 console.log("imported fs " + timePast());
-const Discord = require("discord.js");
+import Discord = require("discord.js");
+
 console.log("imported discord " + timePast());
-const https = require("https");
+import https = require("https");
 console.log("imported https " + timePast());
 var bot = new Discord.Client();
 console.log("created bot instance " + timePast());
 const disbut = require("discord-buttons")(bot);
 console.log("imported discord-buttons" + timePast());
-const compress_images = require("compress-images");
+import compress_images = require("compress-images");
 console.log("imported compress_images" + timePast());
 const CronJob = require("cron").CronJob;
 console.log("imported cron" + timePast());
@@ -39,13 +40,14 @@ require("console-error");
 require("console-info");
 require("console-warn");
 console.log("console error,info,warn" + timePast());
-
+let hey = "hey";
 
 //test: rewrite discord message send
 
-const { prefix, ownerID, rpgprefix } = require("./config.json");
-bot.commands = new Discord.Collection();
-bot.rpgcommands = new Discord.Collection();
+import { ownerID, prefix, rpgprefix } from "./config.json";
+import { changeStatus, cleanup, inputs, outputs, randomOdd, sleep } from "./functions";
+bot["commands"] = new Discord.Collection();
+bot["rpgcommands"] = new Discord.Collection();
 
 require("dotenv").config();
 const token = process.env["token"];
@@ -56,7 +58,6 @@ const firebasekey = process.env["firebasekey"];
 if (token == "") {
   console.log("You're missing a token!");
 }
-const { changeStatus, cleanup, inputs, outputs, randomOdd, sleep } = require("./functions");
 console.log("imported functions " + timePast());
 var startTime = new Date().toISOString().substring(2);
 
@@ -66,11 +67,11 @@ function fulllog(str) {
   console.log(str);
   filelog(str);
 }
-const Role = require("./role.js");
+import Role = require("./role.js");
 
-bot.games = {};
+bot["games"] = {};
 
-var praise = ["nice", "good", "amazing", "godly", "legend", "legendary"];
+let praise = ["nice", "good", "amazing", "godly", "legend", "legendary"];
 
 const commandFiles = fs.readdirSync("./commands");
 
@@ -82,13 +83,13 @@ for (const folder of commandFolders) {
   commands[folder] = fs.readdirSync("./commands/" + folder);
   for (const file of commands[folder]) {
     let command = require(`./commands/${folder}/${file}`);
-    bot.commands.set(command.name, command);
+    bot["commands"].set(command.name, command);
     folderFind[command.name] = folder;
     console.log(`set ${command.name} command ` + timePast());
   }
 }
 
-bot.commandlist = commands;
+bot["commandlist"] = commands;
 
 console.log("set bot commands " + timePast());
 //import rpgcommands
@@ -101,13 +102,13 @@ for (const file of rpgcommandFiles) {
 
   // set a new item in the Collection
   // with name : command module
-  bot.rpgcommands.set(command.name, command);
+  bot["rpgcommands"].set(command.name, command);
   console.log(`set ${command.name} command ` + timePast());
 }
 console.log("set rpg commands " + timePast());
 //import Firebase stuff
 
-const admin = require("firebase-admin");
+import admin = require("firebase-admin");
 console.log("imported firebase-admin" + timePast());
 
 let serviceAccount = require("./servicekey.json");
@@ -140,33 +141,8 @@ bot.on("ready", () => {
   console.log("synced Emotes " + timePast());
 });
 
-bot.on("messageDelete", async (message) => {
-  if (message.channel.id == "834141508264525845") {
-    var channel = await bot.channels.fetch("838496897861025812");
-    channel.send(message.content);
-    message.embeds.forEach((e) => channel.send(e));
-    channel.send(`From: <@${message.author.id}>`);
-  }
-  if (message.guild.id == "712382129673338991") {
-    var channel = await bot.channels.fetch("842750073896173628");
-    if (message.content) {
-      var embed = new Discord.MessageEmbed()
-        .setTitle("Message Deleted")
-        .setDescription(message.content)
-        .addField("Channel:", message.channel.name)
-        .setAuthor(message.author.username, message.author.avatarURL())
-        .setTimestamp();
-      channel.send(embed);
-    } else {
-      message.embeds.forEach((e) => channel.send(e));
-      channel.send(
-        `From: <@${message.author.id}> in ${
-          message.channel.name
-        } at ${Date.now().toString()}`
-      );
-    }
-  }
-});
+bot.on("messageDelete", async (message) => {});
+
 bot.on("messageUpdate", async (oldMessage, newMessage) => {});
 
 bot.on("message", async (message) => {
@@ -178,20 +154,21 @@ bot.on("message", async (message) => {
     }
 
     if (message.channel.type == "dm") {
+      
       if (
         message.author.id == bot.user.id &&
         !message.content.startsWith(prefix)
       ) {
         return;
       }
-      var matthew = await bot.guilds.fetch("720351714791915520");
-      var channel = await matthew.channels.cache.find(
+      let matthewGuild = await bot.guilds.fetch("720351714791915520");
+      let channel = await matthewGuild.channels.cache.find(
         (c) => c.name == message.author.id
-      );
+      ) as Discord.TextChannel;
 
       if (!channel) {
-        var channel = await matthew.channels.create(message.author.id);
-        var category = await matthew.channels.cache.find(
+        channel = await matthewGuild.channels.create(message.author.id);
+        var category = await matthewGuild.channels.cache.find(
           (c) => c.name == "DM" && c.type == "category"
         );
         channel.setParent(category.id);
@@ -233,10 +210,10 @@ bot.on("message", async (message) => {
     }
 
     // EDWARD STALKING:
-    if (message.author.id == "351132323405889537") {
+    if (message.author.id == "351132323405889537" && message.channel.type != "dm") {
       let edwardRef = db.collection("extra").doc("edward");
-      let e = await edwardRef.get();
-      e = e.data();
+      let eGet = await edwardRef.get();
+      let e = eGet.data();
       e.totalM = e.totalM + 1;
       var d = new Date();
       d.setTime(d.getTime() - 240 * 60 * 1000);
@@ -306,14 +283,15 @@ bot.on("message", async (message) => {
 
       //emoji counting
 
-      var emojis = message.content.match(/<:.+?:\d+>/g);
-      if (emojis) {
-        var emojis = emojis.map((e) => e.match(/\d+/g)[0]);
+      var messageEmojis = message.content.match(/<:.+?:\d+>/g);
+      if (messageEmojis) {
+        let emojis = messageEmojis.map((e) => e.match(/\d+/g)[0]);
         emojis = emojis.filter((v, i) => emojis.indexOf(v) == i);
         let guildRef = db.collection("reactions").doc(message.guild.id);
-        let r = await guildRef.get();
+        let rGet = await guildRef.get();
+        let r;
         if (r.exists) {
-          r = r.data();
+          r = rGet.data();
         } else {
           r = { reactions: {}, users: {} };
         }
@@ -391,7 +369,7 @@ bot.on("message", async (message) => {
                 } else {
                   message.guild.emojis
                     .create(
-                      message.attachments.first().attachment,
+                      message.attachments.first().attachment as Discord.BufferResolvable,
                       collected.first().content
                     )
                     .catch((err) => {
@@ -408,7 +386,7 @@ bot.on("message", async (message) => {
               });
             } else {
               message.guild.emojis
-                .create(message.attachments.first().attachment, message.content)
+                .create(message.attachments.first().attachment as Discord.BufferResolvable, message.content)
                 .catch((err) => {
                   message.channel.send(
                     new Discord.MessageEmbed()
@@ -604,8 +582,8 @@ bot.on("message", async (message) => {
       if (message.guild.id == "712382129673338991") {
         if (message.author.id == "351164483256975360") {
           let kellydata = db.collection("extra").doc("kellycount");
-          let data = await kellydata.get();
-          data = data.data();
+          let dataGet = await kellydata.get();
+          let data = dataGet.data();
           console.log(data);
           data.count += 1;
           kellydata.set(data);
@@ -647,9 +625,7 @@ bot.on("message", async (message) => {
 
     if (message.author.id == "518232676411637780") {
       message.react("827007959363223562").catch((err) => {
-        console.log(
-          `reaction failed in ${message.channel.name} of ${message.guild.name}`
-        );
+        if (message.channel.type != "dm") {console.log(`reaction failed in ${message.channel.name} of ${message.guild.name}`);}
       });
     }
     if (message.content.startsWith(prefix)) {
@@ -659,13 +635,6 @@ bot.on("message", async (message) => {
     }
     //checks if matthew bot or rpg bot is called
     if (!type) {
-      //some extra personality for Matthew Bot
-      /*if (temp.length = 1 && temp.includes("e")) {
-					var role = await message.guild.roles.cache.find(role => role.id == '758129827906584587');
-					message.channel.send("Silence.")
-					return message.member.roles.add(role)
-				
-				}*/
       temp = cleanup(temp);
       if (temp != "") {
         for (i = 0; i < inputs.length; i++) {
@@ -744,9 +713,7 @@ bot.on("message", async (message) => {
           temp.split(" ").includes("maisan")
         ) {
           message.react("809523703138091108").catch((err) => {
-            console.log(
-              `reaction failed in ${message.channel.name} of ${message.guild.name}`
-            );
+            if (message.channel.type != "dm") {console.log(`reaction failed in ${message.channel.name} of ${message.guild.name}`)};
           });
         }
         if (
@@ -780,9 +747,7 @@ bot.on("message", async (message) => {
           }
           for (i = 0; i < 4; i++) {
             message.react(bigbrother[i]).catch((err) => {
-              console.log(
-                `reaction failed in ${message.channel.name} of ${message.guild.name}`
-              );
+              if (message.channel.type != "dm") {console.log(`reaction failed in ${message.channel.name} of ${message.guild.name}`)};
             });
           }
         }
@@ -792,7 +757,7 @@ bot.on("message", async (message) => {
         if (
           temp.includes("suck") &&
           temp.includes("i") &&
-          message.author.id == 306512867232972802
+          message.author.id == "306512867232972802"
         ) {
           return message.channel.send("https://i.imgur.com/1pQHxXd.png");
         }
@@ -811,14 +776,14 @@ bot.on("message", async (message) => {
     //check if command exists for both prefix and rpgprefix
     if (type == "bot") {
       command =
-        bot.commands.get(commandName) ||
-        bot.commands.find(
+        bot["commands"].get(commandName) ||
+        bot["commands"].find(
           (cmd) => cmd.aliases && cmd.aliases.includes(commandName)
         );
     } else {
       command =
-        bot.rpgcommands.get(commandName) ||
-        bot.rpgcommands.find(
+        bot["rpgcommands"].get(commandName) ||
+        bot["rpgcommands"].find(
           (cmd) => cmd.aliases && cmd.aliases.includes(commandName)
         );
     }
@@ -827,7 +792,7 @@ bot.on("message", async (message) => {
       return;
     }
     //nsfw check
-    if (command.nsfw && !message.channel.nsfw) {
+    if (command.nsfw && (message.channel.type != "dm" && message.channel.nsfw)) {
       return message.reply(
         "THIS IS A WHOLESOME AND SAFE CHANNEL! THAT COMMAND CANNOT BE USED HERE."
       );
@@ -836,7 +801,7 @@ bot.on("message", async (message) => {
     //if admin, skip this part
 
     if (command.perms.includes("MATTHEW")) {
-      if (message.author.id != 576031405037977600) {
+      if (message.author.id != "576031405037977600") {
         return message.channel.send(
           new Discord.MessageEmbed()
             .setTitle("Nice try...")
@@ -847,7 +812,7 @@ bot.on("message", async (message) => {
     }
     if (
       !(
-        message.channel.type != "DM" ||
+        message.channel.type != "dm" ||
         message.member.permissions.has("ADMINISTRATOR")
       )
     ) {
@@ -923,9 +888,10 @@ bot.on("messageReactionAdd", async function (reaction, user) {
       return;
     }
     let guildRef = db.collection("reactions").doc(reaction.message.guild.id);
-    let r = await guildRef.get();
-    if (r.exists) {
-      r = r.data();
+    let rGet = await guildRef.get();
+    let r: { [x: string]: any; reactions?: any; users?: any; };
+    if (rGet.exists) {
+      r = rGet.data();
     } else {
       r = { reactions: {}, users: {} };
     }
@@ -969,7 +935,7 @@ bot.on("guildMemberAdd", async (member) => {
   if (member.guild.id == "757770623450611784") {
     var channel = await member.guild.channels.cache.find(
       (c) => c.id == "843735245399785482"
-    );
+    ) as Discord.TextChannel;
     var sended = await channel.send("<@" + member.id + ">");
     sended.delete();
   }
@@ -1002,7 +968,10 @@ bot.on("raw", async (packet) => {
     return;
   }
 
-  const channel = await guild.channels.cache.get(packet.d.channel_id);
+  let channel = await guild.channels.cache.get(packet.d.channel_id);
+  if (!channel.isText()) {
+    return
+  }
 
   //if channel message is already cached no need to call twice
   //it'll be detected by messageReactionAdd anyways
@@ -1011,9 +980,9 @@ bot.on("raw", async (packet) => {
   //Emojis can have identifiers of name:id format, so we have to account for that case as well
   const emoji = packet.d.emoji.id ? packet.d.emoji.id : packet.d.emoji.name;
   //This gives us the reaction we need to emit the event properly, in top of the message object
-  const reaction = await message.reactions.cache.get(emoji);
+  let reaction = await message.reactions.cache.get(emoji);
   //Adds the currently reacting user to the reaction's users collection.
-  if (reaction) reaction.users = (packet.d.user_id, member.user);
+  //if (reaction) reaction["users"] = (packet.d.user_id, member.user);
 
   bot.emit("messageReactionAdd", reaction, member.user);
 });
@@ -1032,12 +1001,12 @@ bot.on("presenceUpdate", async function (oldMember, newMember) {
       var channel = await newMember.guild.channels.cache.find(
         (c) => c.name == "dead-chat"
       );
-      if (!channel) {
+      if (!channel || !channel.isText()) {
         return;
       }
       let edwardRef = db.collection("extra").doc("edward");
       let e = await edwardRef.get();
-      e = e.data();
+      let eData = e.data();
       if (
         !(
           (newMember.status != "offline" && status == "offline") ||
@@ -1058,9 +1027,9 @@ bot.on("presenceUpdate", async function (oldMember, newMember) {
           console.log(err);
           return;
         });
-      e.status = "online";
+      eData.status = "online";
       if (newMember.status != "offline" && status == "offline") {
-        e.totalA = e.totalA + 1;
+        eData.totalA = eData.totalA + 1;
       }
       var d = new Date();
       d.setTime(d.getTime() - 240 * 60 * 1000);
@@ -1096,7 +1065,7 @@ bot.on("presenceUpdate", async function (oldMember, newMember) {
         data:
           newMember.status != "offline" && status == "offline" ? "on" : "off",
       });
-      e["history"] = h;
+      eData["history"] = h;
       edwardRef.set(e);
       return;
     }
@@ -1115,11 +1084,11 @@ bot.on("presenceUpdate", async function (oldMember, newMember) {
   var channel = await newMember.guild.channels.cache.find(
     (c) => c.name == "matthew-sees-you"
   );
-  if (!channel) {
+  if (!channel || !channel.isText()) {
     return;
   }
   if (newMember.status != "offline" && status == "offline") {
-    if (!ignore.includes(newMember.user.id) && channel) {
+    if (!ignore.includes(newMember.user.id) && channel && channel.isText()) {
       channel.send(`${username} *I see you* :eyes:`);
     }
 
@@ -1136,11 +1105,7 @@ bot.on("presenceUpdate", async function (oldMember, newMember) {
 
 bot.on("guildCreate", async function (guild) {
   console.log(`Joined guild ${guild.name}`);
-  const channel = guild.channels.cache.find(
-    (channel) =>
-      channel.type === "text" &&
-      channel.permissionsFor(guild.me).has("SEND_MESSAGES")
-  );
+  let channel = guild.channels.cache.find((channel) =>channel.permissionsFor(guild.me).has("SEND_MESSAGES") && channel.type == "text") as Discord.TextChannel;
   await channel.send(
     new Discord.MessageEmbed()
       .setTitle("Matthew Bot, at your service!")
@@ -1209,8 +1174,8 @@ bot.on("roleUpdate", async function (oldRole, newRole) {
   }
 });
 
-const express = require("express");
-const bodyParser = require("body-parser");
+import express = require("express");
+import bodyParser = require("body-parser");
 console.log("imported express, body-parser  " + timePast());
 
 const router = express.Router();
@@ -1281,9 +1246,9 @@ async function nameChange() {
 }
 
 async function syncEmotes() {
-  var e = JSON.parse(fs.readFileSync("serveremotes.json").toString());
-  var emojis = await bot.emojis.cache;
-  var emojis = emojis.array();
+  let e = JSON.parse(fs.readFileSync("serveremotes.json").toString());
+  let emojiCache = await bot.emojis.cache;
+  let emojis = emojiCache.array();
   for (let i = 0; i < emojis.length; i++) {
     e[emojis[i].name] = emojis[i].id;
   }
@@ -1297,7 +1262,7 @@ async function botUpdates(message) {
       return;
     }
     let channels = await g.channels.cache;
-    const channel = await channels.find((c) => c.name == "matthew-bot-updates");
+    const channel = await channels.find((c) => c.name == "matthew-bot-updates") as Discord.TextChannel;
     if (channel) {
       channel.send(message).catch();
     }
@@ -1305,8 +1270,8 @@ async function botUpdates(message) {
 }
 function sendCovid(i) {
   console.log("sending covid screen");
-  console.log(bot.covidtimes);
-  let guilds = bot.covidtimes[i];
+  console.log(bot["covidtimes"]);
+  let guilds = bot["covidtimes"][i];
   var bucket = admin.storage().bucket();
   var content;
   var screenie = bucket.file("screenie.png");
@@ -1326,9 +1291,10 @@ function sendCovid(i) {
   a.on("finish", async () => {
     guilds.forEach(async (guildid) => {
       let guild = await bot.guilds.fetch(guildid);
-      let channel = await guild.channels.cache;
-      channel = channel.find((c) => c.name == "matthew-bot-screening");
-      if (channel) {
+      let channels = await guild.channels.cache;
+      let channel = channels.find((c) => c.name == "matthew-bot-screening");
+      if (channel && channel.isText()) {
+        
         channel.send("Your daily scheduled covid screening :D");
         channel.send({ files: ["./screenie.png"] });
       }
@@ -1345,7 +1311,7 @@ async function covidScheduleSetup() {
   job1.start();
   job2.start();
   `;
-  bot.reloadCovidSchedule = async function () {
+  bot["reloadCovidSchedule"] = async function () {
     console.log("reloading Covid Schedule");
     var covidRef = await db.collection("covidscreening");
     const times = {};
@@ -1357,14 +1323,14 @@ async function covidScheduleSetup() {
         times[i] ? times[i].push(guild.id) : (times[i] = [guild.id]);
       }
     });
-    bot.covidtimes = times;
-    console.log(bot.covidtimes);
-    bot.covidCrons = [];
+    bot["covidtimes"] = times;
+    console.log(bot["covidtimes"]);
+    bot["covidCrons"] = [];
     let counter = 0;
-    for (const i in bot.covidtimes) {
+    for (const i in bot["covidtimes"]) {
       let p = i;
-      console.log(bot.covidtimes[p]);
-      bot.covidCrons.push(
+      console.log(bot["covidtimes"][p]);
+      bot["covidCrons"].push(
         new CronJob(
           p,
           () => {
@@ -1375,10 +1341,10 @@ async function covidScheduleSetup() {
           "America/New_York"
         )
       );
-      bot.covidCrons[counter].start();
+      bot["covidCrons"][counter].start();
       counter++;
     }
     console.log("Covid schedule reloaded " + timePast());
   };
-  bot.reloadCovidSchedule();
+  bot["reloadCovidSchedule"]();
 }

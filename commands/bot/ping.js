@@ -8,7 +8,6 @@ module.exports = {
 	usage: `${prefix}ping`,
 	perms: [],
 	execute(message, args, other) {
-		console.log("HEY")
 		var ping = Date.now() - message.createdAt;
 		if (other[2] == "ping") {
 			var added = ":ping_pong: Pong! ";
