@@ -197,7 +197,7 @@ bot.on("message", async (message) => {
             "In Guilds: ",
             guilds.join(",").length > 0 ? guilds.join(",") : "None."
           )
-          .setImage(message.author.displayAvatarURL);
+          .setImage(message.author.displayAvatarURL.toString());
         var sended = await channel.send(embed);
         sended.pin();
       }
@@ -409,17 +409,19 @@ bot.on("message", async (message) => {
                 max: 1,
                 time: 30000,
               })
-              .then((collected, reason) => {
+              .then(async (collected) => {
                 if (collected.first()) {
                   message.guild.emojis
                     .create(file, collected.first().content)
-                    .catch((err) => {
-                      message.channel.send(
+                    .catch(async (err) => {
+                      await message.channel.send(
                         "File cannot be larger than 256.0 kb."
                       );
+                      return
                     });
                 } else {
-                  return message.channel.send("Command timed out.");
+                  let sended = await message.channel.send("Command timed out.");
+                  return
                 }
               });
           }
