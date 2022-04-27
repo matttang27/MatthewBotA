@@ -15,7 +15,7 @@
                 "${workspaceFolder}/lib/**/*.js"
                 
             ],
-            "program": "${workspaceFolder}\\index.ts"
+            "program": "${workspaceFolder}\\index.js"
         }
         
     ]

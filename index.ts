@@ -30,11 +30,9 @@ import https = require("https");
 console.log("imported https " + timePast());
 var bot = new Discord.Client();
 console.log("created bot instance " + timePast());
-const disbut = require("discord-buttons")(bot);
-console.log("imported discord-buttons" + timePast());
 import compress_images = require("compress-images");
 console.log("imported compress_images" + timePast());
-const CronJob = require("cron").CronJob;
+import cron = require("cron"); 
 console.log("imported cron" + timePast());
 require("console-error");
 require("console-info");
@@ -108,7 +106,12 @@ for (const file of rpgcommandFiles) {
 console.log("set rpg commands " + timePast());
 //import Firebase stuff
 
-import admin = require("firebase-admin");
+import admin = require("firebase-admin/app");
+import storage = require('firebase-admin/storage');
+import firestore = require('firebase-admin/firestore');
+const { initializeApp, applicationDefault, cert } = admin
+const { getFirestore, Timestamp, FieldValue } = firestore
+const { getStorage } = storage
 console.log("imported firebase-admin" + timePast());
 
 let serviceAccount = require("./servicekey.json");
@@ -118,17 +121,17 @@ rpgserviceAccount.private_key = rpgkey.replace(/\\n/g, "\n");
 serviceAccount.private_key = firebasekey.replace(/\\n/g, "\n");
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
+  credential: admin.cert(serviceAccount),
   storageBucket: "tosbot.appspot.com",
 });
 
 var rpgadmin = admin.initializeApp(
   {
-    credential: admin.credential.cert(rpgserviceAccount),
+    credential: admin.cert(rpgserviceAccount),
   },
   "rpg"
 );
-let db = admin.firestore();
+let db = getFirestore();
 console.log("initialized firebase " + timePast());
 
 //discord
@@ -847,11 +850,11 @@ bot.on("message", async (message) => {
       await message.channel.send("usage: " + command.usage);
       return;
     }
-
+    let other = []
     if (type == "bot") {
-      var other = [admin, bot, commandName, disbut];
+      other = [admin, bot, commandName];
     } else {
-      var other = [rpgadmin, bot, commandName, disbut];
+      other = [rpgadmin, bot, commandName];
     }
 
     if (command.status == "wip") {
@@ -1178,6 +1181,7 @@ bot.on("roleUpdate", async function (oldRole, newRole) {
 
 import express = require("express");
 import bodyParser = require("body-parser");
+import internal = require("stream");
 console.log("imported express, body-parser  " + timePast());
 
 const router = express.Router();
@@ -1274,7 +1278,7 @@ function sendCovid(i) {
   console.log("sending covid screen");
   console.log(bot["covidtimes"]);
   let guilds = bot["covidtimes"][i];
-  var bucket = admin.storage().bucket();
+  var bucket = getStorage().bucket();
   var content;
   var screenie = bucket.file("screenie.png");
 
@@ -1333,7 +1337,7 @@ async function covidScheduleSetup() {
       let p = i;
       console.log(bot["covidtimes"][p]);
       bot["covidCrons"].push(
-        new CronJob(
+        new cron.CronJob(
           p,
           () => {
             sendCovid(p);
@@ -1349,4 +1353,20 @@ async function covidScheduleSetup() {
     console.log("Covid schedule reloaded " + timePast());
   };
   bot["reloadCovidSchedule"]();
+}
+
+async function countDown() {
+  new cron.CronJob(
+    "0 30 * ? * *",
+    () => {
+      let timeleft: number;
+      timeleft = (+new Date('April 28, 2022 08:30:00') - +Date.now())
+      console.log(timeleft);
+      //amazingly, this works
+
+    },
+    null,
+    true,
+    "America/New_York"
+  )
 }

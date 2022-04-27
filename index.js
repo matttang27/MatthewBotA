@@ -1,3 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 let time = Date.now();
 function timePast() {
     return (Date.now() - time) / 1000 + "s";
@@ -18,15 +20,11 @@ const fs = require("fs");
 console.log("imported fs " + timePast());
 const Discord = require("discord.js");
 console.log("imported discord " + timePast());
-const https = require("https");
 console.log("imported https " + timePast());
 var bot = new Discord.Client();
 console.log("created bot instance " + timePast());
-const disbut = require("discord-buttons")(bot);
-console.log("imported discord-buttons" + timePast());
-const compress_images = require("compress-images");
 console.log("imported compress_images" + timePast());
-const CronJob = require("cron").CronJob;
+const cron = require("cron");
 console.log("imported cron" + timePast());
 require("console-error");
 require("console-info");
@@ -34,9 +32,10 @@ require("console-warn");
 console.log("console error,info,warn" + timePast());
 let hey = "hey";
 //test: rewrite discord message send
-const { prefix, ownerID, rpgprefix } = require("./config.json");
-bot.commands = new Discord.Collection();
-bot.rpgcommands = new Discord.Collection();
+const config_json_1 = require("./config.json");
+const functions_1 = require("./functions");
+bot["commands"] = new Discord.Collection();
+bot["rpgcommands"] = new Discord.Collection();
 require("dotenv").config();
 const token = process.env["token"];
 const othertoken = process.env["othertoken"];
@@ -45,7 +44,6 @@ const firebasekey = process.env["firebasekey"];
 if (token == "") {
     console.log("You're missing a token!");
 }
-const { changeStatus, cleanup, inputs, outputs, randomOdd, sleep } = require("./functions");
 console.log("imported functions " + timePast());
 var startTime = new Date().toISOString().substring(2);
 function filelog(str) { }
@@ -53,9 +51,8 @@ function fulllog(str) {
     console.log(str);
     filelog(str);
 }
-const Role = require("./role.js");
-bot.games = {};
-var praise = ["nice", "good", "amazing", "godly", "legend", "legendary"];
+bot["games"] = {};
+let praise = ["nice", "good", "amazing", "godly", "legend", "legendary"];
 const commandFiles = fs.readdirSync("./commands");
 const commandFolders = commandFiles.filter((file) => !file.endsWith(".js"));
 const commands = {};
@@ -64,12 +61,12 @@ for (const folder of commandFolders) {
     commands[folder] = fs.readdirSync("./commands/" + folder);
     for (const file of commands[folder]) {
         let command = require(`./commands/${folder}/${file}`);
-        bot.commands.set(command.name, command);
+        bot["commands"].set(command.name, command);
         folderFind[command.name] = folder;
         console.log(`set ${command.name} command ` + timePast());
     }
 }
-bot.commandlist = commands;
+bot["commandlist"] = commands;
 console.log("set bot commands " + timePast());
 //import rpgcommands
 const rpgcommandFiles = fs
@@ -79,58 +76,40 @@ for (const file of rpgcommandFiles) {
     const command = require(`./rpg/rpgcommands/${file}`);
     // set a new item in the Collection
     // with name : command module
-    bot.rpgcommands.set(command.name, command);
+    bot["rpgcommands"].set(command.name, command);
     console.log(`set ${command.name} command ` + timePast());
 }
 console.log("set rpg commands " + timePast());
 //import Firebase stuff
-const admin = require("firebase-admin");
+const admin = require("firebase-admin/app");
+const storage = require("firebase-admin/storage");
+const firestore = require("firebase-admin/firestore");
+const { initializeApp, applicationDefault, cert } = admin;
+const { getFirestore, Timestamp, FieldValue } = firestore;
+const { getStorage } = storage;
 console.log("imported firebase-admin" + timePast());
 let serviceAccount = require("./servicekey.json");
 let rpgserviceAccount = require("./rpg/rpgservicekey.json");
 rpgserviceAccount.private_key = rpgkey.replace(/\\n/g, "\n");
 serviceAccount.private_key = firebasekey.replace(/\\n/g, "\n");
 admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
+    credential: admin.cert(serviceAccount),
     storageBucket: "tosbot.appspot.com",
 });
 var rpgadmin = admin.initializeApp({
-    credential: admin.credential.cert(rpgserviceAccount),
+    credential: admin.cert(rpgserviceAccount),
 }, "rpg");
-let db = admin.firestore();
+let db = getFirestore();
 console.log("initialized firebase " + timePast());
 //discord
 bot.on("ready", () => {
     fulllog("Bot Ready at " + new Date().toString());
-    changeStatus(bot);
+    (0, functions_1.changeStatus)(bot);
     fulllog("Changing status at " + new Date().toString());
     syncEmotes();
     console.log("synced Emotes " + timePast());
 });
-bot.on("messageDelete", async (message) => {
-    if (message.channel.id == "834141508264525845") {
-        var channel = await bot.channels.fetch("838496897861025812");
-        channel.send(message.content);
-        message.embeds.forEach((e) => channel.send(e));
-        channel.send(`From: <@${message.author.id}>`);
-    }
-    if (message.guild.id == "712382129673338991") {
-        var channel = await bot.channels.fetch("842750073896173628");
-        if (message.content) {
-            var embed = new Discord.MessageEmbed()
-                .setTitle("Message Deleted")
-                .setDescription(message.content)
-                .addField("Channel:", message.channel.name)
-                .setAuthor(message.author.username, message.author.avatarURL())
-                .setTimestamp();
-            channel.send(embed);
-        }
-        else {
-            message.embeds.forEach((e) => channel.send(e));
-            channel.send(`From: <@${message.author.id}> in ${message.channel.name} at ${Date.now().toString()}`);
-        }
-    }
-});
+bot.on("messageDelete", async (message) => { });
 bot.on("messageUpdate", async (oldMessage, newMessage) => { });
 bot.on("message", async (message) => {
     try {
@@ -140,14 +119,14 @@ bot.on("message", async (message) => {
         }
         if (message.channel.type == "dm") {
             if (message.author.id == bot.user.id &&
-                !message.content.startsWith(prefix)) {
+                !message.content.startsWith(config_json_1.prefix)) {
                 return;
             }
-            var matthew = await bot.guilds.fetch("720351714791915520");
-            var channel = await matthew.channels.cache.find((c) => c.name == message.author.id);
+            let matthewGuild = await bot.guilds.fetch("720351714791915520");
+            let channel = await matthewGuild.channels.cache.find((c) => c.name == message.author.id);
             if (!channel) {
-                var channel = await matthew.channels.create(message.author.id);
-                var category = await matthew.channels.cache.find((c) => c.name == "DM" && c.type == "category");
+                channel = await matthewGuild.channels.create(message.author.id);
+                var category = await matthewGuild.channels.cache.find((c) => c.name == "DM" && c.type == "category");
                 channel.setParent(category.id);
                 var alias = [];
                 var guilds = [];
@@ -167,7 +146,7 @@ bot.on("message", async (message) => {
                     .setDescription(message.author.tag)
                     .addField("a.k.a", alias.join(",").length > 0 ? alias.join(",") : "None.")
                     .addField("In Guilds: ", guilds.join(",").length > 0 ? guilds.join(",") : "None.")
-                    .setImage(message.author.displayAvatarURL);
+                    .setImage(message.author.displayAvatarURL.toString());
                 var sended = await channel.send(embed);
                 sended.pin();
             }
@@ -179,10 +158,10 @@ bot.on("message", async (message) => {
             }
         }
         // EDWARD STALKING:
-        if (message.author.id == "351132323405889537") {
+        if (message.author.id == "351132323405889537" && message.channel.type != "dm") {
             let edwardRef = db.collection("extra").doc("edward");
-            let e = await edwardRef.get();
-            e = e.data();
+            let eGet = await edwardRef.get();
+            let e = eGet.data();
             e.totalM = e.totalM + 1;
             var d = new Date();
             d.setTime(d.getTime() - 240 * 60 * 1000);
@@ -236,14 +215,15 @@ bot.on("message", async (message) => {
                 return;
             }
             //emoji counting
-            var emojis = message.content.match(/<:.+?:\d+>/g);
-            if (emojis) {
-                var emojis = emojis.map((e) => e.match(/\d+/g)[0]);
+            var messageEmojis = message.content.match(/<:.+?:\d+>/g);
+            if (messageEmojis) {
+                let emojis = messageEmojis.map((e) => e.match(/\d+/g)[0]);
                 emojis = emojis.filter((v, i) => emojis.indexOf(v) == i);
                 let guildRef = db.collection("reactions").doc(message.guild.id);
-                let r = await guildRef.get();
+                let rGet = await guildRef.get();
+                let r;
                 if (r.exists) {
-                    r = r.data();
+                    r = rGet.data();
                 }
                 else {
                     r = { reactions: {}, users: {} };
@@ -343,16 +323,18 @@ bot.on("message", async (message) => {
                             max: 1,
                             time: 30000,
                         })
-                            .then((collected, reason) => {
+                            .then(async (collected) => {
                             if (collected.first()) {
                                 message.guild.emojis
                                     .create(file, collected.first().content)
-                                    .catch((err) => {
-                                    message.channel.send("File cannot be larger than 256.0 kb.");
+                                    .catch(async (err) => {
+                                    await message.channel.send("File cannot be larger than 256.0 kb.");
+                                    return;
                                 });
                             }
                             else {
-                                return message.channel.send("Command timed out.");
+                                let sended = await message.channel.send("Command timed out.");
+                                return;
                             }
                         });
                     }
@@ -459,7 +441,7 @@ bot.on("message", async (message) => {
             //Matthew Bot Testing stuff
             if (message.guild.id == "720351714791915520") {
                 if (message.channel.parentID == "781939212416581654") {
-                    if (message.author.id != ownerID) {
+                    if (message.author.id != config_json_1.ownerID) {
                         return;
                     }
                     var receive = await bot.users.fetch(message.channel.name);
@@ -473,8 +455,8 @@ bot.on("message", async (message) => {
             if (message.guild.id == "712382129673338991") {
                 if (message.author.id == "351164483256975360") {
                     let kellydata = db.collection("extra").doc("kellycount");
-                    let data = await kellydata.get();
-                    data = data.data();
+                    let dataGet = await kellydata.get();
+                    let data = dataGet.data();
                     console.log(data);
                     data.count += 1;
                     kellydata.set(data);
@@ -513,31 +495,26 @@ bot.on("message", async (message) => {
         }
         if (message.author.id == "518232676411637780") {
             message.react("827007959363223562").catch((err) => {
-                console.log(`reaction failed in ${message.channel.name} of ${message.guild.name}`);
+                if (message.channel.type != "dm") {
+                    console.log(`reaction failed in ${message.channel.name} of ${message.guild.name}`);
+                }
             });
         }
-        if (message.content.startsWith(prefix)) {
+        if (message.content.startsWith(config_json_1.prefix)) {
             type = "bot";
         }
-        else if (message.content.startsWith(rpgprefix)) {
+        else if (message.content.startsWith(config_json_1.rpgprefix)) {
             type = "rpg";
         }
         //checks if matthew bot or rpg bot is called
         if (!type) {
-            //some extra personality for Matthew Bot
-            /*if (temp.length = 1 && temp.includes("e")) {
-                          var role = await message.guild.roles.cache.find(role => role.id == '758129827906584587');
-                          message.channel.send("Silence.")
-                          return message.member.roles.add(role)
-                      
-                      }*/
-            temp = cleanup(temp);
+            temp = (0, functions_1.cleanup)(temp);
             if (temp != "") {
-                for (i = 0; i < inputs.length; i++) {
-                    for (j = 0; j < inputs[i].length; j++) {
-                        if (temp.includes(inputs[i][j])) {
-                            for (let k = 0; k < outputs[i].length; k++) {
-                                message.channel.send(outputs[i][k]);
+                for (i = 0; i < functions_1.inputs.length; i++) {
+                    for (j = 0; j < functions_1.inputs[i].length; j++) {
+                        if (temp.includes(functions_1.inputs[i][j])) {
+                            for (let k = 0; k < functions_1.outputs[i].length; k++) {
+                                message.channel.send(functions_1.outputs[i][k]);
                             }
                             return;
                         }
@@ -546,11 +523,11 @@ bot.on("message", async (message) => {
                 if (temp.length == 1 && temp.includes("e")) {
                     var sended = await message.channel.send("E");
                     if (message.author.id == "351164483256975360") {
-                        await sleep(1000);
+                        await (0, functions_1.sleep)(1000);
                         return sended.edit("You thought");
                     }
-                    if (randomOdd(50)) {
-                        await sleep(1000);
+                    if ((0, functions_1.randomOdd)(50)) {
+                        await (0, functions_1.sleep)(1000);
                         return sended.edit("You thought");
                     }
                     else {
@@ -574,7 +551,7 @@ bot.on("message", async (message) => {
                 if (temp.split(" ").includes("im") && temp.split(" ").includes("god")) {
                     return message.channel.send("You are not god. **I am God**.");
                 }
-                if (message.author.id == ownerID) {
+                if (message.author.id == config_json_1.ownerID) {
                     if (!(temp.split(" ").includes("matthew") ||
                         temp.split(" ").includes("matthewbot"))) {
                     }
@@ -598,7 +575,10 @@ bot.on("message", async (message) => {
                 if (temp.split(" ").includes("mai") ||
                     temp.split(" ").includes("maisan")) {
                     message.react("809523703138091108").catch((err) => {
-                        console.log(`reaction failed in ${message.channel.name} of ${message.guild.name}`);
+                        if (message.channel.type != "dm") {
+                            console.log(`reaction failed in ${message.channel.name} of ${message.guild.name}`);
+                        }
+                        ;
                     });
                 }
                 if (temp.charAt(0) == "a" &&
@@ -628,7 +608,10 @@ bot.on("message", async (message) => {
                     }
                     for (i = 0; i < 4; i++) {
                         message.react(bigbrother[i]).catch((err) => {
-                            console.log(`reaction failed in ${message.channel.name} of ${message.guild.name}`);
+                            if (message.channel.type != "dm") {
+                                console.log(`reaction failed in ${message.channel.name} of ${message.guild.name}`);
+                            }
+                            ;
                         });
                     }
                 }
@@ -637,14 +620,14 @@ bot.on("message", async (message) => {
                 }
                 if (temp.includes("suck") &&
                     temp.includes("i") &&
-                    message.author.id == 306512867232972802) {
+                    message.author.id == "306512867232972802") {
                     return message.channel.send("https://i.imgur.com/1pQHxXd.png");
                 }
             }
             return;
         }
         //gets the arguments by slicing the prefix, and splitting them into an array
-        const args = message.content.slice(prefix.length).trim().split(/ +/g);
+        const args = message.content.slice(config_json_1.prefix.length).trim().split(/ +/g);
         const commandName = args.shift().toLowerCase();
         console.log(commandName + " from " + message.author.username);
         console.log(args);
@@ -652,32 +635,32 @@ bot.on("message", async (message) => {
         //check if command exists for both prefix and rpgprefix
         if (type == "bot") {
             command =
-                bot.commands.get(commandName) ||
-                    bot.commands.find((cmd) => cmd.aliases && cmd.aliases.includes(commandName));
+                bot["commands"].get(commandName) ||
+                    bot["commands"].find((cmd) => cmd.aliases && cmd.aliases.includes(commandName));
         }
         else {
             command =
-                bot.rpgcommands.get(commandName) ||
-                    bot.rpgcommands.find((cmd) => cmd.aliases && cmd.aliases.includes(commandName));
+                bot["rpgcommands"].get(commandName) ||
+                    bot["rpgcommands"].find((cmd) => cmd.aliases && cmd.aliases.includes(commandName));
         }
         if (!command) {
             return;
         }
         //nsfw check
-        if (command.nsfw && !message.channel.nsfw) {
+        if (command.nsfw && (message.channel.type != "dm" && message.channel.nsfw)) {
             return message.reply("THIS IS A WHOLESOME AND SAFE CHANNEL! THAT COMMAND CANNOT BE USED HERE.");
         }
         /*checks whether the user has the permissions required for the matthew bot commmand*/
         //if admin, skip this part
         if (command.perms.includes("MATTHEW")) {
-            if (message.author.id != 576031405037977600) {
+            if (message.author.id != "576031405037977600") {
                 return message.channel.send(new Discord.MessageEmbed()
                     .setTitle("Nice try...")
                     .setColor("RED")
                     .setDescription(`Can't do that mate you ain't Matthew`));
             }
         }
-        if (!(message.channel.type != "DM" ||
+        if (!(message.channel.type != "dm" ||
             message.member.permissions.has("ADMINISTRATOR"))) {
             let perms = command.perms;
             let missing = [];
@@ -699,11 +682,12 @@ bot.on("message", async (message) => {
             await message.channel.send("usage: " + command.usage);
             return;
         }
+        let other = [];
         if (type == "bot") {
-            var other = [admin, bot, commandName, disbut];
+            other = [admin, bot, commandName];
         }
         else {
-            var other = [rpgadmin, bot, commandName, disbut];
+            other = [rpgadmin, bot, commandName];
         }
         if (command.status == "wip") {
             return message.channel.send("That command is currently a WIP, please check again later (or pester Matthew to code it faster)");
@@ -736,9 +720,10 @@ bot.on("messageReactionAdd", async function (reaction, user) {
             return;
         }
         let guildRef = db.collection("reactions").doc(reaction.message.guild.id);
-        let r = await guildRef.get();
-        if (r.exists) {
-            r = r.data();
+        let rGet = await guildRef.get();
+        let r;
+        if (rGet.exists) {
+            r = rGet.data();
         }
         else {
             r = { reactions: {}, users: {} };
@@ -814,7 +799,10 @@ bot.on("raw", async (packet) => {
     if (member.user.bot) {
         return;
     }
-    const channel = await guild.channels.cache.get(packet.d.channel_id);
+    let channel = await guild.channels.cache.get(packet.d.channel_id);
+    if (!channel.isText()) {
+        return;
+    }
     //if channel message is already cached no need to call twice
     //it'll be detected by messageReactionAdd anyways
     if (channel.messages.cache.has(packet.d.message_id))
@@ -823,10 +811,9 @@ bot.on("raw", async (packet) => {
     //Emojis can have identifiers of name:id format, so we have to account for that case as well
     const emoji = packet.d.emoji.id ? packet.d.emoji.id : packet.d.emoji.name;
     //This gives us the reaction we need to emit the event properly, in top of the message object
-    const reaction = await message.reactions.cache.get(emoji);
+    let reaction = await message.reactions.cache.get(emoji);
     //Adds the currently reacting user to the reaction's users collection.
-    if (reaction)
-        reaction.users = (packet.d.user_id, member.user);
+    //if (reaction) reaction["users"] = (packet.d.user_id, member.user);
     bot.emit("messageReactionAdd", reaction, member.user);
 });
 //stalker time!
@@ -842,12 +829,12 @@ bot.on("presenceUpdate", async function (oldMember, newMember) {
     if (newMember.user.id == "351132323405889537") {
         if (newMember.guild.id == "712382129673338991") {
             var channel = await newMember.guild.channels.cache.find((c) => c.name == "dead-chat");
-            if (!channel) {
+            if (!channel || !channel.isText()) {
                 return;
             }
             let edwardRef = db.collection("extra").doc("edward");
             let e = await edwardRef.get();
-            e = e.data();
+            let eData = e.data();
             if (!((newMember.status != "offline" && status == "offline") ||
                 newMember.status == "offline")) {
                 return;
@@ -862,9 +849,9 @@ bot.on("presenceUpdate", async function (oldMember, newMember) {
                 console.log(err);
                 return;
             });
-            e.status = "online";
+            eData.status = "online";
             if (newMember.status != "offline" && status == "offline") {
-                e.totalA = e.totalA + 1;
+                eData.totalA = eData.totalA + 1;
             }
             var d = new Date();
             d.setTime(d.getTime() - 240 * 60 * 1000);
@@ -889,7 +876,7 @@ bot.on("presenceUpdate", async function (oldMember, newMember) {
                 type: "a",
                 data: newMember.status != "offline" && status == "offline" ? "on" : "off",
             });
-            e["history"] = h;
+            eData["history"] = h;
             edwardRef.set(e);
             return;
         }
@@ -903,11 +890,11 @@ bot.on("presenceUpdate", async function (oldMember, newMember) {
         username = newMember.member.nickname;
     }
     var channel = await newMember.guild.channels.cache.find((c) => c.name == "matthew-sees-you");
-    if (!channel) {
+    if (!channel || !channel.isText()) {
         return;
     }
     if (newMember.status != "offline" && status == "offline") {
-        if (!ignore.includes(newMember.user.id) && channel) {
+        if (!ignore.includes(newMember.user.id) && channel && channel.isText()) {
             channel.send(`${username} *I see you* :eyes:`);
         }
         console.log(`\n${username} from ${newMember.guild.name} has gone online.\n`);
@@ -921,8 +908,7 @@ bot.on("presenceUpdate", async function (oldMember, newMember) {
 });
 bot.on("guildCreate", async function (guild) {
     console.log(`Joined guild ${guild.name}`);
-    const channel = guild.channels.cache.find((channel) => channel.type === "text" &&
-        channel.permissionsFor(guild.me).has("SEND_MESSAGES"));
+    let channel = guild.channels.cache.find((channel) => channel.permissionsFor(guild.me).has("SEND_MESSAGES") && channel.type == "text");
     await channel.send(new Discord.MessageEmbed()
         .setTitle("Matthew Bot, at your service!")
         .setDescription("I'm  Matthew Bot, here to make this server a ~~better~~ exciting place!\n\nHere's the important commands you should probably know.\n\n**m!help** - The help function, get a list of all commands or see a specific command\n**m!cvs** - Gets a covid screening :eyes:\n**m!wordgame - three matthewbot wordgames for the family!")
@@ -1034,9 +1020,9 @@ async function nameChange() {
     return;
 }
 async function syncEmotes() {
-    var e = JSON.parse(fs.readFileSync("serveremotes.json").toString());
-    var emojis = await bot.emojis.cache;
-    var emojis = emojis.array();
+    let e = JSON.parse(fs.readFileSync("serveremotes.json").toString());
+    let emojiCache = await bot.emojis.cache;
+    let emojis = emojiCache.array();
     for (let i = 0; i < emojis.length; i++) {
         e[emojis[i].name] = emojis[i].id;
     }
@@ -1057,9 +1043,9 @@ async function botUpdates(message) {
 }
 function sendCovid(i) {
     console.log("sending covid screen");
-    console.log(bot.covidtimes);
-    let guilds = bot.covidtimes[i];
-    var bucket = admin.storage().bucket();
+    console.log(bot["covidtimes"]);
+    let guilds = bot["covidtimes"][i];
+    var bucket = getStorage().bucket();
     var content;
     var screenie = bucket.file("screenie.png");
     const localFilename = "./screenie.png";
@@ -1077,9 +1063,9 @@ function sendCovid(i) {
     a.on("finish", async () => {
         guilds.forEach(async (guildid) => {
             let guild = await bot.guilds.fetch(guildid);
-            let channel = await guild.channels.cache;
-            channel = channel.find((c) => c.name == "matthew-bot-screening");
-            if (channel) {
+            let channels = await guild.channels.cache;
+            let channel = channels.find((c) => c.name == "matthew-bot-screening");
+            if (channel && channel.isText()) {
                 channel.send("Your daily scheduled covid screening :D");
                 channel.send({ files: ["./screenie.png"] });
             }
@@ -1095,7 +1081,7 @@ async function covidScheduleSetup() {
   job1.start();
   job2.start();
   `;
-    bot.reloadCovidSchedule = async function () {
+    bot["reloadCovidSchedule"] = async function () {
         console.log("reloading Covid Schedule");
         var covidRef = await db.collection("covidscreening");
         const times = {};
@@ -1107,20 +1093,28 @@ async function covidScheduleSetup() {
                 times[i] ? times[i].push(guild.id) : (times[i] = [guild.id]);
             }
         });
-        bot.covidtimes = times;
-        console.log(bot.covidtimes);
-        bot.covidCrons = [];
+        bot["covidtimes"] = times;
+        console.log(bot["covidtimes"]);
+        bot["covidCrons"] = [];
         let counter = 0;
-        for (const i in bot.covidtimes) {
+        for (const i in bot["covidtimes"]) {
             let p = i;
-            console.log(bot.covidtimes[p]);
-            bot.covidCrons.push(new CronJob(p, () => {
+            console.log(bot["covidtimes"][p]);
+            bot["covidCrons"].push(new cron.CronJob(p, () => {
                 sendCovid(p);
             }, null, true, "America/New_York"));
-            bot.covidCrons[counter].start();
+            bot["covidCrons"][counter].start();
             counter++;
         }
         console.log("Covid schedule reloaded " + timePast());
     };
-    bot.reloadCovidSchedule();
+    bot["reloadCovidSchedule"]();
+}
+async function countDown() {
+    new cron.CronJob("0 30 * ? * *", () => {
+        let timeleft;
+        timeleft = (+new Date('April 28, 2022 08:30:00') - +Date.now());
+        console.log(timeleft);
+        //amazingly, this works
+    }, null, true, "America/New_York");
 }
