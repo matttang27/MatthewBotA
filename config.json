@@ -1,7 +1,8 @@
 {
-	"prefix": "m@",
+	"production": true,
+	"proPrefix": ["m!","m$"],
+	"devPrefix": ["m@","m%"],
 	"ownerID": "576031405037977600",
-	"rpgprefix": "m%",
 	"hourlycd": 60,
 	"dailycd": 1380,
 	"weeklycd": 9360

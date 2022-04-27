@@ -42,14 +42,27 @@ let hey = "hey";
 
 //test: rewrite discord message send
 
-import { ownerID, prefix, rpgprefix } from "./config.json";
+import { devPrefix, ownerID, production, proPrefix } from "./config.json";
 import { changeStatus, cleanup, inputs, outputs, randomOdd, sleep } from "./functions";
 bot["commands"] = new Discord.Collection();
 bot["rpgcommands"] = new Discord.Collection();
 
 require("dotenv").config();
-const token = process.env["token"];
-const othertoken = process.env["othertoken"];
+
+let token;
+let prefix: string;
+let rpgprefix: string;
+if (production) {
+  token = process.env["token"]
+  prefix = proPrefix[0]
+  rpgprefix = proPrefix[1]
+}
+else {
+  token = process.env["othertoken"]
+  prefix = devPrefix[0]
+  rpgprefix = devPrefix[1]
+}
+
 const rpgkey = process.env["rpgkey"];
 const firebasekey = process.env["firebasekey"];
 
@@ -135,13 +148,23 @@ let db = getFirestore();
 console.log("initialized firebase " + timePast());
 
 //discord
-
+let humantraffickingicon;
 bot.on("ready", () => {
   fulllog("Bot Ready at " + new Date().toString());
+  if (production) {
+    humantraffickingicon = setInterval(() => nameChange(), 700000);
+    covidScheduleSetup();
+    syncEmotes();
+    console.log("synced Emotes " + timePast());
+    bot["countDown"] = countDown()
+    fulllog("Countdown setup at " + new Date().toString())
+  }
+  
   changeStatus(bot);
   fulllog("Changing status at " + new Date().toString());
-  syncEmotes();
-  console.log("synced Emotes " + timePast());
+  
+	
+  
 });
 
 bot.on("messageDelete", async (message) => {});
@@ -1211,8 +1234,6 @@ function keepAlive() {
 keepAlive();
 console.log("bot login");
 bot.login(token).then(async () => {
-  const humantraffickingicon = setInterval(() => nameChange(), 700000);
-  covidScheduleSetup();
 
   let matthew = await bot.users.fetch("576031405037977600");
   matthew.send("Bot started!");
@@ -1356,17 +1377,53 @@ async function covidScheduleSetup() {
 }
 
 async function countDown() {
-  new cron.CronJob(
-    "0 30 * ? * *",
-    () => {
-      let timeleft: number;
-      timeleft = (+new Date('April 28, 2022 08:30:00') - +Date.now())
-      console.log(timeleft);
-      //amazingly, this works
+	console.log("HI")
+	let cronJobs = []
+	let eCompany = await bot.guilds.fetch("712382129673338991")
 
-    },
-    null,
-    true,
-    "America/New_York"
-  )
+	let general = await eCompany.channels.cache.find(c => c.id == "716336274591580190") as Discord.TextChannel
+	let hourly = new cron.CronJob(
+		"0 30 * * * *",
+		async () => {
+			let timeleft;
+			timeleft = (+new Date('April 28, 2022 12:30:00') - +Date.now())
+			let hours = Math.ceil(timeleft / 3600000);
+			
+
+			let embed = new Discord.MessageEmbed()
+			if (hours > 0) {
+				embed.setTitle(`${hours} Hours Left.`).setColor("#FF0000")
+				general.send(embed)
+			}
+			else if (hours == 0) {
+
+				embed.setTitle(`The exam begins.`)
+				general.send(embed)
+			}
+			
+
+		},
+		null,
+		true,
+		"America/New_York"
+	).start();
+	cronJobs.push(hourly)
+
+	let minuteTimes = [0, 15, 20, 25, 26, 27, 28, 29]
+	for (let minute of minuteTimes) {
+		let newCron = new cron.CronJob(`0 ${minute} 8 28 * *`, async () => {
+			let embed = new Discord.MessageEmbed()
+			embed.setTitle(`${30-minute} minutes left.`)
+			embed.setColor("#FF0000")
+			general.send(embed)
+		},
+			null,
+			true,
+			"America/New_York"
+		).start()
+		cronJobs.push(newCron)
+		
+
+	}
+	return cronJobs
 }

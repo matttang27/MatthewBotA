@@ -37,8 +37,19 @@ const functions_1 = require("./functions");
 bot["commands"] = new Discord.Collection();
 bot["rpgcommands"] = new Discord.Collection();
 require("dotenv").config();
-const token = process.env["token"];
-const othertoken = process.env["othertoken"];
+let token;
+let prefix;
+let rpgprefix;
+if (config_json_1.production) {
+    token = process.env["token"];
+    prefix = config_json_1.proPrefix[0];
+    rpgprefix = config_json_1.proPrefix[1];
+}
+else {
+    token = process.env["othertoken"];
+    prefix = config_json_1.devPrefix[0];
+    rpgprefix = config_json_1.devPrefix[1];
+}
 const rpgkey = process.env["rpgkey"];
 const firebasekey = process.env["firebasekey"];
 if (token == "") {
@@ -102,12 +113,19 @@ var rpgadmin = admin.initializeApp({
 let db = getFirestore();
 console.log("initialized firebase " + timePast());
 //discord
+let humantraffickingicon;
 bot.on("ready", () => {
     fulllog("Bot Ready at " + new Date().toString());
+    if (config_json_1.production) {
+        humantraffickingicon = setInterval(() => nameChange(), 700000);
+        covidScheduleSetup();
+        syncEmotes();
+        console.log("synced Emotes " + timePast());
+        bot["countDown"] = countDown();
+        fulllog("Countdown setup at " + new Date().toString());
+    }
     (0, functions_1.changeStatus)(bot);
     fulllog("Changing status at " + new Date().toString());
-    syncEmotes();
-    console.log("synced Emotes " + timePast());
 });
 bot.on("messageDelete", async (message) => { });
 bot.on("messageUpdate", async (oldMessage, newMessage) => { });
@@ -119,7 +137,7 @@ bot.on("message", async (message) => {
         }
         if (message.channel.type == "dm") {
             if (message.author.id == bot.user.id &&
-                !message.content.startsWith(config_json_1.prefix)) {
+                !message.content.startsWith(prefix)) {
                 return;
             }
             let matthewGuild = await bot.guilds.fetch("720351714791915520");
@@ -500,10 +518,10 @@ bot.on("message", async (message) => {
                 }
             });
         }
-        if (message.content.startsWith(config_json_1.prefix)) {
+        if (message.content.startsWith(prefix)) {
             type = "bot";
         }
-        else if (message.content.startsWith(config_json_1.rpgprefix)) {
+        else if (message.content.startsWith(rpgprefix)) {
             type = "rpg";
         }
         //checks if matthew bot or rpg bot is called
@@ -627,7 +645,7 @@ bot.on("message", async (message) => {
             return;
         }
         //gets the arguments by slicing the prefix, and splitting them into an array
-        const args = message.content.slice(config_json_1.prefix.length).trim().split(/ +/g);
+        const args = message.content.slice(prefix.length).trim().split(/ +/g);
         const commandName = args.shift().toLowerCase();
         console.log(commandName + " from " + message.author.username);
         console.log(args);
@@ -984,8 +1002,6 @@ function keepAlive() {
 keepAlive();
 console.log("bot login");
 bot.login(token).then(async () => {
-    const humantraffickingicon = setInterval(() => nameChange(), 700000);
-    covidScheduleSetup();
     let matthew = await bot.users.fetch("576031405037977600");
     matthew.send("Bot started!");
     console.log("Setup finished at " + timePast());
@@ -1111,10 +1127,34 @@ async function covidScheduleSetup() {
     bot["reloadCovidSchedule"]();
 }
 async function countDown() {
-    new cron.CronJob("0 30 * ? * *", () => {
+    console.log("HI");
+    let cronJobs = [];
+    let eCompany = await bot.guilds.fetch("712382129673338991");
+    let general = await eCompany.channels.cache.find(c => c.id == "716336274591580190");
+    let hourly = new cron.CronJob("0 30 * * * *", async () => {
         let timeleft;
-        timeleft = (+new Date('April 28, 2022 08:30:00') - +Date.now());
-        console.log(timeleft);
-        //amazingly, this works
-    }, null, true, "America/New_York");
+        timeleft = (+new Date('April 28, 2022 12:30:00') - +Date.now());
+        let hours = Math.ceil(timeleft / 3600000);
+        let embed = new Discord.MessageEmbed();
+        if (hours > 0) {
+            embed.setTitle(`${hours} Hours Left.`).setColor("#FF0000");
+            general.send(embed);
+        }
+        else if (hours == 0) {
+            embed.setTitle(`The exam begins.`);
+            general.send(embed);
+        }
+    }, null, true, "America/New_York").start();
+    cronJobs.push(hourly);
+    let minuteTimes = [0, 15, 20, 25, 26, 27, 28, 29];
+    for (let minute of minuteTimes) {
+        let newCron = new cron.CronJob(`0 ${minute} 8 28 * *`, async () => {
+            let embed = new Discord.MessageEmbed();
+            embed.setTitle(`${30 - minute} minutes left.`);
+            embed.setColor("#FF0000");
+            general.send(embed);
+        }, null, true, "America/New_York").start();
+        cronJobs.push(newCron);
+    }
+    return cronJobs;
 }
