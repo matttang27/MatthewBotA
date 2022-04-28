@@ -43,7 +43,7 @@ let hey = "hey";
 //test: rewrite discord message send
 
 import { devPrefix, ownerID, production, proPrefix } from "./config.json";
-import { changeStatus, cleanup, inputs, outputs, randomOdd, sleep } from "./functions";
+import { changeStatus, cleanup, inputs, outputs, randomOdd, sleep } from "./src/constants/functions";
 bot["commands"] = new Discord.Collection();
 bot["rpgcommands"] = new Discord.Collection();
 
@@ -78,7 +78,6 @@ function fulllog(str) {
   console.log(str);
   filelog(str);
 }
-import Role = require("./role.js");
 
 bot["games"] = {};
 
@@ -1303,7 +1302,7 @@ function sendCovid(i) {
   var content;
   var screenie = bucket.file("screenie.png");
 
-  const localFilename = "./screenie.png";
+  const localFilename = "./assets/screenie.png";
   let a = fs.createWriteStream(localFilename);
   screenie
     .createReadStream()
@@ -1323,7 +1322,7 @@ function sendCovid(i) {
       if (channel && channel.isText()) {
         
         channel.send("Your daily scheduled covid screening :D");
-        channel.send({ files: ["./screenie.png"] });
+        channel.send({ files: ["./assets/screenie.png"] });
       }
     });
   });

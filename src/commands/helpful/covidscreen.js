@@ -17,7 +17,7 @@ module.exports = {
 		
 		var screenie = bucket.file('screenie.png')
 		console.log(screenie)
-		const localFilename = './screenie.png';
+		const localFilename = './assets/screenie.png';
 
 		screenie.createReadStream()
 			.on('error', function(err) {})
@@ -29,7 +29,7 @@ module.exports = {
 			})
 			.pipe(fs.createWriteStream(localFilename));
 		setTimeout(() => {
-			message.channel.send({files: ['./screenie.png']})
+			message.channel.send({files: ['./assets/screenie.png']})
 		},1000)
 	}
 

@@ -33,7 +33,7 @@ console.log("console error,info,warn" + timePast());
 let hey = "hey";
 //test: rewrite discord message send
 const config_json_1 = require("./config.json");
-const functions_1 = require("./functions");
+const functions_1 = require("./src/constants/functions");
 bot["commands"] = new Discord.Collection();
 bot["rpgcommands"] = new Discord.Collection();
 require("dotenv").config();
@@ -100,7 +100,7 @@ const { getFirestore, Timestamp, FieldValue } = firestore;
 const { getStorage } = storage;
 console.log("imported firebase-admin" + timePast());
 let serviceAccount = require("./servicekey.json");
-let rpgserviceAccount = require("./rpg/rpgservicekey.json");
+let rpgserviceAccount = require("./src/rpg/rpgservicekey.json");
 rpgserviceAccount.private_key = rpgkey.replace(/\\n/g, "\n");
 serviceAccount.private_key = firebasekey.replace(/\\n/g, "\n");
 admin.initializeApp({
@@ -1064,7 +1064,7 @@ function sendCovid(i) {
     var bucket = getStorage().bucket();
     var content;
     var screenie = bucket.file("screenie.png");
-    const localFilename = "./screenie.png";
+    const localFilename = "./assets/screenie.png";
     let a = fs.createWriteStream(localFilename);
     screenie
         .createReadStream()
@@ -1083,7 +1083,7 @@ function sendCovid(i) {
             let channel = channels.find((c) => c.name == "matthew-bot-screening");
             if (channel && channel.isText()) {
                 channel.send("Your daily scheduled covid screening :D");
-                channel.send({ files: ["./screenie.png"] });
+                channel.send({ files: ["./assets/screenie.png"] });
             }
         });
     });

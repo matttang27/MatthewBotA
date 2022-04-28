@@ -7,5 +7,6 @@
     "lib": ["es6", "dom"],
     "resolveJsonModule": true,
     "esModuleInterop": true,
+    "allowJs": true
   }
 }
