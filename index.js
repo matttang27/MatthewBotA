@@ -32,23 +32,25 @@ require("console-warn");
 console.log("console error,info,warn" + timePast());
 let hey = "hey";
 //test: rewrite discord message send
-const config_json_1 = require("./config.json");
-const functions_1 = require("./src/constants/functions");
+const functions = require("./src/constants/functions.js");
+let { changeStatus, cleanup, inputs, outputs, randomOdd, sleep } = functions;
+const config = require("./config.json");
+let { devPrefix, ownerID, production, proPrefix } = config;
 bot["commands"] = new Discord.Collection();
 bot["rpgcommands"] = new Discord.Collection();
 require("dotenv").config();
 let token;
 let prefix;
 let rpgprefix;
-if (config_json_1.production) {
+if (production) {
     token = process.env["token"];
-    prefix = config_json_1.proPrefix[0];
-    rpgprefix = config_json_1.proPrefix[1];
+    prefix = proPrefix[0];
+    rpgprefix = proPrefix[1];
 }
 else {
     token = process.env["othertoken"];
-    prefix = config_json_1.devPrefix[0];
-    rpgprefix = config_json_1.devPrefix[1];
+    prefix = devPrefix[0];
+    rpgprefix = devPrefix[1];
 }
 const rpgkey = process.env["rpgkey"];
 const firebasekey = process.env["firebasekey"];
@@ -64,14 +66,14 @@ function fulllog(str) {
 }
 bot["games"] = {};
 let praise = ["nice", "good", "amazing", "godly", "legend", "legendary"];
-const commandFiles = fs.readdirSync("./commands");
+const commandFiles = fs.readdirSync("./src/commands");
 const commandFolders = commandFiles.filter((file) => !file.endsWith(".js"));
 const commands = {};
 var folderFind = {};
 for (const folder of commandFolders) {
-    commands[folder] = fs.readdirSync("./commands/" + folder);
+    commands[folder] = fs.readdirSync("./src/commands/" + folder);
     for (const file of commands[folder]) {
-        let command = require(`./commands/${folder}/${file}`);
+        let command = require(`./src/commands/${folder}/${file}`);
         bot["commands"].set(command.name, command);
         folderFind[command.name] = folder;
         console.log(`set ${command.name} command ` + timePast());
@@ -95,12 +97,11 @@ console.log("set rpg commands " + timePast());
 const admin = require("firebase-admin/app");
 const storage = require("firebase-admin/storage");
 const firestore = require("firebase-admin/firestore");
-const { initializeApp, applicationDefault, cert } = admin;
-const { getFirestore, Timestamp, FieldValue } = firestore;
-const { getStorage } = storage;
+let { getStorage } = storage;
+let { getFirestore } = firestore;
 console.log("imported firebase-admin" + timePast());
 let serviceAccount = require("./servicekey.json");
-let rpgserviceAccount = require("./src/rpg/rpgservicekey.json");
+let rpgserviceAccount = require("./rpg/rpgservicekey.json");
 rpgserviceAccount.private_key = rpgkey.replace(/\\n/g, "\n");
 serviceAccount.private_key = firebasekey.replace(/\\n/g, "\n");
 admin.initializeApp({
@@ -116,7 +117,7 @@ console.log("initialized firebase " + timePast());
 let humantraffickingicon;
 bot.on("ready", () => {
     fulllog("Bot Ready at " + new Date().toString());
-    if (config_json_1.production) {
+    if (production) {
         humantraffickingicon = setInterval(() => nameChange(), 700000);
         covidScheduleSetup();
         syncEmotes();
@@ -124,7 +125,7 @@ bot.on("ready", () => {
         bot["countDown"] = countDown();
         fulllog("Countdown setup at " + new Date().toString());
     }
-    (0, functions_1.changeStatus)(bot);
+    changeStatus(bot);
     fulllog("Changing status at " + new Date().toString());
 });
 bot.on("messageDelete", async (message) => { });
@@ -459,7 +460,7 @@ bot.on("message", async (message) => {
             //Matthew Bot Testing stuff
             if (message.guild.id == "720351714791915520") {
                 if (message.channel.parentID == "781939212416581654") {
-                    if (message.author.id != config_json_1.ownerID) {
+                    if (message.author.id != ownerID) {
                         return;
                     }
                     var receive = await bot.users.fetch(message.channel.name);
@@ -526,13 +527,13 @@ bot.on("message", async (message) => {
         }
         //checks if matthew bot or rpg bot is called
         if (!type) {
-            temp = (0, functions_1.cleanup)(temp);
+            temp = cleanup(temp);
             if (temp != "") {
-                for (i = 0; i < functions_1.inputs.length; i++) {
-                    for (j = 0; j < functions_1.inputs[i].length; j++) {
-                        if (temp.includes(functions_1.inputs[i][j])) {
-                            for (let k = 0; k < functions_1.outputs[i].length; k++) {
-                                message.channel.send(functions_1.outputs[i][k]);
+                for (i = 0; i < inputs.length; i++) {
+                    for (j = 0; j < inputs[i].length; j++) {
+                        if (temp.includes(inputs[i][j])) {
+                            for (let k = 0; k < outputs[i].length; k++) {
+                                message.channel.send(outputs[i][k]);
                             }
                             return;
                         }
@@ -541,11 +542,11 @@ bot.on("message", async (message) => {
                 if (temp.length == 1 && temp.includes("e")) {
                     var sended = await message.channel.send("E");
                     if (message.author.id == "351164483256975360") {
-                        await (0, functions_1.sleep)(1000);
+                        await sleep(1000);
                         return sended.edit("You thought");
                     }
-                    if ((0, functions_1.randomOdd)(50)) {
-                        await (0, functions_1.sleep)(1000);
+                    if (randomOdd(50)) {
+                        await sleep(1000);
                         return sended.edit("You thought");
                     }
                     else {
@@ -569,7 +570,7 @@ bot.on("message", async (message) => {
                 if (temp.split(" ").includes("im") && temp.split(" ").includes("god")) {
                     return message.channel.send("You are not god. **I am God**.");
                 }
-                if (message.author.id == config_json_1.ownerID) {
+                if (message.author.id == ownerID) {
                     if (!(temp.split(" ").includes("matthew") ||
                         temp.split(" ").includes("matthewbot"))) {
                     }

@@ -42,8 +42,10 @@ let hey = "hey";
 
 //test: rewrite discord message send
 
-import { devPrefix, ownerID, production, proPrefix } from "./config.json";
-import { changeStatus, cleanup, inputs, outputs, randomOdd, sleep } from "./src/constants/functions";
+import functions = require("./src/constants/functions.js");
+let { changeStatus, cleanup, inputs, outputs, randomOdd, sleep } = functions
+import config = require("./config.json");
+let { devPrefix, ownerID, production, proPrefix } = config
 bot["commands"] = new Discord.Collection();
 bot["rpgcommands"] = new Discord.Collection();
 
@@ -83,16 +85,16 @@ bot["games"] = {};
 
 let praise = ["nice", "good", "amazing", "godly", "legend", "legendary"];
 
-const commandFiles = fs.readdirSync("./commands");
+const commandFiles = fs.readdirSync("./src/commands");
 
 const commandFolders = commandFiles.filter((file) => !file.endsWith(".js"));
 
 const commands = {};
 var folderFind = {};
 for (const folder of commandFolders) {
-  commands[folder] = fs.readdirSync("./commands/" + folder);
+  commands[folder] = fs.readdirSync("./src/commands/" + folder);
   for (const file of commands[folder]) {
-    let command = require(`./commands/${folder}/${file}`);
+    let command = require(`./src/commands/${folder}/${file}`);
     bot["commands"].set(command.name, command);
     folderFind[command.name] = folder;
     console.log(`set ${command.name} command ` + timePast());
@@ -121,9 +123,8 @@ console.log("set rpg commands " + timePast());
 import admin = require("firebase-admin/app");
 import storage = require('firebase-admin/storage');
 import firestore = require('firebase-admin/firestore');
-const { initializeApp, applicationDefault, cert } = admin
-const { getFirestore, Timestamp, FieldValue } = firestore
-const { getStorage } = storage
+let {getStorage} = storage
+let {getFirestore} = firestore
 console.log("imported firebase-admin" + timePast());
 
 let serviceAccount = require("./servicekey.json");
