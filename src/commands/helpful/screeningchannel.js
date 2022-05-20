@@ -1,8 +1,8 @@
-const { prefix, token } = require("../../../config.json");
+const { prefix, token } = require("@config");
 const fs = require('fs');
 const Discord = require('discord.js');
 const CronJob = require('cron').CronJob;
-const { embedError } = require('../../constants/functions.js');
+const { embedError } = require('@functions');
 
 var cronstrue = require('cronstrue');
 

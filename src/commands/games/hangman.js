@@ -1,5 +1,5 @@
-const { prefix, token } = require("../../../config.json");
-const {embedError} = require("../../constants/functions.js");
+const { prefix, token } = require("@config");
+const {embedError} = require("@functions");
 const path = require("path");
 const fs = require('fs');
 const Discord = require('discord.js');

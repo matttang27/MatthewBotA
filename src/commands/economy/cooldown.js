@@ -1,7 +1,7 @@
-const { prefix, token, hourlycd, dailycd, weeklycd } = require("../../../config.json");
+const { prefix, token, hourlycd, dailycd, weeklycd } = require("@config");
 const fs = require('fs');
 const Discord = require('discord.js');
-const minutesToMessage = require('../../constants/functions.js')
+const minutesToMessage = require('@functions')
 
 module.exports = {
 	args: [0],

@@ -1,7 +1,7 @@
-const { prefix, token } = require("../../../config.json");
+const { prefix, token } = require("@config");
 const Discord = require('discord.js');
 const fs = require('fs');
-const {findMember,newProfile} = require('../../constants/functions.js')
+const {findMember,newProfile} = require('@functions')
 
 module.exports = {
 	args: [-1],

@@ -1,4 +1,4 @@
-const { prefix, token, ownerID, rpgprefix } = require("../../../config.json");
+const { prefix, token, ownerID, rpgprefix } = require("@config");
 const fs = require("fs");
 const Discord = require("discord.js");
 module.exports = {

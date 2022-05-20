@@ -1,4 +1,4 @@
-const { prefix, ownerID} = require("../../../config.json");
+const { prefix, ownerID} = require("@config");
 const token = process.env['token'];
 const fetch = require('node-fetch')
 module.exports = {

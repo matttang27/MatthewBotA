@@ -1,4 +1,4 @@
-
+require('module-alias/register')
 
 let time = Date.now();
 
@@ -43,7 +43,7 @@ let hey = "hey";
 //test: rewrite discord message send
 
 import { devPrefix, ownerID, production, proPrefix } from "./config.json";
-import { changeStatus, cleanup, inputs, outputs, randomOdd, sleep } from "./src/constants/functions";
+import { changeStatus, cleanup, inputs, outputs, randomOdd, sleep } from "./src/constants/functions.js";
 bot["commands"] = new Discord.Collection();
 bot["rpgcommands"] = new Discord.Collection();
 

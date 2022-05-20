@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+require('module-alias/register');
 let time = Date.now();
 function timePast() {
     return (Date.now() - time) / 1000 + "s";
@@ -33,7 +34,7 @@ console.log("console error,info,warn" + timePast());
 let hey = "hey";
 //test: rewrite discord message send
 const config_json_1 = require("./config.json");
-const functions_1 = require("./src/constants/functions");
+const functions_js_1 = require("./src/constants/functions.js");
 bot["commands"] = new Discord.Collection();
 bot["rpgcommands"] = new Discord.Collection();
 require("dotenv").config();
@@ -124,7 +125,7 @@ bot.on("ready", () => {
         bot["countDown"] = countDown();
         fulllog("Countdown setup at " + new Date().toString());
     }
-    (0, functions_1.changeStatus)(bot);
+    (0, functions_js_1.changeStatus)(bot);
     fulllog("Changing status at " + new Date().toString());
 });
 bot.on("messageDelete", async (message) => { });
@@ -526,13 +527,13 @@ bot.on("message", async (message) => {
         }
         //checks if matthew bot or rpg bot is called
         if (!type) {
-            temp = (0, functions_1.cleanup)(temp);
+            temp = (0, functions_js_1.cleanup)(temp);
             if (temp != "") {
-                for (i = 0; i < functions_1.inputs.length; i++) {
-                    for (j = 0; j < functions_1.inputs[i].length; j++) {
-                        if (temp.includes(functions_1.inputs[i][j])) {
-                            for (let k = 0; k < functions_1.outputs[i].length; k++) {
-                                message.channel.send(functions_1.outputs[i][k]);
+                for (i = 0; i < functions_js_1.inputs.length; i++) {
+                    for (j = 0; j < functions_js_1.inputs[i].length; j++) {
+                        if (temp.includes(functions_js_1.inputs[i][j])) {
+                            for (let k = 0; k < functions_js_1.outputs[i].length; k++) {
+                                message.channel.send(functions_js_1.outputs[i][k]);
                             }
                             return;
                         }
@@ -541,11 +542,11 @@ bot.on("message", async (message) => {
                 if (temp.length == 1 && temp.includes("e")) {
                     var sended = await message.channel.send("E");
                     if (message.author.id == "351164483256975360") {
-                        await (0, functions_1.sleep)(1000);
+                        await (0, functions_js_1.sleep)(1000);
                         return sended.edit("You thought");
                     }
-                    if ((0, functions_1.randomOdd)(50)) {
-                        await (0, functions_1.sleep)(1000);
+                    if ((0, functions_js_1.randomOdd)(50)) {
+                        await (0, functions_js_1.sleep)(1000);
                         return sended.edit("You thought");
                     }
                     else {

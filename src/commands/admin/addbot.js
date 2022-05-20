@@ -1,4 +1,4 @@
-const { prefix, ownerID } = require("../../../config.json");
+const { prefix, ownerID } = require("@config");
 const fs = require('fs');
 const Discord = require('discord.js');
 const top = require('@top-gg/sdk')

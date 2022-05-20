@@ -1,8 +1,8 @@
-const { prefix, ownerID } = require("../../../config.json");
+const { prefix, ownerID } = require("@config");
 const fs = require('fs');
 const Discord = require('discord.js');
 const https = require('https')
-const {httpsGet,httpRequest} = require('../../constants/functions.js')
+const {httpsGet,httpRequest} = require('@functions')
 const chars = require("@constants/emojiCharacters.js")
 module.exports = {
 	args: [-1],
