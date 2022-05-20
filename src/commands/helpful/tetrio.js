@@ -1,9 +1,9 @@
-const { prefix, ownerID } = require("../../config.json");
+const { prefix, ownerID } = require("../../../config.json");
 const fs = require('fs');
 const Discord = require('discord.js');
 const https = require('https')
-const {httpsGet,httpRequest} = require('../../functions.js')
-const chars = require("../../emojiCharacters.js")
+const {httpsGet,httpRequest} = require('../../constants/functions.js')
+const chars = require("@constants/emojiCharacters.js")
 module.exports = {
 	args: [-1],
 	name: "tetrio",

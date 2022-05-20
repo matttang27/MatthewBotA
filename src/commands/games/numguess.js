@@ -1,7 +1,7 @@
-const { prefix, token } = require("../../config.json");
+const { prefix, token } = require("../../../config.json");
 const fs = require('fs');
 const Discord = require('discord.js');
-const emoji = require('../../emojiCharacters.js')
+const emoji = require('@constants/emojiCharacters.js')
 module.exports = {
 	args: [-1],
 	name: "numguess",

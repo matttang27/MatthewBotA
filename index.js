@@ -64,14 +64,14 @@ function fulllog(str) {
 }
 bot["games"] = {};
 let praise = ["nice", "good", "amazing", "godly", "legend", "legendary"];
-const commandFiles = fs.readdirSync("./commands");
+const commandFiles = fs.readdirSync("./src/commands");
 const commandFolders = commandFiles.filter((file) => !file.endsWith(".js"));
 const commands = {};
 var folderFind = {};
 for (const folder of commandFolders) {
-    commands[folder] = fs.readdirSync("./commands/" + folder);
+    commands[folder] = fs.readdirSync("./src/commands/" + folder);
     for (const file of commands[folder]) {
-        let command = require(`./commands/${folder}/${file}`);
+        let command = require(`./src/commands/${folder}/${file}`);
         bot["commands"].set(command.name, command);
         folderFind[command.name] = folder;
         console.log(`set ${command.name} command ` + timePast());
@@ -81,10 +81,10 @@ bot["commandlist"] = commands;
 console.log("set bot commands " + timePast());
 //import rpgcommands
 const rpgcommandFiles = fs
-    .readdirSync("./rpg/rpgcommands")
+    .readdirSync("./src/rpg/rpgcommands")
     .filter((file) => file.endsWith(".js"));
 for (const file of rpgcommandFiles) {
-    const command = require(`./rpg/rpgcommands/${file}`);
+    const command = require(`./src/rpg/rpgcommands/${file}`);
     // set a new item in the Collection
     // with name : command module
     bot["rpgcommands"].set(command.name, command);
