@@ -42,8 +42,10 @@ let hey = "hey";
 
 //test: rewrite discord message send
 
-import { devPrefix, ownerID, production, proPrefix } from "./config.json";
-import { changeStatus, cleanup, inputs, outputs, randomOdd, sleep } from "./src/constants/functions";
+import functions = require("./src/constants/functions.js");
+let { changeStatus, cleanup, inputs, outputs, randomOdd, sleep } = functions
+import config = require("./config.json");
+let { devPrefix, ownerID, production, proPrefix } = config
 bot["commands"] = new Discord.Collection();
 bot["rpgcommands"] = new Discord.Collection();
 
@@ -121,9 +123,8 @@ console.log("set rpg commands " + timePast());
 import admin = require("firebase-admin/app");
 import storage = require('firebase-admin/storage');
 import firestore = require('firebase-admin/firestore');
-const { initializeApp, applicationDefault, cert } = admin
-const { getFirestore, Timestamp, FieldValue } = firestore
-const { getStorage } = storage
+let {getStorage} = storage
+let {getFirestore} = firestore
 console.log("imported firebase-admin" + timePast());
 
 let serviceAccount = require("./servicekey.json");
