@@ -21,12 +21,8 @@
     "express": "^4.18.0",
     "firebase": "^9.6.11",
     "firebase-admin": "^10.1.0",
-<<<<<<< HEAD
     "grpc": "^1.24.11",
     "module-alias": "^2.2.2",
-=======
-    "js-to-ts-converter": "^0.18.2",
->>>>>>> 9e79397123384be9c02f670d44438c53f18e283e
     "natural": "^2.4.5",
     "nhentai": "^2.1.1",
     "node-fetch": "^2.6.7",
