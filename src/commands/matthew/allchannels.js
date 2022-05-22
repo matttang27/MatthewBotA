@@ -1,4 +1,4 @@
-const { prefix, ownerID } = require("@config");
+const { prefix, ownerID } = require("@root/config.json");
 const fs = require('fs');
 const Discord = require('discord.js');
 

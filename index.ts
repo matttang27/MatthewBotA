@@ -1,4 +1,4 @@
-require('module-alias/register')
+require('better-module-alias')(__dirname)
 
 let time = Date.now();
 
@@ -38,30 +38,33 @@ require("console-error");
 require("console-info");
 require("console-warn");
 console.log("console error,info,warn" + timePast());
-let hey = "hey";
 
-//test: rewrite discord message send
-
-import { devPrefix, ownerID, production, proPrefix } from "./config.json";
 import { changeStatus, cleanup, inputs, outputs, randomOdd, sleep } from "./src/constants/functions.js";
 bot["commands"] = new Discord.Collection();
 bot["rpgcommands"] = new Discord.Collection();
 
 require("dotenv").config();
 
+const config = JSON.parse(fs.readFileSync("./config.json").toString())
 let token;
 let prefix: string;
 let rpgprefix: string;
-if (production) {
+if (config.production) {
   token = process.env["token"]
-  prefix = proPrefix[0]
-  rpgprefix = proPrefix[1]
+  prefix = config.proPrefix[0]
+  rpgprefix = config.proPrefix[1]
+  config.prefix = config.proPrefix[0]
+  config.rpgprefix = config.proPrefix[1]
 }
 else {
   token = process.env["othertoken"]
-  prefix = devPrefix[0]
-  rpgprefix = devPrefix[1]
+  prefix = config.devPrefix[0]
+  rpgprefix = config.devPrefix[1]
+  config.prefix = config.devPrefix[0]
+  config.rpgprefix = config.devPrefix[1]
 }
+fs.writeFileSync("./config.json",JSON.stringify(config, null, 2))
+
 
 const rpgkey = process.env["rpgkey"];
 const firebasekey = process.env["firebasekey"];
@@ -150,15 +153,15 @@ console.log("initialized firebase " + timePast());
 let humantraffickingicon;
 bot.on("ready", () => {
   fulllog("Bot Ready at " + new Date().toString());
-  if (production) {
+  if (config.production) {
     humantraffickingicon = setInterval(() => nameChange(), 700000);
     covidScheduleSetup();
-    syncEmotes();
+    
     console.log("synced Emotes " + timePast());
     bot["countDown"] = countDown()
     fulllog("Countdown setup at " + new Date().toString())
   }
-  
+  syncEmotes();
   changeStatus(bot);
   fulllog("Changing status at " + new Date().toString());
   
@@ -315,7 +318,7 @@ bot.on("message", async (message) => {
         let guildRef = db.collection("reactions").doc(message.guild.id);
         let rGet = await guildRef.get();
         let r;
-        if (r.exists) {
+        if (rGet.exists) {
           r = rGet.data();
         } else {
           r = { reactions: {}, users: {} };
@@ -594,7 +597,7 @@ bot.on("message", async (message) => {
 
       if (message.guild.id == "720351714791915520") {
         if (message.channel.parentID == "781939212416581654") {
-          if (message.author.id != ownerID) {
+          if (message.author.id != config.ownerID) {
             return;
           }
           var receive = await bot.users.fetch(message.channel.name);
@@ -706,7 +709,7 @@ bot.on("message", async (message) => {
         if (temp.split(" ").includes("im") && temp.split(" ").includes("god")) {
           return message.channel.send("You are not god. **I am God**.");
         }
-        if (message.author.id == ownerID) {
+        if (message.author.id == config.ownerID) {
           if (
             !(
               temp.split(" ").includes("matthew") ||
@@ -1272,13 +1275,13 @@ async function nameChange() {
 }
 
 async function syncEmotes() {
-  let e = JSON.parse(fs.readFileSync("serveremotes.json").toString());
+  let e = JSON.parse(fs.readFileSync(require.resolve("@constants/serveremotes.json")).toString());
   let emojiCache = await bot.emojis.cache;
   let emojis = emojiCache.array();
   for (let i = 0; i < emojis.length; i++) {
     e[emojis[i].name] = emojis[i].id;
   }
-  fs.writeFileSync("serveremotes.json", JSON.stringify(e, null, 2));
+  fs.writeFileSync(require.resolve("@constants/serveremotes.json"), JSON.stringify(e, null, 2));
 }
 
 async function botUpdates(message) {

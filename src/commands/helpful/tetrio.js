@@ -1,4 +1,4 @@
-const { prefix, ownerID } = require("@config");
+const { prefix, ownerID } = require("@root/config.json");
 const fs = require('fs');
 const Discord = require('discord.js');
 const https = require('https')
@@ -68,7 +68,7 @@ module.exports = {
 					trlb = trlb.sort((a,b) => b.tr - a.tr)
 					var text = ""
 					
-					var serveremotes = JSON.parse(fs.readFileSync('serveremotes.json').toString())
+					var serveremotes = JSON.parse(fs.readFileSync(require.resolve("@constants/serveremotes.json")).toString())
 					
 					for (i=0;i<trlb.length;i++) {
 						var rank = trlb[i].rank

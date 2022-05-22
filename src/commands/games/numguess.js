@@ -1,4 +1,4 @@
-const { prefix, token } = require("@config");
+const { prefix, token } = require("@root/config.json");
 const fs = require('fs');
 const Discord = require('discord.js');
 const emoji = require('@constants/emojiCharacters.js')

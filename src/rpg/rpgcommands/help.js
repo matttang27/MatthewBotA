@@ -1,4 +1,4 @@
-const { prefix, token, ownerID,rpgprefix } = require("@config");
+const { prefix, token, ownerID,rpgprefix } = require("@root/config.json");
 
 module.exports = {
 	args: [0,1],

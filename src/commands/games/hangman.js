@@ -1,4 +1,4 @@
-const { prefix, token } = require("@config");
+const { prefix, token } = require("@root/config.json");
 const {embedError} = require("@functions");
 const path = require("path");
 const fs = require('fs');

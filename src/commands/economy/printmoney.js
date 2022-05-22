@@ -1,4 +1,4 @@
-const { prefix, token, workcd } = require("@config");
+const { prefix, token, workcd } = require("@root/config.json");
 const fs = require('fs');
 const Discord = require('discord.js');
 const minutesToMessage = require('@functions')

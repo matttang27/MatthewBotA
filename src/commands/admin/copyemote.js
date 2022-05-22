@@ -1,4 +1,4 @@
-const { prefix, token } = require("@config");
+const { prefix, token } = require("@root/config.json");
 const fs = require('fs');
 const Discord = require('discord.js');
 
@@ -14,16 +14,21 @@ module.exports = {
 		var bot = other[1]
 		var commandName = other[2]
 		if (message.guild.emojis)
-		var emotes = JSON.parse(fs.readFileSync('serveremotes.json').toString());
+		var emotes = JSON.parse(fs.readFileSync(require.resolve('@constants/serveremotes.json')).toString());
 		var emoji = await bot.emojis.resolve(args[0])
+		//copy from emote id
 		if (emoji) {
-			message.guild.emojis.create(emoji.url,args.length == 2 ? args[1] : emoji.name).catch((err) => {
-					return message.react('❌')
-				}).then(() => {
-					return message.react('✅')
-				})
+			try {
+				await message.guild.emojis.create(emoji.url,args.length == 2 ? args[1] : emoji.name)
+				return message.react('✅')
+			}
+			catch {
+				return message.react('❌')
+			}
+			
 			
 		}
+		//Copy from emote name
 		else {
 			if (emotes[args[0]]) {
 				emoji = await bot.emojis.resolve(emotes[args[0]])

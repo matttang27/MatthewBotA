@@ -1,4 +1,4 @@
-const { prefix, token } = require("@config");
+const { prefix, token } = require("@root/config.json");
 const Discord = require('discord.js');
 const fs = require('fs');
 const {findMember,newProfile} = require('@functions')
