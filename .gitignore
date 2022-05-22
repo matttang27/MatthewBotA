@@ -1,6 +1,5 @@
 .env
 node_modules
-servicekey.json
 package-lock.json
 .breakpoints
 assets/screenie.png
