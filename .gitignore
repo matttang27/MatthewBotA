@@ -2,8 +2,9 @@
 node_modules
 servicekey.json
 package-lock.json
-rpg/rpgservicekey.json
+src/rpg/rpgservicekey.json
 .breakpoints
-screenie.png
-serveremotes.json
+assets/screenie.png
+src/constants/serveremotes.json
 config.json
+key.json
