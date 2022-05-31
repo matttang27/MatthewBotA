@@ -1,8 +1,8 @@
-const { prefix, token } = require("@root/config.json");
+const { prefix, token } = require(require.resolve("@root/config.json"));
 const fs = require('fs');
 const Discord = require('discord.js');
 const ytdl = require('ytdl-core');
-var {newProfile} = require('@functions')
+var {newProfile} = require(require.resolve("@functions"))
 module.exports = {
 	args: [-1],
 	name: "test3",

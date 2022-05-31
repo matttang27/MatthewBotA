@@ -1,4 +1,4 @@
-const { prefix, token } = require("@root/config.json");
+const { prefix, token } = require(require.resolve("@root/config.json"));
 
 module.exports = {
 	args: [0,1],

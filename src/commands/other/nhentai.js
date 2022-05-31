@@ -1,4 +1,4 @@
-const { prefix, token } = require("@root/config.json");
+const { prefix, token } = require(require.resolve("@root/config.json"));
 const fs = require('fs');
 const Discord = require('discord.js');
 const nhentai = require('nhentai');

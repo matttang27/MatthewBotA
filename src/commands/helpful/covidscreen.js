@@ -1,4 +1,4 @@
-const { prefix, ownerID } = require("@root/config.json");
+const { prefix, ownerID } = require(require.resolve("@root/config.json"));
 const fs = require('fs');
 const Discord = require('discord.js');
 var admin = require("firebase-admin");

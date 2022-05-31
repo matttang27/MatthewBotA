@@ -1,7 +1,7 @@
 const {
     prefix,
     token
-} = require("@root/config.json");
+} = require(require.resolve("@root/config.json"));
 const fs = require('fs');
 const Discord = require('discord.js');
 module.exports = {

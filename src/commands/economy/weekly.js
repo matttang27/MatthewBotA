@@ -1,7 +1,7 @@
-const { prefix, token, weeklycd, ownerID } = require("@root/config.json");
+const { prefix, token, weeklycd, ownerID } = require(require.resolve("@root/config.json"));
 const fs = require('fs');
 const Discord = require('discord.js');
-const minutesToMessage = require('@functions')
+const minutesToMessage = require(require.resolve("@functions"))
 
 module.exports = {
 	args: [0],

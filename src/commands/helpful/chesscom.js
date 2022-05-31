@@ -1,9 +1,9 @@
-const { prefix, ownerID } = require("@root/config.json");
+const { prefix, ownerID } = require(require.resolve("@root/config.json"));
 const fs = require('fs');
 const Discord = require('discord.js');
 const chars = require("@constants/emojiCharacters.js")
 const ChessWebAPI = require('chess-web-api');
-const { embedError } = require('@functions')
+const { embedError } = require(require.resolve("@functions"))
 
 module.exports = {
   args: [-1],
