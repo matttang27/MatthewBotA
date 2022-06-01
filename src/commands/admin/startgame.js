@@ -11,8 +11,8 @@ module.exports = {
 	perms: ["MATTHEW"],
 	status: 'closed',
 	async execute(message, args, other) {
-		var db = other[0].firestore()
-		var firestore = other[0].firestore
+		var db = other["admin"].firestore()
+		var firestore = other["admin"].firestore
 		var gameNum = args[0]
 		
 		const gameRef = db.collection('games').doc(gameNum);

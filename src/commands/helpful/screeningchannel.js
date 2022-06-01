@@ -15,10 +15,10 @@ module.exports = {
   perms: [],
   async execute(message, args, other) {
     try {
-      var admin = other[0]
-      var bot = other[1]
-      var commandName = other[2]
-      let db = admin.firestore()
+      var admin = other["admin"]
+      var bot = other["bot"]
+      var commandName = other["commandName"]
+      let db = other["db"]
       if (args.length == 0 || !["create","add","list","remove"].includes(args[0])) {
         return message.channel.send(new Discord.MessageEmbed().setTitle("m!sc commands").setDescription("**create** - Creates a screening channel (or else Matthew Bot can't send anything)\n\n**list** - Lists all times Matthew Bot sends a covid screen\n\n**add** - Add a time for Matthew Bot to send a covid screen.\n\n**remove** - Removes a time"))
       }

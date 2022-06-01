@@ -12,13 +12,13 @@ module.exports = {
 	perms: [],
 	async execute(message, args, other) {
 
-		var admin = other[0]
+		var admin = other["admin"]
 		var firestore = admin.firestore
-		var db = admin.firestore()
+		var db = other["db"]
 		var FieldValue = firestore.FieldValue
 		let users = db.collection('users');
-		var bot = other[1]
-		var commandName = other[2]
+		var bot = other["bot"]
+		var commandName = other["commandName"]
 		var words = require("an-array-of-english-words")
 		var game = ""
 		var player;

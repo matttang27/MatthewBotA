@@ -10,8 +10,8 @@ module.exports = {
 	usage: `${prefix}suggest <stuff>`,
 	perms: [],
 	async execute(message, args, other) {
-		admin = other[0]
-		var db = admin.firestore()
+		admin = other["admin"]
+		var db = other["db"]
 		let suggestRef = db.collection("extra").doc("suggestions")
 		let s = await suggestRef.get()
 		if (s.exists) {

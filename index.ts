@@ -135,12 +135,12 @@ let rpgserviceAccount = require("./src/rpg/rpgservicekey.json");
 rpgserviceAccount.private_key = rpgkey.replace(/\\n/g, "\n");
 serviceAccount.private_key = firebasekey.replace(/\\n/g, "\n");
 
-admin.initializeApp({
+initializeApp({
   credential: admin.cert(serviceAccount),
   storageBucket: "tosbot.appspot.com",
 });
 
-var rpgadmin = admin.initializeApp(
+initializeApp(
   {
     credential: admin.cert(rpgserviceAccount),
   },
@@ -875,12 +875,8 @@ bot.on("message", async (message) => {
       await message.channel.send("usage: " + command.usage);
       return;
     }
-    let other = []
-    if (type == "bot") {
-      other = [admin, bot, commandName];
-    } else {
-      other = [rpgadmin, bot, commandName];
-    }
+    let other = {"admin":admin,"bot":bot,"commandName":commandName,"db":db,"storage":storage}
+    
 
     if (command.status == "wip") {
       return message.channel.send(

@@ -10,10 +10,10 @@ module.exports = {
 	perms: ["MATTHEW"],
 	reload: true,
 	async execute(message, args, other) {
-		var admin = other[0]
-		var bot = other[1]
-    let db = admin.firestore()
-		var commandName = other[2]
+		var admin = other["admin"]
+		var bot = other["bot"]
+    let db = other["db"]
+		var commandName = other["commandName"]
 		var serverQueue = other[3]
     let covids = await db.collection('covidscreening')
 

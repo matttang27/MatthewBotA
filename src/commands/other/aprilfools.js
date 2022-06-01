@@ -10,9 +10,9 @@ module.exports = {
 	usage: `${prefix}aprilfools`,
 	perms: ["MANAGE_CHANNELS","MANAGE_ROLES","MANAGE_GUILD","MANAGE_NICKNAMES","CHANGE_NICKNAME"],
 	async execute(message, args, other) {
-		var admin = other[0]
-		var bot = other[1]
-		var commandName = other[2]
+		var admin = other["admin"]
+		var bot = other["bot"]
+		var commandName = other["commandName"]
 		var serverQueue = other[3]
 
 		var firestore = admin.firestore

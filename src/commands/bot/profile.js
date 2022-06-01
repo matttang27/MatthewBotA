@@ -13,10 +13,10 @@ module.exports = {
 	perms: [],
 	
 	async execute(message, args, other) {
-		var admin = other[0]
-		var bot = other[1]
-		var commandName = other[2]
-		var db = admin.firestore()
+		var admin = other["admin"]
+		var bot = other["bot"]
+		var commandName = other["commandName"]
+		var db = other["db"]
 		var firestore = admin.firestore
 		
 		function createEmbed(user,userData) {
@@ -40,8 +40,8 @@ module.exports = {
 
 
 		//start here
-		var db = other[0].firestore()
-		var firestore = other[0].firestore
+		var db = other["db"]
+		var firestore = other["admin"].firestore
 		var userNum = message.author.id
 		var target = args[0]
 		if (args.length >= 1) {
@@ -93,7 +93,7 @@ module.exports = {
 			}
 			
 			else {
-				user = await other[1].users.fetch(userNum)
+				user = await other["bot"].users.fetch(userNum)
 
 				
 				

@@ -10,9 +10,9 @@ module.exports = {
 	usage: `${prefix}copyemotes <guild id>`,
 	perms: [0x0040000000],
 	async execute(message, args, other) {
-		var admin = other[0]
-		var bot = other[1]
-		var commandName = other[2]
+		var admin = other["admin"]
+		var bot = other["bot"]
+		var commandName = other["commandName"]
 		
 		console.log("syncing emotes")
 		var emoji = await bot.guilds.fetch(args[0])

@@ -12,10 +12,10 @@ module.exports = {
 	perms: [],
 	status: 'closed',
 	async execute(message, args, other) {
-		var admin = other[0]
-		var bot = other[1]
-		var commandName = other[2]
-		var db = admin.firestore()
+		var admin = other["admin"]
+		var bot = other["bot"]
+		var commandName = other["commandName"]
+		var db = other["db"]
 		var firestore = admin.firestore
 		var money = 0
 

@@ -9,9 +9,9 @@ module.exports = {
 	perms: [],
 	execute(message, args, other) {
 		var ping = Date.now() - message.createdAt;
-		if (other[2] == "ping") {
+		if (other["commandName"] == "ping") {
 			var added = ":ping_pong: Pong! ";
-		} else if (other[2] == "pong") {
+		} else if (other["commandName"] == "pong") {
 			var added = ":ping_pong: Ping! ";
 		} else {
 			var added = "Ping: ";

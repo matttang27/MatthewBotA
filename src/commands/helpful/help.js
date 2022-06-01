@@ -12,7 +12,7 @@ module.exports = {
 	perms: [],
 
 	execute(message, args, other) {
-		var bot = other[1];
+		var bot = other["bot"];
 		var commandlist = { ...bot.commandlist };
 		var keys = Object.keys(commandlist);
 

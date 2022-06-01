@@ -11,7 +11,7 @@ module.exports = {
 	usage: `${prefix}covidscreen <opt. device | x pixels> <y pixels>`,
 	perms: [],
 	async execute(message, args, other) {
-		var admin = other[0]
+		var admin = other["admin"]
 		var bucket = admin.storage().bucket()
 		var content;
 		

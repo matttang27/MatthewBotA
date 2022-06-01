@@ -10,9 +10,9 @@ module.exports = {
 	usage: `${prefix}copyemote <emojiid / emote name> <opt custom name>`,
 	perms: [0x0040000000],
 	async execute(message, args, other) {
-		var admin = other[0]
-		var bot = other[1]
-		var commandName = other[2]
+		var admin = other["admin"]
+		var bot = other["bot"]
+		var commandName = other["commandName"]
 		if (message.guild.emojis)
 		var emotes = JSON.parse(fs.readFileSync(require.resolve('@constants/serveremotes.json')).toString());
 		var emoji = await bot.emojis.resolve(args[0])

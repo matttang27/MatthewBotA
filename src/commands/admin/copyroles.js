@@ -9,9 +9,9 @@ module.exports = {
 	usage: `${prefix}copyroles <servertocopyfrom>`,
 	perms: ["MANAGE_ROLES"],
 	async execute(message, args, other) {
-		var admin = other[0]
-		var bot = other[1]
-		var commandName = other[2]
+		var admin = other["admin"]
+		var bot = other["bot"]
+		var commandName = other["commandName"]
 
 		var roles = message.guild.roles
 		var origin = await bot.guilds.fetch(args[0])

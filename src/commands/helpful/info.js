@@ -9,9 +9,9 @@ module.exports = {
 	usage: `${prefix}info <ID or mention>`,
 	perms: ["MATTHEW"],
 	async execute(message, args, other) {
-		var admin = other[0]
-		var bot = other[1]
-		var commandName = other[2]
+		var admin = other["admin"]
+		var bot = other["bot"]
+		var commandName = other["commandName"]
 		var alias = []
 		var guilds = []
 		var guildlist = bot.guilds.cache.array()

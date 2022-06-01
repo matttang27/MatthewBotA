@@ -11,8 +11,8 @@ module.exports = {
 	status: "wip",
 	async execute(message, args, other) {
 
-		const db = other[0].firestore()
-		const firestore = other[0].firestore
+		const db = other["db"];
+		const firestore = other["admin"].firestore
 
 
 

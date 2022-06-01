@@ -1,4 +1,4 @@
-var db = admin.firestore()
+var db = other["db"]
 let guildRef = db.collection("extra").doc("edward")
 let r = JSON.parse(fs.readFileSync('edward.json').toString());
 guildRef.set(r)
