@@ -74,7 +74,7 @@ module.exports = {
 				
 
 	
-				message.channel.send(embed)
+				message.channel.send({ embeds: [embed]})
 
 				results = `<@${players[0].id}>-${moves[move[0]]} -- ${moves[move[1]]}-<@${players[1].id}>`
 				message.channel.send("results:\n" + results)

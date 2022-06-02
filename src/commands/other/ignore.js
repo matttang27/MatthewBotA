@@ -14,7 +14,7 @@ module.exports = {
 		var commandName = other["commandName"]
 
 		message.delete()
-		var members = await message.channel.members.array()
+		var members = await Array.from(message.channel.members)
 		if (members.splice(members.indexOf(args[0]),1).length == 0) {
 			return message.channel.send("I need an actual member!")
 		}

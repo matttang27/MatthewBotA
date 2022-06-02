@@ -14,8 +14,8 @@ module.exports = {
 		var commandName = other["commandName"]
 		var alias = []
 		var guilds = []
-		var guildlist = bot.guilds.cache.array()
-		console.log(bot.users.cache.array())
+		var guildlist = Array.from(bot.guilds.cache)
+		console.log(Array.from(bot.users.cache))
 		console.log()
 		var author = message.mentions.users.first() ? message.mentions.users.first() : await bot.users.fetch(args[0])
 		console.log("part 1")
@@ -36,7 +36,7 @@ module.exports = {
 		.addField("a.k.a", alias.length > 0 ? alias.join(",") : "None.")
 		.addField("In Guilds: ", guilds.length > 0 ? guilds.join(", ") : "None.")
 		.setImage(author.avatarURL)
-		var sended = await message.channel.send(embed)
+		var sended = await message.channel.send({ embeds: [embed]})
 		sended.pin();
 	}
 }

@@ -19,7 +19,7 @@ module.exports = {
 		var commandName = other["commandName"]
 
 		
-		var mention = message.mentions.members.array()
+		var mention = Array.from(message.mentions.members)
 		
 		if (message.channel.type == "dm") {
 			return message.reply("Sorry but you can only battle in a guild!")

@@ -44,7 +44,7 @@ module.exports = {
 
 
 		var reactions = message.reactions.cache;
-		reactions = reactions.array()
+		reactions = Array.from(reactions)
 		var users = []
 		var j = []
 		var k = []
@@ -54,7 +54,7 @@ module.exports = {
 		console.log("\n\n\n\n\n")
 		var m = []
 		for (i=0;i<j.length;i++) {
-			m.push(j[i].array())
+			m.push(Array.from(j[i]))
 		}
 		console.log(m)
 		for (i=0;i<m.length;i++) {

@@ -19,7 +19,7 @@ module.exports = {
             if (details.length == 0) {
                 embed.setColor("#FF0000");
                 embed.setTitle = (args[0] + " is not a word!")
-                return message.channel.send(embed);
+                return message.channel.send({ embeds: [embed]});
             }
             
             details.forEach(function(detail) {
@@ -37,7 +37,7 @@ module.exports = {
                     embed.addField(`Example #${counter}`,example)
                     counter++;
                 });
-                message.channel.send(embed);
+                message.channel.send({ embeds: [embed]});
             });
         });
 		

@@ -67,7 +67,7 @@ module.exports = {
 			.setTimestamp()
 			.setFooter(`Matthew Bot Coolodowns`);
 
-		message.channel.send(embed)
+		message.channel.send({ embeds: [embed]})
 
 		
 	}

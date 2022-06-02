@@ -1,6 +1,7 @@
 const { prefix, ownerID} = require(require.resolve("@root/config.json"));
 const token = process.env['token'];
-const fetch = require('node-fetch')
+const fetch = require('node-fetch');
+//if you get an error here, downgrade node-fetch to 2.6.6
 module.exports = {
 	args: [-1],
 	name: "reply",

@@ -47,7 +47,7 @@ module.exports = {
 		if (args.length >= 1) {
 			
 			var member = findMember(message,args)
-			var guildlist = bot.guilds.cache.array()
+			var guildlist = Array.from(bot.guilds.cache)
 			for (i=0;i<guildlist.length;i++) {
 				if (guildlist[i].members.fetch(member) != undefined) {
 					member = await bot.users.fetch(member);
@@ -89,7 +89,7 @@ module.exports = {
 				}
 				fs.writeFileSync('players.json', JSON.stringify(p,null,2));
 				embed = createEmbed(message.author,userData)
-				return message.channel.send(embed)
+				return message.channel.send({ embeds: [embed]})
 			}
 			
 			else {

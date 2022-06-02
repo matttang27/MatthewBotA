@@ -19,7 +19,7 @@ module.exports = {
 		var firestore = admin.firestore
 		
 
-		var mention = message.mentions.members.array()
+		var mention = Array.from(message.mentions.members)
 		if (!(!isNaN(args[0]) && parseInt(Number(args[0])) == args[0] && !isNaN(parseInt(args[0], 10)))) {
 			return message.channel.send("Not a valid number!")
 		}
