@@ -21,7 +21,7 @@ module.exports = {
 		
 		var mention = Array.from(message.mentions.members)
 		
-		if (message.channel.type == "dm") {
+		if (message.channel.type == "DM") {
 			return message.reply("Sorry but you can only battle in a guild!")
 		}
 		

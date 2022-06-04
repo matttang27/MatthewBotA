@@ -29,7 +29,7 @@ console.log("imported discord " + timePast());
 import https = require("https");
 console.log("imported https " + timePast());
 let allIntents = new Discord.Intents(32768);
-var bot = new Discord.Client({intents: allIntents});
+var bot = new Discord.Client({intents: ["GUILDS","GUILD_MESSAGES","DIRECT_MESSAGES","GUILD_MEMBERS","GUILD_EMOJIS_AND_STICKERS","GUILD_EMOJIS_AND_STICKERS","DIRECT_MESSAGE_REACTIONS"]});
 console.log("created bot instance " + timePast());
 console.log("imported compress_images" + timePast());
 import cron = require("cron"); 
@@ -42,7 +42,7 @@ console.log("console error,info,warn" + timePast());
 import fetch = require('node-fetch');
 
 
-import { changeStatus } from "./src/constants/functions.js";
+import { changeStatus, cleanup, inputs, outputs, randomOdd, sleep } from "./src/constants/functions.js";
 bot["commands"] = new Discord.Collection();
 bot["rpgcommands"] = new Discord.Collection();
 
@@ -177,11 +177,9 @@ bot.on("messageDelete", async (message) => {});
 
 bot.on("messageUpdate", async (oldMessage, newMessage) => {});
 
-bot.on("messageCreated", async message => {
-  return message.channel.send("HI");
-})
-bot.on("messageCreate", async message => {
-  {
+
+bot.on("messageCreate", async (message) => {
+  try {
     //no bot replies
 
     if (message.author.bot && message.author.id != bot.user.id) {
@@ -197,8 +195,7 @@ bot.on("messageCreate", async message => {
         return;
       }
       let matthewGuild = await bot.guilds.fetch("720351714791915520");
-      let channel = await matthewGuild.channels.cache
-      .find(
+      let channel = await matthewGuild.channels.cache.find(
         (c) => c.name == message.author.id
       ) as Discord.TextChannel;
 
@@ -212,7 +209,7 @@ bot.on("messageCreate", async message => {
         var alias = [];
         var guilds = [];
         var guildlist = Array.from(bot.guilds.cache);
-        for (let i = 0; i < guildlist.length; i++) {
+        for (i = 0; i < guildlist.length; i++) {
           var g = guildlist[i];
           try {
             var m = await g[1].members.fetch(message.author.id);
@@ -234,7 +231,7 @@ bot.on("messageCreate", async message => {
             guilds.join(",").length > 0 ? guilds.join(",") : "None."
           )
           .setImage(message.author.displayAvatarURL.toString());
-        var sended = await channel.send({ embeds: [embed]});
+        var sended = await channel.send({embeds: [embed]});
         sended.pin();
       }
 
@@ -312,87 +309,625 @@ bot.on("messageCreate", async message => {
       message.channel.send(pingers[Math.floor(Math.random() * pingers.length)]);
     }
 
+    if (message.channel.type == "GUILD_TEXT") {
+      if (message.author.id == bot.user.id) {
+        return;
+      }
+
+      //emoji counting
+
+      var messageEmojis = message.content.match(/<:.+?:\d+>/g);
+      if (messageEmojis) {
+        let emojis = messageEmojis.map((e) => e.match(/\d+/g)[0]);
+        emojis = emojis.filter((v, i) => emojis.indexOf(v) == i);
+        let guildRef = db.collection("reactions").doc(message.guild.id);
+        let rGet = await guildRef.get();
+        let r;
+        if (rGet.exists) {
+          r = rGet.data();
+        } else {
+          r = { reactions: {}, users: {} };
+        }
+
+        for (var i = 0; i < emojis.length; i++) {
+          var e = message.guild.emojis.cache.get(emojis[i]);
+          if (!e) {
+            continue;
+          }
+          var u = message.author;
+
+          if (e.id in r.reactions) {
+            r.reactions[e.id].count++;
+          } else {
+            r.reactions[e.id] = {};
+            r.reactions[e.id]["name"] = e.name;
+            r.reactions[e.id]["count"] = 1;
+            r.reactions[e.id]["users"] = {};
+          }
+          if (u.id in r.reactions[e.id].users) {
+            r.reactions[e.id].users[u.id]++;
+          } else {
+            r.reactions[e.id].users[u.id] = 1;
+          }
+
+          if (u.id in r.users) {
+            r.users[u.id].count++;
+          } else {
+            r.users[u.id] = {};
+            r.users[u.id]["name"] = u.username;
+            r.users[u.id]["count"] = 1;
+            r.users[u.id]["reactions"] = {};
+          }
+          if (e.id in r.users[u.id].reactions) {
+            r.users[u.id].reactions[e.id]++;
+          } else {
+            r.users[u.id].reactions[e.id] = 1;
+          }
+        }
+        guildRef.set(r);
+      }
+
+      //Human trafficking cult stuff
+      if (message.guild.id == "757770623450611784") {
+        if (message.channel.id == "769979741506764844") {
+          if (!message.member.roles.cache.has("819421409934573568")) {
+            var dirty = message.guild.roles.cache.find(
+              (r) => r.name == "Horny Gang"
+            );
+            await message.member.roles.add(dirty);
+          }
+        }
+        //emoji add in #emoji-voting
+        if (message.channel.id == "837743995828174878") {
+          if (message.attachments.first()) {
+            if (!message.content) {
+              var sended = await message.channel.send({embeds:[
+                new Discord.MessageEmbed()
+                  .setTitle("Emoji Adding")
+                  .setDescription("Enter a name for you emoji:")
+                  .setColor("#00FFFF")
+              ]});
+              const collector = message.channel.createMessageCollector(
+                
+                { filter: (m) => m.author.id == message.author.id, time: 30000, max: 1 }
+              );
+              collector.on("end", (collected, reason) => {
+                if (reason == "time") {
+                  sended.edit({embeds: [
+                    new Discord.MessageEmbed()
+                      .setTitle("Emoji Adding Timed out.")
+                      .setDescription("Slowpoke :[")
+                      .setColor("#FF0000")
+                  ]});
+                } else {
+                  message.guild.emojis
+                    .create(
+                      message.attachments.first().attachment as Discord.BufferResolvable,
+                      collected.first().content
+                    )
+                    .catch((err) => {
+                      message.channel.send({embeds: [
+                        new Discord.MessageEmbed()
+                          .setTitle("Failed to add Emoji")
+                          .setDescription(
+                            "Might be because the image size is over 256kb. If it's not, give up on your dreams and die."
+                          )
+                          .setColor("#FF0000")
+                          ]});
+                    });
+                }
+              });
+            } else {
+              message.guild.emojis
+                .create(message.attachments.first().attachment as Discord.BufferResolvable, message.content)
+                .catch((err) => {
+                  message.channel.send({embeds: [
+                    new Discord.MessageEmbed()
+                      .setTitle("Failed to add Emoji")
+                      .setDescription(
+                        "Might be because the image size is over 256kb. If it's not, give up on your dreams and die."
+                      )
+                      .setColor("#FF0000")
+                      ]});
+                });
+            }
+          } else if (
+            message.content.match(/tenor/g) ||
+            message.content.match(/imgur/g)
+          ) {
+            let file = message.content;
+            message.channel.send("Enter a name for this emoji:");
+            message.channel
+              .awaitMessages( {
+                filter: (m) => m.author.id == message.author.id,
+                max: 1,
+                time: 30000,
+              })
+              .then(async (collected) => {
+                if (collected.first()) {
+                  message.guild.emojis
+                    .create(file, collected.first().content)
+                    .catch(async (err) => {
+                      await message.channel.send(
+                        "File cannot be larger than 256.0 kb."
+                      );
+                      return
+                    });
+                } else {
+                  let sended = await message.channel.send("Command timed out.");
+                  return
+                }
+              });
+          }
+        }
+
+        //only rolling in human trafficking channels
+        if (
+          message.channel.id != "834128407536861284" &&
+          message.channel.id != "834132436136230942"
+        ) {
+          var c = message.content;
+          if (
+            c == "$wa" ||
+            c == "$wg" ||
+            c == "$ha" ||
+            c == "$hg" ||
+            c == "$ma" ||
+            c == "$mg"
+          ) {
+            message.delete();
+            message.channel.send(
+              "Rolling waifus are only allowed in the <#757977875059179602> channel!"
+            );
+            message.member.roles.add(
+              message.guild.roles.cache.find((r) => r.name == "Muted")
+            );
+            setTimeout(function () {
+              message.member.roles.remove(
+                message.guild.roles.cache.find((r) => r.name == "Muted")
+              );
+            }, 10000);
+            return;
+          }
+        }
+        var clean = message.content.replace(/\W/g, "").toLowerCase();
+        if (clean == "imadegeneratetoo") {
+          var act = message.guild.roles.cache.find(
+            (r) => r.name == "Human Rights Activist"
+          );
+          if (message.member.roles.cache.has("776509222145228870")) {
+            message.channel.send(
+              `${message.author.username} is now a degenerate!`
+            );
+            message.member.roles.remove(act);
+            return;
+          } else {
+            message.channel.send(`${message.author.username} is a degenerate.`);
+          }
+        }
+        if (clean == "yallarefuckingdegenerates") {
+          var act = message.guild.roles.cache.find(
+            (r) => r.name == "Human Rights Activist"
+          );
+          if (message.member.roles.cache.has("776509222145228870")) {
+            message.channel.send(`We know`);
+            message.member.roles.remove(act);
+            return;
+          } else {
+            message.channel.send(
+              
+              {
+                content: `${message.author.username} is now a <@&776509222145228870>!`,
+                allowedMentions: {
+                  users: [],
+                },
+              }
+            );
+            message.member.roles.add(act);
+            return;
+          }
+        }
+        if (clean == "procrastinationtime") {
+          var act = message.guild.roles.cache.find(
+            (r) => r.name == "Responsible Person"
+          );
+          if (message.member.roles.cache.has("770826236158410762")) {
+            message.channel.send(
+              `${message.author.username} is now a Procrastinator!`
+            );
+            message.member.roles.remove(act);
+            return;
+          } else {
+            message.channel.send(
+              `${message.author.username} is in Quadrant 1: Procrastinator.`
+            );
+          }
+        }
+        if (clean == "imaresponsibleboi") {
+          var act = message.guild.roles.cache.find(
+            (r) => r.name == "Responsible Person"
+          );
+          if (message.member.roles.cache.has("770826236158410762")) {
+            message.channel.send(
+              `${message.author.username} is in Quadrant 2: Something idk i wasn't listening`
+            );
+            message.member.roles.remove(act);
+            return;
+          } else {
+            message.channel.send(
+              
+              {
+                content: `${message.author.username} is now a <@&770826236158410762>!`,
+                allowedMentions: {
+                  users: [],
+                },
+              }
+            );
+            message.member.roles.add(act);
+            return;
+          }
+        }
+        if (clean == "imapervert") {
+          var act = message.guild.roles.cache.find((r) => r.name == "Innocent");
+          var dirty = message.guild.roles.cache.find(
+            (r) => r.name == "Horny Gang"
+          );
+          if (message.member.roles.cache.has("784135793987682384")) {
+            message.channel.send(
+              `${message.author.username} couldn't fight the *urge*`
+            );
+            await message.member.roles.add(dirty);
+            message.member.roles.remove(act);
+            return;
+          } else {
+            message.channel.send(
+              `${message.author.username}...h-h-***hentaii!***`
+            );
+          }
+        }
+        if (clean == "imunder18") {
+          var act = message.guild.roles.cache.find((r) => r.name == "Innocent");
+          var dirty = message.guild.roles.cache.find(
+            (r) => r.name == "Horny Gang"
+          );
+          if (message.member.roles.cache.has("784135793987682384")) {
+            message.channel.send(
+              `${message.author.username} doesn't know anything :sweat:`
+            );
+            await message.member.roles.remove(dirty);
+          } else {
+            message.channel.send(
+              
+              {
+                content: `${message.author.username} is now <@&784135793987682384>!`,
+                allowedMentions: {
+                  users: [],
+                },
+              }
+            );
+            await message.member.roles.remove(dirty);
+            message.member.roles.add(act);
+            return;
+          }
+        }
+      }
+      //Matthew Bot Testing stuff
+
+      if (message.guild.id == "720351714791915520") {
+        if (message.channel.parentId == "781939212416581654") {
+          if (message.author.id != config.ownerID) {
+            return;
+          }
+          var receive = await bot.users.fetch(message.channel.name);
+          receive.send(message.content);
+        }
+        if (message.channel.id == "894262071116566558") {
+          botUpdates(message.content);
+        }
+      }
+
+      //E Company stuff
+      if (message.guild.id == "712382129673338991") {
+        if (message.author.id == "351164483256975360") {
+          let kellydata = db.collection("extra").doc("kellycount");
+          let dataGet = await kellydata.get();
+          let data = dataGet.data();
+          console.log(data);
+          data.count += 1;
+          kellydata.set(data);
+          let extra = "";
+          switch (data.count) {
+            case 50:
+              extra = "Halfway";
+              break;
+            case 69:
+              extra = "nice.";
+              break;
+            case 100:
+              extra = "The journey begins...";
+              break;
+            case 250:
+              extra = "The delayer.";
+              break;
+            case 500:
+              extra = "The postponer.";
+              break;
+            case 1000:
+              extra = "THE PROCRASTINATOR";
+              break;
+          }
+          let embed = new Discord.MessageEmbed()
+            .setTitle(`Go study Kelly.`)
+            .setFooter(`I have told you ${data.count} times.`);
+          message.reply({embeds: [embed]});
+          if (extra != "") {
+            message.channel.send({embeds: [
+              new Discord.MessageEmbed()
+                .setTitle(`New achievement: ${extra}`)
+                .setColor("#FFD700")
+            ]});
+          }
+        }
+      }
+    }
+
+    if (message.author.id == "518232676411637780") {
+      message.react("827007959363223562").catch((err) => {
+        if (message.channel.type != "DM") {console.log(`reaction failed in ${message.channel.name} of ${message.guild.name}`);}
+      });
+    }
+    if (message.content.startsWith(prefix)) {
+      type = "bot";
+    } else if (message.content.startsWith(rpgprefix)) {
+      type = "rpg";
+    }
+    //checks if matthew bot or rpg bot is called
+    if (!type) {
+      temp = cleanup(temp);
+      if (temp != "") {
+        for (i = 0; i < inputs.length; i++) {
+          for (j = 0; j < inputs[i].length; j++) {
+            if (temp.includes(inputs[i][j])) {
+              for (let k = 0; k < outputs[i].length; k++) {
+                message.channel.send(outputs[i][k]);
+              }
+              return;
+            }
+          }
+        }
+        if (temp.length == 1 && temp.includes("e")) {
+          var sended = await message.channel.send("E");
+          if (message.author.id == "351164483256975360") {
+            await sleep(1000);
+            sended.edit("You thought");
+            return;
+          }
+          if (randomOdd(50)) {
+            await sleep(1000);
+            sended.edit("You thought");
+            return;
+          } else {
+            return;
+          }
+        }
+        if (
+          (temp.split(" ").includes("david") ||
+            temp.split(" ").includes("davids")) &&
+          temp.split(" ").includes("yasuo")
+        ) {
+          message.react("🤡");
+        }
+        if (temp.split(" ").includes("clown")) {
+          message.react("🤡");
+        }
+        if (temp.match(/Cog+ers/gi)) {
+          message.react("<coggers:919643778074177628>");
+        }
+        if (temp.split(" ").includes("masteryu")) {
+          message.channel.send("<:masteryu:827007959363223562>");
+        }
+        if (temp.split(" ").includes("im") && temp.split(" ").includes("god")) {
+          message.channel.send("You are not god. **I am God**.");
+        }
+        if (message.author.id == config.ownerID) {
+          if (
+            !(
+              temp.split(" ").includes("matthew") ||
+              temp.split(" ").includes("matthewbot")
+            )
+          ) {
+          } else {
+            for (i = 0; i < temp.split(" ").length; i++) {
+              if (praise.includes(temp.split(" ")[i])) {
+                message.channel.send(
+                  "https:cdn.discordapp.com/attachments/720351714791915523/764105109536768020/unknown.png"
+                );
+                return;
+              }
+            }
+          }
+        }
+        if (temp.includes("abdullah")) {
+          if (!temp.includes("supreme") || !temp.includes("leader")) {
+            message.channel.send(
+              "You must refer to him as Supreme Leader Abdullah!"
+            );
+          } else {
+            message.channel.send(
+              "All hail Supreme Leader Abdullah! <:hotabdullahcrop:746455282921636021> "
+            );
+          }
+          return;
+        }
+        if (
+          temp.split(" ").includes("mai") ||
+          temp.split(" ").includes("maisan")
+        ) {
+          message.react("809523703138091108").catch((err) => {
+            if (message.channel.type != "DM") {console.log(`reaction failed in ${message.channel.name} of ${message.guild.name}`)};
+          });
+        }
+        if (
+          temp.charAt(0) == "a" &&
+          temp.slice(1).split("y").join("").length == 0 &&
+          temp.length != 1
+        ) {
+          message.channel.send("(☞ﾟヮﾟ)☞ ☜(ﾟヮﾟ☜) **Ayyyyy**");
+          return;
+        }
+        if (
+          temp.split(" ")[temp.split(" ").indexOf("big") + 1] == "brother" ||
+          temp.split(" ").includes("bb")
+        ) {
+          var bigbrother = [
+            "💖",
+            "❤️",
+            "👏",
+            "👍",
+            "💪",
+            "👁️",
+            "👁‍🗨",
+            "🥳",
+            "📷",
+            "🎉",
+          ];
+          for (var i = bigbrother.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            let temp = bigbrother[i];
+            bigbrother[i] = bigbrother[j];
+            bigbrother[j] = temp;
+          }
+          for (i = 0; i < 4; i++) {
+            message.react(bigbrother[i]).catch((err) => {
+              if (message.channel.type != "DM") {console.log(`reaction failed in ${message.channel.name} of ${message.guild.name}`)};
+            });
+          }
+        }
+        if (temp.includes("just do it")) {
+          message.react("🎷");
+        }
+        if (
+          temp.includes("suck") &&
+          temp.includes("i") &&
+          message.author.id == "306512867232972802"
+        ) {
+          message.channel.send("https://i.imgur.com/1pQHxXd.png");
+          return;
+        }
+      }
+      return;
+    }
+
+    //gets the arguments by slicing the prefix, and splitting them into an array
+    const args = message.content.slice(prefix.length).trim().split(/ +/g);
+    const commandName = args.shift().toLowerCase();
+
+    console.log(commandName + " from " + message.author.username);
+    console.log(args);
+
+    let command = null;
+    //check if command exists for both prefix and rpgprefix
+    if (type == "bot") {
+      command =
+        bot["commands"].get(commandName) ||
+        bot["commands"].find(
+          (cmd) => cmd.aliases && cmd.aliases.includes(commandName)
+        );
+    } else {
+      command =
+        bot["rpgcommands"].get(commandName) ||
+        bot["rpgcommands"].find(
+          (cmd) => cmd.aliases && cmd.aliases.includes(commandName)
+        );
+    }
+
+    if (!command) {
+      return;
+    }
+    //nsfw check
+    if (command.nsfw && (message.channel.type == "GUILD_TEXT" &&  message.channel.nsfw)) {
+      message.reply(
+        "THIS IS A WHOLESOME AND SAFE CHANNEL! THAT COMMAND CANNOT BE USED HERE."
+      );
+      return;
+    }
+    /*checks whether the user has the permissions required for the matthew bot commmand*/
+    //if admin, skip this part
+
+    if (command.perms.includes("MATTHEW")) {
+      if (message.author.id != "576031405037977600") {
+        message.channel.send({embeds:[
+          new Discord.MessageEmbed()
+            .setTitle("Nice try...")
+            .setColor("RED")
+            .setDescription(`Can't do that mate you ain't Matthew`)
+        ]});
+        return;
+      }
+    }
+    if (
+      !(
+        message.channel.type != "DM" ||
+        message.member.permissions.has("ADMINISTRATOR")
+      )
+    ) {
+      let perms = command.perms;
+      let missing = [];
+      for (const perm of perms) {
+        if (!message.member.permissions.has(perm)) {
+          missing.push(perm);
+        }
+      }
+      if (missing.length > 0) {
+        message.channel.send({embeds:[
+          new Discord.MessageEmbed()
+            .setTitle("Missing Permissions")
+            .setColor("RED")
+            .setDescription(
+              `You are missing the following permissions for the **m!${
+                command.name
+              }** command: \`${missing.join(", ")}\``
+            )
+            ]});
+        return;
+      }
+    }
+
+    //args check
+    if (!command.args.includes(-1) && !command.args.includes(args.length)) {
+      await message.reply(
+        "Are you sure that was the right number of arguments?"
+      );
+      await message.channel.send("usage: " + command.usage);
+      return;
+    }
+    let other = {"admin":admin,"bot":bot,"commandName":commandName,"db":db,"storage":storage}
     
-  
 
-}});
-
-let ignore = ["576031405037977600"];
-
-bot.on("messageReactionAdd", async function (reaction, user) {
-  try {
-    if (user.bot) {
+    if (command.status == "wip") {
+      message.channel.send(
+        "That command is currently a WIP, please check again later (or pester Matthew to code it faster)"
+      );
+      return;
+    } else if (command.status == "closed") {
+      message.channel.send(
+        "That command is currently closed. Either Matthew hasn't started coding, or it isn't needed."
+      );
       return;
     }
 
-    if (!(reaction.emoji instanceof Discord.GuildEmoji)) {
-      return;
+    try {
+      command.execute(message, args, other)
+    } catch (err) {
+      console.error(err);
     }
-    if (reaction.emoji.guild.id != reaction.message.guild.id) {
-      return;
-    }
-    let guildRef = db.collection("reactions").doc(reaction.message.guild.id);
-    let rGet = await guildRef.get();
-    let r: { [x: string]: any; reactions?: any; users?: any; };
-    if (rGet.exists) {
-      r = rGet.data();
-    } else {
-      r = { reactions: {}, users: {} };
-    }
-
-    var e = reaction.emoji;
-    var u = user;
-    if (e.id in r.reactions) {
-      r.reactions[e.id].count++;
-    } else {
-      r.reactions[e.id] = {};
-      r.reactions[e.id]["name"] = e.name;
-      r.reactions[e.id]["count"] = 1;
-      r.reactions[e.id]["users"] = {};
-    }
-    if (u.id in r.reactions[e.id].users) {
-      r.reactions[e.id].users[u.id]++;
-    } else {
-      r.reactions[e.id].users[u.id] = 1;
-    }
-
-    if (u.id in r.users) {
-      r.users[u.id].count++;
-    } else {
-      r.users[u.id] = {};
-      r.users[u.id]["name"] = u.username;
-      r.users[u.id]["count"] = 1;
-      r.users[u.id]["reactions"] = {};
-    }
-    if (e.id in r.users[u.id].reactions) {
-      r.users[u.id].reactions[e.id]++;
-    } else {
-      r.users[u.id].reactions[e.id] = 1;
-    }
-    guildRef.set(r);
   } catch (err) {
-    console.log(err);
+	console.log("TEST")
+    console.error(err);
   }
 });
-bot.on("guildMemberAdd", async (member) => {
-  filelog(member);
-  if (member.guild.id == "757770623450611784") {
-    var channel = await member.guild.channels.cache.find(
-      (c) => c.id == "843735245399785482"
-    ) as Discord.TextChannel;
-    var sended = await channel.send("<@" + member.id + ">");
-    sended.delete();
-  }
-  if (member.guild.id == "836780126741332009") {
-    var roles = await member.guild.roles.cache;
-    var origin = await bot.guilds.fetch("757770623450611784");
-    var anchor = await origin.members.fetch(member.id);
-    var oldroles = await anchor.roles.cache;
-    oldroles.each((r) => {
-      member.roles.add(roles.find((oldrole) => oldrole.name == r.name));
-    });
-  }
-});
+
+
 bot.on("raw", async (packet) => {
   if (
     packet.t == "TYPING_START" ||
@@ -432,6 +967,8 @@ bot.on("raw", async (packet) => {
 });
 //stalker time!
 
+
+let ignore = ["576031405037977600"];
 bot.on("presenceUpdate", async function (oldMember, newMember) {
   var status;
   if (!oldMember) {

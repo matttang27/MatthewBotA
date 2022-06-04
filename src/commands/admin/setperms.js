@@ -19,7 +19,7 @@ module.exports = {
 
 
 		while (true) {
-			let category = message.guild.channels.cache.find(c => c.name == `game-${counter}` && c.type == "category");
+			let category = message.guild.channels.cache.find(c => c.name == `game-${counter}` && c.type == "GUILD_CATEGORY");
 			console.log(!category)
 			if (!category) break;
 			counter++;
@@ -44,7 +44,7 @@ module.exports = {
 			for (i=0;i<names.length;i++) {
 				
 				console.log(names[i])
-				let channel = message.guild.channels.cache.find(c => c.name == `${names[i]}-${counter}` && c.type == "text")
+				let channel = message.guild.channels.cache.find(c => c.name == `${names[i]}-${counter}` && c.type == "GUILD_TEXT")
 				if (!channel) throw new Error("Channel does not exist");
 
 				channel.createOverwrite(message.guild.roles.everyone, {
@@ -92,14 +92,14 @@ Note: Everyone can talk in Other, but no information may be shared (fun comments
 		//edit permissions for each channel according to the chart
 
 		function assignPermissions(message,roles,colors,names,counter) {
-			channel = message.guild.channels.cache.find(c => c.name == `town-${counter}` && c.type == "text")
+			channel = message.guild.channels.cache.find(c => c.name == `town-${counter}` && c.type == "GUILD_TEXT")
 
 			channel.createOverwrite(message.guild.roles.cache.find(r => r.name == `alive-${counter}`).id, {
 				SEND_MESSAGES: true,
 				ADD_REACTIONS: true
 			})
 
-			channel = message.guild.channels.cache.find(c => c.name == `dead-${counter}` && c.type == "text")
+			channel = message.guild.channels.cache.find(c => c.name == `dead-${counter}` && c.type == "GUILD_TEXT")
 
 
 			channel.createOverwrite(message.guild.roles.everyone, {
@@ -113,12 +113,12 @@ Note: Everyone can talk in Other, but no information may be shared (fun comments
 				ADD_REACTIONS: true
 			})
 
-			channel = message.guild.channels.cache.find(c => c.name == `voting-${counter}` && c.type == "text")
+			channel = message.guild.channels.cache.find(c => c.name == `voting-${counter}` && c.type == "GUILD_TEXT")
 			channel.createOverwrite(message.guild.roles.cache.find(r => r.name == `alive-${counter}`).id, {
 				ADD_REACTIONS: true
 			})
 			
-			channel = message.guild.channels.cache.find(c => c.name == `other-${counter}` && c.type == "text")
+			channel = message.guild.channels.cache.find(c => c.name == `other-${counter}` && c.type == "GUILD_TEXT")
 			channel.createOverwrite(message.guild.roles.everyone, {
 				SEND_MESSAGES: true,
 				ADD_REACTIONS: true
@@ -134,7 +134,7 @@ Note: Everyone can talk in Other, but no information may be shared (fun comments
 		
 		}
 
-		channel = message.guild.channels.cache.find(c => c.name == `mafia-${counter}` && c.type == "text")
+		channel = message.guild.channels.cache.find(c => c.name == `mafia-${counter}` && c.type == "GUILD_TEXT")
 		channel.createOverwrite(message.guild.roles.everyone, {
 			VIEW_CHANNEL: false
 		})

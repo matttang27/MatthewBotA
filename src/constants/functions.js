@@ -34,7 +34,7 @@ function findMember(message, args) {
   return new Promise((resolve) => {
 
 
-    if (args.length >= 1 && message.channel.type == "dm") {
+    if (args.length >= 1 && message.channel.type == "DM") {
       message.reply("You can only search for others inside a guild!")
       return false
     }

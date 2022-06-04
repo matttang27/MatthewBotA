@@ -14,7 +14,7 @@ module.exports = {
 		var commandName = other["commandName"]
 		var type = message.channel.type
 		if (message.author.id != ownerID) {
-			if (type == "text") {
+			if (type == "GUILD_TEXT") {
 				if (!message.member.roles.cache.find(r => r.name == "Puppeteer")) {
 					return;
 				}
@@ -26,7 +26,7 @@ module.exports = {
 			return message.reply("You need a message!")
 		}
 		message.delete()
-		if (type == "text") {
+		if (type == "GUILD_TEXT") {
 			var channel = await bot.channels.fetch(args[0])
 			var message = await channel.messages.fetch(args[1])
 			for (i=0;i<args.length-2;i++) {

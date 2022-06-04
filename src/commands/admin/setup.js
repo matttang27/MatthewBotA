@@ -20,7 +20,7 @@ module.exports = {
 
 
 		while (true) {
-			let category = message.guild.channels.cache.find(c => c.name == `game-${counter}` && c.type == "category");
+			let category = message.guild.channels.cache.find(c => c.name == `game-${counter}` && c.type == "GUILD_CATEGORY");
 			console.log(!category)
 			if (!category) break;
 			counter++;
@@ -58,7 +58,7 @@ module.exports = {
 			for (i=0;i<names.length;i++) {
 				message.guild.channels.create(`${names[i]}-${counter}`)
 				.then(channel => {
-					let category = message.guild.channels.cache.find(c => c.name == `game-${counter}` && c.type == "category");
+					let category = message.guild.channels.cache.find(c => c.name == `game-${counter}` && c.type == "GUILD_CATEGORY");
 
 					if (!category) throw new Error("Category channel does not exist");
 					channel.setParent(category.id);

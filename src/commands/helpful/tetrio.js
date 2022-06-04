@@ -3,7 +3,7 @@ const fs = require('fs');
 const Discord = require('discord.js');
 const https = require('https')
 const {httpsGet,httpRequest} = require(require.resolve("@functions"))
-const chars = require("@constants/emojiCharacters.js")
+const chars = require(require.resolve("@constants/emojiCharacters.js"))
 module.exports = {
 	args: [-1],
 	name: "tetrio",

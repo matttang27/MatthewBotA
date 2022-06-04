@@ -13,7 +13,7 @@ module.exports = {
 
 		var type = message.channel.type
 		if (message.author.id != ownerID) {
-			if (type == "text") {
+			if (type == "GUILD_TEXT") {
 				if (!message.member.roles.cache.find(r => r.name == "Puppeteer")) {
 					return;
 				}
@@ -25,14 +25,14 @@ module.exports = {
 			return message.reply("You need a message!")
 		}
 		message.delete()
-		if (type == "text") {
+		if (type == "GUILD_TEXT") {
 			message.channel.send(args.join(' ')).catch(() => {
 				message.channel.send("Message cannot be empty.")
 			})
 		}
 		else {
 			message.client.users.cache.get(message.author.id).send(args.join(' ')).catch(() => {
-				if (type == "text") {
+				if (type == "GUILD_TEXT") {
 					message.channel.send("Message cannot be empty.")
 				}
 				else {
@@ -40,7 +40,7 @@ module.exports = {
 				}
 			})
 		}
-		if (type == "text") {
+		if (type == "GUILD_TEXT") {
 			console.log(`controlled by ${message.author.username} in ${message.channel.name} in ${message.guild.name}`)
 		}
 		else {
