@@ -16,13 +16,14 @@
     "console-warn": "0.0.4",
     "cron": "^2.0.0",
     "cronstrue": "^2.9.0",
-    "discord.js": "^13.7.0",
+    "discord.js": "^13.8.0",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "firebase-admin": "^10.2.0",
     "natural": "^5.2.2",
     "nhentai": "^3.0.0",
-    "node-fetch": "^2.6.6",
+    "node-fetch": "<=2.6.6",
+    "npm-check-updates": "^13.1.2",
     "uuid-v4": "^0.1.0",
     "wordnet-db": "^3.1.14",
     "ytdl-core": "^4.11.0"
@@ -34,14 +35,15 @@
   "author": "Matthew Tang",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^17.0.38",
+    "@types/node": "^17.0.41",
     "@types/node-fetch": "^2.6.1",
-    "typescript": "^4.7.2"
+    "typescript": "^4.7.3"
   },
   "_moduleAliases": {
-    "@root": ".", 
+    "@root": ".",
     "@functions": "src/constants/functions.js",
     "@commands": "src/commands",
-    "@constants": "src/constants"
+    "@constants": "src/constants",
+    "@assets": "assets"
   }
 }

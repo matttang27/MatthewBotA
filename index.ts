@@ -1193,7 +1193,7 @@ bot.login(token).then(async () => {
 });
 
 async function nameChange() {
-  const dirs = fs.readdirSync("./amongus");
+  const dirs = fs.readdirSync("@assets/amongus");
   try {
     var guild = await bot.guilds.fetch("757770623450611784");
   } catch (e) {
@@ -1215,7 +1215,7 @@ async function nameChange() {
 
   var name = names[Math.floor(Math.random() * names.length)];
   var icon = dirs[Math.floor(Math.random() * dirs.length)];
-  await guild.setIcon(`./amongus/${icon}`);
+  await guild.setIcon(require.resolve(`@assets/amongus/${icon}`));
   await guild.setName(name).catch((error) => {
     console.error(error);
   });
