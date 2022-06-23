@@ -9,7 +9,7 @@ module.exports = {
 	description: "Collect your daily reward!",
 	usage: `${prefix}daily`,
 	perms: [],
-	status: 'closed',
+	status: 'open',
 	async execute(message, args, other) {
 		var admin = other["admin"]
 		var bot = other["bot"]

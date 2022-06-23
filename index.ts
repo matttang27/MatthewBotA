@@ -31,7 +31,7 @@ console.log("imported https " + timePast());
 let allIntents = new Discord.Intents(32768);
 var bot = new Discord.Client({intents: ["GUILDS","GUILD_MESSAGES","DIRECT_MESSAGES","GUILD_MEMBERS","GUILD_EMOJIS_AND_STICKERS","GUILD_EMOJIS_AND_STICKERS","DIRECT_MESSAGE_REACTIONS"]});
 console.log("created bot instance " + timePast());
-console.log("imported compress_images" + timePast());
+
 import cron = require("cron"); 
 console.log("imported cron" + timePast());
 require("console-error");

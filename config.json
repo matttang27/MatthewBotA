@@ -1,5 +1,5 @@
 {
-  "production": false,
+  "production": true,
   "proPrefix": [
     "m!",
     "m$"
@@ -8,8 +8,8 @@
     "m@",
     "m%"
   ],
-  "prefix": "m@",
-  "rpgprefix": "m%",
+  "prefix": "m!",
+  "rpgprefix": "m$",
   "ownerID": "576031405037977600",
   "hourlycd": 60,
   "dailycd": 1380,
